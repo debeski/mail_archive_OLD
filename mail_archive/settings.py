@@ -119,9 +119,9 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "documents/static"),
-    os.path.join(BASE_DIR, "documents/pdfs"),
-    os.path.join(BASE_DIR, "documents/attach"),
+    os.path.join(BASE_DIR, "documents\static"),
+    os.path.join(BASE_DIR, ".\pdfs"),
+ #   os.path.join(BASE_DIR, ".\attach"),
 ]
 
 # Default primary key field type

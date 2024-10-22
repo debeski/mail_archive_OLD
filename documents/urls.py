@@ -8,6 +8,8 @@ urlpatterns = [
     path('internal/', views.Internal, name='internal'),
     path('decrees/', views.Decree, name='decrees'),
     path('add_outgoing/', views.add_outgoing, name='add_outgoing'),
+    path('outgoing_mail/', views.outgoing_mail, name='outgoing_mail'),  # Updated URL path
+    path('pdfs/outgoing/<int:outgoing_id>/', views.download_outgoing_pdf, name='download_outgoing_pdf')
     # path('add_incoming/', views.add_incoming, name='add_incoming'),
     # etc.
 ]
