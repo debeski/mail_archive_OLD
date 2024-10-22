@@ -26,6 +26,9 @@ class Outgoing(models.Model):
     pdf_file = models.FileField(upload_to='pdfs/outgoing/', blank=False)
     attach = models.FileField(upload_to='attach/outgoing/', blank=True)
 
+    def __str__(self):
+        return self.title
+
 class Internal(models.Model):
     int_date = models.DateField(blank=True, null=True)
     reg_number = models.CharField(max_length=100, blank=True, null=True)

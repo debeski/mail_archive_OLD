@@ -1,8 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from .forms import add_outgoing_form
 
-# Create your views here.
 
-from django.shortcuts import render
 from .models import Incoming, Outgoing, Internal, Decree
 
 def index(request):
@@ -17,3 +16,16 @@ def index(request):
         'internal': internal,
         'decrees': decrees,
     })
+
+# documents/views.py
+
+def add_outgoing(request):
+    if request.method == 'POST':
+        form = add_outgoing_form(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()  # Save the form data to the database
+            return redirect('index')  # Redirect back to the same form
+    else:
+        form = add_outgoing_form()
+    
+    return render(request, 'add_outgoing.html', {'form': form})
