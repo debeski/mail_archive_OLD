@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 
-from django.db import models
+
 
 class Incoming(models.Model):
     orig_date = models.DateField(blank=False, null=False)
@@ -43,3 +43,6 @@ class Decree(models.Model):
     keywords = models.CharField(max_length=200, blank=True)
     pdf_file = models.FileField(upload_to='pdfs/decree/', blank=False)
     attach = models.FileField(upload_to='attach/decree/', blank=True)
+
+    def __str__(self):
+        return self.title
