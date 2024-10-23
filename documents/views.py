@@ -37,16 +37,6 @@ def outgoing_mail(request):
     return render(request, 'outgoing_mail.html', {'documents': documents})
 
 def download_outgoing_pdf(request, outgoing_id):
-    """
-    Downloads a PDF file based on its ID.
-
-    Args:
-        request (django.http.HttpRequest): The HTTP request object.
-        outgoing_id (int): The ID of the Outgoing object to download.
-
-    Returns:
-        django.http.HttpResponse: The HTTP response containing the PDF file.
-    """
 
     outgoing = get_object_or_404(Outgoing, pk=outgoing_id)
 
@@ -66,3 +56,18 @@ def download_outgoing_pdf(request, outgoing_id):
         return response
     else:
         return HttpResponseNotFound('PDF file not found or invalid')
+
+def edit_outgoing(request, outgoing_id):
+    # Retrieve the specific Outgoing instance
+    outgoing_document = get_object_or_404(Outgoing, id=outgoing_id)
+
+    if request.method == 'POST':
+        form = add_outgoing_form(request.POST, request.FILES, instance=outgoing_document)
+        if form.is_valid():
+            form.save()  # Save the updated data to the database
+            return redirect('outgoing_mail')  # Redirect to the outgoing mail view
+    else:
+        form = add_outgoing_form(instance=outgoing_document)  # Populate the form with existing data
+    
+    # Use the same template for adding and editing
+    return render(request, 'add_outgoing.html', {'form': form})
