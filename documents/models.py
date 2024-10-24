@@ -8,17 +8,6 @@ import datetime
 # Create your models here.
 
 def get_pdf_upload_path(instance, filename):
-    """
-    Generates a unique upload path for PDF files, using only the registration number and date.
-
-    Args:
-        instance (models.Model): The model instance for which the file is uploaded.
-        filename (str): The original filename provided by the user (ignored).
-
-    Returns:
-        str: The complete upload path for the PDF file.
-    """
-
     # Extract the date from the filename (if present)
     filename_without_extension = os.path.splitext(filename)[0]
     try:
@@ -27,22 +16,11 @@ def get_pdf_upload_path(instance, filename):
         # If the filename doesn't match the date format, use the current date
         date_part = datetime.date.today().strftime('%Y-%m-%d')
 
-    # Combine registration number and date
-    return f'pdfs/outgoing/{instance.reg_number}_{date_part}.pdf'
+    # Generate the filename without redundant prefixes
+    return f'pdfs/{instance.__class__.__name__.lower()}/{instance.reg_number}_{date_part}.pdf'
 
 
 def get_attach_upload_path(instance, filename):
-    """
-    Generates a unique upload path for attachment files, using only the registration number and date.
-
-    Args:
-        instance (models.Model): The model instance for which the file is uploaded.
-        filename (str): The original filename provided by the user (ignored).
-
-    Returns:
-        str: The complete upload path for the attachment file.
-    """
-
     # Extract the date from the filename (if present)
     filename_without_extension = os.path.splitext(filename)[0]
     try:
@@ -51,8 +29,9 @@ def get_attach_upload_path(instance, filename):
         # If the filename doesn't match the date format, use the current date
         date_part = datetime.date.today().strftime('%Y-%m-%d')
 
-    # Combine registration number and date
-    return f'attach/outgoing/{instance.reg_number}_{date_part}.attach'
+    # Generate the filename without redundant prefixes
+    return f'attach/{instance.__class__.__name__.lower()}/{instance.reg_number}_{date_part}.attach'
+
 
 
 class Incoming(models.Model):

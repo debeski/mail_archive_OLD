@@ -3,7 +3,7 @@ from .forms import add_outgoing_form
 from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
 import mimetypes
 from django.apps import apps
-
+import os
 from django.views.decorators.csrf import csrf_exempt
 from .models import Incoming, Outgoing, Internal, Decree
 
@@ -79,6 +79,15 @@ def delete_document(request, model_name, document_id):
 #download pdf functions.
 
 
+def get_model_prefix(model_name):
+    prefixes = {
+        'outgoing': 'pdf_outgoing',
+        'incoming': 'pdf_incoming',
+        'internal': 'pdf_internal',
+        'decree': 'pdf_decree',
+    }
+    return prefixes.get(model_name.lower(), '')
+
 def download_pdf(request, model_name, object_id):
     model_mapping = {
         'outgoing': Outgoing,
@@ -93,8 +102,8 @@ def download_pdf(request, model_name, object_id):
 
     obj = get_object_or_404(model, pk=object_id)
 
-    # Check if the file exists and is a PDF
-    if obj.pdf_file and obj.pdf_file.name.endswith('.pdf'):
+    # Check if the PDF file exists
+    if obj.pdf_file:
         content_type, _ = mimetypes.guess_type(obj.pdf_file.name)
         if content_type is None:
             content_type = 'application/pdf'  # Default to PDF if unknown
@@ -108,7 +117,7 @@ def download_pdf(request, model_name, object_id):
         return response
     else:
         return HttpResponseNotFound('PDF file not found or invalid')
-    
+
 
 def download_attach(request, model_name, object_id):
     model_mapping = {
@@ -139,3 +148,4 @@ def download_attach(request, model_name, object_id):
         return response
     else:
         return HttpResponseNotFound('Attachment file not found or invalid')
+

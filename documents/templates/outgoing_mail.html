@@ -52,14 +52,15 @@
                         <div class="dropdown">
                             <button class="dropbtn">تحميل PDF</button>
                             <div class="dropdown-content">
-                                <a href="{% url 'download_pdf' model_name='outgoing' object_id=document.id %}">تحميل الرسالة</a>
-                                {% if document.attach %}
-                                    <a href="{% url 'download_attach' model_name='outgoing' object_id=document.id %}">تحميل المرفقات</a>
+                                {% if document.pdf_file %}
+                                    <a href="{% url 'download_pdf' model_name='outgoing' object_id=document.id %}">تحميل الرسالة</a>
                                 {% else %}
-                                    <span>لا يوجد مرفقات</span>
+                                    <span class="disabled-option">لا يوجد ملف PDF</span>
                                 {% endif %}
-                                {% if not document.pdf_file %}
-                                    <span>لا يوجد ملف PDF</span>
+                                {% if document.attach %}
+                                <a href="{% url 'download_attach' model_name='outgoing' object_id=document.id %}">تحميل المرفقات</a>
+                                {% else %}
+                                    <span class="disabled-option">لا يوجد مرفقات</span>
                                 {% endif %}
                             </div>
                         </div>
