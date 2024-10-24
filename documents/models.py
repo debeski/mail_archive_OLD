@@ -65,7 +65,7 @@ class Incoming(models.Model):
     dept_to = models.CharField(max_length=100, blank=False, null=False)
     title = models.CharField(max_length=100, blank=False, null=False)
     keywords = models.CharField(max_length=200, blank=True)
-    pdf_file = models.FileField(upload_to='pdfs/incoming/', blank=False)
+    pdf_file = models.FileField(upload_to='pdfs/incoming/', blank=True)
     attach = models.FileField(upload_to='attach/incoming', blank=True)
 
 class Outgoing(models.Model):
@@ -76,7 +76,7 @@ class Outgoing(models.Model):
     dept_to = models.CharField(max_length=100, blank=False, null=False)
     title = models.CharField(max_length=100, blank=False, null=False)
     keywords = models.CharField(max_length=200, blank=True)
-    pdf_file = models.FileField(upload_to=get_pdf_upload_path, blank=False)
+    pdf_file = models.FileField(upload_to=get_pdf_upload_path, blank=True)
     attach = models.FileField(upload_to=get_attach_upload_path, blank=True)
 
     def __str__(self):
@@ -90,7 +90,7 @@ class Internal(models.Model):
     dept_to = models.CharField(max_length=100, blank=False, null=False)
     title = models.CharField(max_length=100, blank=False, null=False)
     keywords = models.CharField(max_length=200, blank=True)
-    pdf_file = models.FileField(upload_to='pdfs/internal/', blank=False)
+    pdf_file = models.FileField(upload_to='pdfs/internal/', blank=True)
     attach = models.FileField(upload_to='attach/internal/', blank=True)
 
 class Decree(models.Model):
@@ -99,5 +99,5 @@ class Decree(models.Model):
     dec_number = models.CharField(max_length=100, blank=False, null=False)
     title = models.CharField(max_length=100, blank=False, null=False)
     keywords = models.CharField(max_length=200, blank=True)
-    pdf_file = models.FileField(upload_to='pdfs/decree/', blank=False)
+    pdf_file = models.FileField(upload_to='pdfs/decree/', blank=True)
     attach = models.FileField(upload_to='attach/decree/', blank=True)

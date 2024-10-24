@@ -6,6 +6,7 @@
     <title>البريد الصادر</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <meta name="csrf-token" content="{{ csrf_token }}">
 </head>
 <body>
 <div class="title">
@@ -15,7 +16,7 @@
 <div class="container">
     <div class="dashboard">
         <input type="text" placeholder="ابحث هنا..." id="search-input" onkeyup="searchDocuments()">
-        <button onclick="location.href='{% url 'add_outgoing' %}'">إدخال بيانات جديدة</button>
+        <button onclick="location.href='{% url 'add_outgoing' %}'">إضافة وثيقة</button>
         <div><br></div>
         <div class="separator"></div>
         <br>
@@ -29,7 +30,7 @@
         <table>
             <thead>
                 <tr>
-                    <th>رقم الوثيقة</th>
+                    <th>رقم الرسالة</th>
                     <th>التاريخ</th>
                     <th>من</th>
                     <th>إلى</th>
@@ -40,7 +41,7 @@
             </thead>
             <tbody id="document-table-body">
                 {% for document in documents %}
-                <tr>
+                <tr id="document-row-{{ document.id }}">
                     <td>{{ document.reg_number }}</td>
                     <td>{{ document.out_date }}</td>
                     <td>{{ document.dept_from }}</td>
@@ -49,21 +50,25 @@
                     <td>{{ document.keywords }}</td>
                     <td>
                         <div class="dropdown">
-                            <button class="dropbtn">الإجراءات</button>
+                            <button class="dropbtn">تحميل PDF</button>
                             <div class="dropdown-content">
-                                {% if document.id %}
-                                    <a href="{% url 'edit_outgoing' document.id %}">تعديل</a>
-                                    <a href="{% url 'download_outgoing_pdf' outgoing_id=document.id %}">تحميل PDF الرئيسي</a>
-                                {% else %}
-                                    <span>لا يوجد ID</span>
-                                {% endif %}
+                                <a href="{% url 'download_pdf' model_name='outgoing' object_id=document.id %}">تحميل الرسالة</a>
                                 {% if document.attach %}
-                                    <a href="{{ document.attach.url }}">تحميل الملف المرفق</a>
+                                    <a href="{% url 'download_attach' model_name='outgoing' object_id=document.id %}">تحميل المرفقات</a>
                                 {% else %}
                                     <span>لا يوجد مرفقات</span>
                                 {% endif %}
+                                {% if not document.pdf_file %}
+                                    <span>لا يوجد ملف PDF</span>
+                                {% endif %}
                             </div>
                         </div>
+                        <a href="{% url 'edit_outgoing' document.id %}" class="edit-button">
+                            <img src="{% static 'img/edit.png' %}" alt="Edit" class="icon"> 
+                        </a>
+                        <a class="delete-button" onclick="confirmDeletion('Outgoing', {{ document.id }})">
+                            <img src="{% static 'img/delete.png' %}" alt="Delete" class="icon">
+                        </a>
                     </td>
                 </tr>
                 {% empty %}
@@ -76,7 +81,18 @@
     </div>
 </div>
 
-<!-- Link to the external JavaScript file -->
+<!-- Custom Delete Confirmation Modal -->
+<div id="deleteModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <p>هل أنت متأكد أنك تريد حذف هذا العنصر؟</p>
+        <button id="confirmDeleteButton">تأكيد</button>
+        <button onclick="closeModal()">إلغاء</button>
+    </div>
+</div>
+
+<!-- Link to the external JavaScript files -->
 <script src="{% static 'js/search.js' %}"></script>
+<script src="{% static 'js/delete.js' %}"></script>
 </body>
 </html>

@@ -1,10 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import add_outgoing_form
-from django.http import HttpResponse, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
 import mimetypes
+from django.apps import apps
 
-
+from django.views.decorators.csrf import csrf_exempt
 from .models import Incoming, Outgoing, Internal, Decree
+
+
+#index+outgoing_index functions.
+
 
 def index(request):
     incoming = Incoming.objects.order_by('-reg_date')[:3]
@@ -19,7 +24,13 @@ def index(request):
         'decrees': decrees,
     })
 
-# documents/views.py
+def outgoing_mail(request):
+    documents = Outgoing.objects.all()  # Use the correct model name here
+    return render(request, 'outgoing_mail.html', {'documents': documents})
+
+
+#add+edit+delete functions.
+
 
 def add_outgoing(request):
     if request.method == 'POST':
@@ -32,30 +43,6 @@ def add_outgoing(request):
     
     return render(request, 'add_outgoing.html', {'form': form})
 
-def outgoing_mail(request):
-    documents = Outgoing.objects.all()  # Use the correct model name here
-    return render(request, 'outgoing_mail.html', {'documents': documents})
-
-def download_outgoing_pdf(request, outgoing_id):
-
-    outgoing = get_object_or_404(Outgoing, pk=outgoing_id)
-
-    # Check if the file exists and is a PDF
-    if outgoing.pdf_file and outgoing.pdf_file.name.endswith('.pdf'):
-        # Use mimetypes to get the content type
-        content_type, _ = mimetypes.guess_type(outgoing.pdf_file.name)
-        if content_type is None:
-            content_type = 'application/pdf'  # Default to PDF if unknown
-
-        response = HttpResponse(content_type=content_type)
-        response['Content-Disposition'] = f'attachment; filename="{outgoing.pdf_file.name}"'
-        
-        with outgoing.pdf_file.open('rb') as pdf_file:
-            response.write(pdf_file.read())
-        
-        return response
-    else:
-        return HttpResponseNotFound('PDF file not found or invalid')
 
 def edit_outgoing(request, outgoing_id):
     # Retrieve the specific Outgoing instance
@@ -71,3 +58,84 @@ def edit_outgoing(request, outgoing_id):
     
     # Use the same template for adding and editing
     return render(request, 'add_outgoing.html', {'form': form})
+
+
+def delete_document(request, model_name, document_id):
+    if request.method == 'DELETE':
+        try:
+            # Dynamically get the model class
+            model = apps.get_model('documents', model_name)
+            document = model.objects.get(id=document_id)
+            document.delete()
+            return JsonResponse({'success': True})
+        except model.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Document not found'}, status=404)
+        except LookupError:
+            return JsonResponse({'success': False, 'error': 'Model not found'}, status=404)
+
+    return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=400)
+
+
+#download pdf functions.
+
+
+def download_pdf(request, model_name, object_id):
+    model_mapping = {
+        'outgoing': Outgoing,
+        'incoming': Incoming,
+        'internal': Internal,
+        'decree': Decree,
+    }
+
+    model = model_mapping.get(model_name.lower())
+    if model is None:
+        return HttpResponseNotFound('Invalid model name')
+
+    obj = get_object_or_404(model, pk=object_id)
+
+    # Check if the file exists and is a PDF
+    if obj.pdf_file and obj.pdf_file.name.endswith('.pdf'):
+        content_type, _ = mimetypes.guess_type(obj.pdf_file.name)
+        if content_type is None:
+            content_type = 'application/pdf'  # Default to PDF if unknown
+
+        response = HttpResponse(content_type=content_type)
+        response['Content-Disposition'] = f'attachment; filename="{obj.pdf_file.name}"'
+
+        with obj.pdf_file.open('rb') as pdf_file:
+            response.write(pdf_file.read())
+
+        return response
+    else:
+        return HttpResponseNotFound('PDF file not found or invalid')
+    
+
+def download_attach(request, model_name, object_id):
+    model_mapping = {
+        'outgoing': Outgoing,
+        'incoming': Incoming,
+        'internal': Internal,
+        'decree': Decree,
+    }
+
+    model = model_mapping.get(model_name.lower())
+    if model is None:
+        return HttpResponseNotFound('Invalid model name')
+
+    obj = get_object_or_404(model, pk=object_id)
+
+    # Check if the attachment exists
+    if obj.attach:
+        content_type, _ = mimetypes.guess_type(obj.attach.name)
+        if content_type is None:
+            content_type = 'application/octet-stream'  # Default to binary if unknown
+
+        response = HttpResponse(content_type=content_type)
+        response['Content-Disposition'] = f'attachment; filename="{obj.attach.name}"'
+
+        with obj.attach.open('rb') as attach_file:
+            response.write(attach_file.read())
+
+        return response
+    else:
+        return HttpResponseNotFound('Attachment file not found or invalid')

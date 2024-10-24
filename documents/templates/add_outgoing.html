@@ -14,22 +14,22 @@
         {% csrf_token %}
         
         <label for="reg_number">رقم الوثيقة:</label>
-        <input type="text" id="reg_number" name="reg_number" value="{{ form.reg_number.value }}" required>
+        <input type="text" id="reg_number" name="reg_number" value="{{ form.reg_number.value|default:'' }}" required>
     
         <label for="out_date">التاريخ:</label>
-        <input type="date" id="out_date" name="out_date" value="{% if form.out_date.value %}{{ form.out_date.value|date:'Y-m-d' }}{% endif %}" required>
+        <input type="date" id="out_date" name="out_date" value="{% if form.out_date.value %}{{ form.out_date.value|date:'Y-m-d' }}{% else %}''{% endif %}" required>
     
         <label for="dept_from">القسم من:</label>
-        <input type="text" id="dept_from" name="dept_from" value="{{ form.dept_from.value }}" required>
+        <input type="text" id="dept_from" name="dept_from" value="{{ form.dept_from.value|default:'' }}" required>
     
         <label for="dept_to">القسم إلى:</label>
-        <input type="text" id="dept_to" name="dept_to" value="{{ form.dept_to.value }}" required>
+        <input type="text" id="dept_to" name="dept_to" value="{{ form.dept_to.value|default:'' }}" required>
     
         <label for="title">العنوان:</label>
-        <input type="text" id="title" name="title" value="{{ form.title.value }}" required>
+        <input type="text" id="title" name="title" value="{{ form.title.value|default:'' }}" required>
     
         <label for="keywords">الكلمات المفتاحية:</label>
-        <input type="text" id="keywords" name="keywords" value="{{ form.keywords.value }}">
+        <input type="text" id="keywords" name="keywords" value="{{ form.keywords.value|default:'' }}">
     
         <label for="pdf_file">ملف PDF الرئيسي:</label>
         <input type="file" id="pdf_file" name="pdf_file" accept="application/pdf">
@@ -40,11 +40,9 @@
         <label for="attach">ملف PDF مرفق:</label>
         <input type="file" id="attach" name="attach" accept="application/pdf">
     
-        <button type="submit">Save</button>
-        <a href="{% url 'outgoing_mail' %}" style="color: white; background-color: red; padding: 8px 16px; text-decoration: none; border-radius: 5px;">Cancel</a>
+        <button type="submit">حفظ</button>
+        <a href="{% url 'outgoing_mail' %}" style="color: white; background-color: red; padding: 8px 16px; text-decoration: none; border-radius: 5px;">إلغاء</a>
     </form>
-    
 
-    <a href="{% url 'outgoing_mail' %}">Cancel</a>
 </body>
 </html>
