@@ -6,37 +6,36 @@ body {
     display: flex;
     flex-direction: column; /* Stack elements vertically */
 }
+
 .title {
     background-color: #007bff; /* Title background color */
     color: white;
-    text-align: center;
+    text-align: right;
     padding: 20px; /* Space around the title */
-    border-radius: 8px;
     margin-bottom: 20px; /* Space below the title */
 }
+
 .container {
     display: flex;
     flex-grow: 1; /* Allow the container to grow */
     justify-content: flex-end; /* Align dashboard to the right */
     padding: 20px; /* Add padding to the container */
 }
+
 .table-container {
     flex-grow: 1; /* Allow the table container to grow */
     margin-right: 20px; /* Space between table and dashboard */
 }
+
 .dashboard {
-    width: 200px; /* Thinner dashboard */
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: inline-block; /* Keep it from pushing down */
+    vertical-align: top; /* Align with the action container */
+    width: 200px; /* Adjust width as needed */
+    margin-left: 20px; /* Space from the action container */
 }
-.dashboard h2 {
-    text-align: center;
-    margin-top: 0; /* Remove top margin */
-}
+
 .dashboard button {
-    width: 100%;
+    width: 100%; /* Make buttons full width */
     margin: 10px 0;
     padding: 10px;
     background-color: #007bff;
@@ -45,25 +44,31 @@ body {
     border-radius: 4px;
     cursor: pointer;
 }
+
 .dashboard button:hover {
     background-color: #0056b3;
 }
+
 table {
     width: 100%;
     border-collapse: collapse;
 }
+
 th, td {
     padding: 10px;
     border: 1px solid #ccc;
     text-align: right; /* Align text to the right for Arabic */
 }
+
 th {
     background-color: #f2f2f2;
 }
+
 .dropdown {
     position: relative;
     display: inline-block;
 }
+
 .dropbtn {
     background-color: #007bff;
     color: white;
@@ -72,6 +77,7 @@ th {
     cursor: pointer;
     border-radius: 4px;
 }
+
 .dropdown-content {
     display: none;
     position: absolute;
@@ -80,16 +86,64 @@ th {
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
 }
+
 .dropdown-content a, .dropdown-content span {
     color: black;
     padding: 12px 16px;
     text-decoration: none;
     display: block;
 }
+
 .dropdown-content a:hover, .dropdown-content span:hover {
     background-color: #007bff; /* Highlight on hover */
     color: white;
 }
+
 .dropdown:hover .dropdown-content {
     display: block;
+}
+
+/* Flexbox for the button and search field */
+.action-container {
+    display: flex;
+    align-items: center; /* Center vertically */
+    margin-bottom: 20px; /* Space below the action container */
+}
+
+.action-container button {
+    margin-right: 10px; /* Space between button and input */
+    flex: 1; /* Allow button to grow */
+}
+
+.search-container {
+    flex: 2; /* Allow search input to grow */
+}
+
+.search-container input {
+    padding: 10px;
+    width: 100%; /* Make input full width */
+}
+
+/* Separator */
+.separator {
+    height: 3px;
+    background-color: #ccc;
+    margin: 10px 0; /* Space above and below */
+}
+
+/* Search Field */
+#search-input:focus {
+    border-color: #007bff;    /* Changes border color when the input is focused */
+    outline: none;             /* Removes the default outline */
+}
+
+#search-input {
+    padding: 10px;             /* Adds padding inside the input for better usability */
+    width: 90%;              /* Makes the input take the full width of its container */
+    border: 1px solid #ccc;   /* Adds a light gray border */
+    border-radius: 4px;       /* Rounds the corners for a softer look */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow */
+    margin-bottom: 10px;      /* Space below the input */
+    font-size: 16px;          /* Sets the font size for better readability */
+    transition: border-color 0.3s; /* Smooth transition for border color */
 }

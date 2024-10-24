@@ -3,38 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>عرض الوثائق الصادرة</title>
+    <title>البريد الصادر</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
 <div class="title">
-    <h1>عرض الوثائق الصادرة</h1>
+    <h1>البريد الصادر</h1>
 </div>
 
 <div class="container">
     <div class="dashboard">
-        <h2>لوحة التحكم</h2>
+        <input type="text" placeholder="ابحث هنا..." id="search-input" onkeyup="searchDocuments()">
         <button onclick="location.href='{% url 'add_outgoing' %}'">إدخال بيانات جديدة</button>
+        <div><br></div>
+        <div class="separator"></div>
+        <br>
         <button onclick="#">الخيار 2</button>
         <button onclick="#">الخيار 3</button>
         <button onclick="#">الخيار 4</button>
         <button onclick="#">الخيار 5</button>
     </div>
+    
     <div class="table-container">
         <table>
             <thead>
                 <tr>
                     <th>رقم الوثيقة</th>
                     <th>التاريخ</th>
-                    <th>القسم من</th>
-                    <th>القسم إلى</th>
+                    <th>من</th>
+                    <th>إلى</th>
                     <th>العنوان</th>
                     <th>الكلمات المفتاحية</th>
                     <th>الإجراءات</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="document-table-body">
                 {% for document in documents %}
                 <tr>
                     <td>{{ document.reg_number }}</td>
@@ -48,7 +52,7 @@
                             <button class="dropbtn">الإجراءات</button>
                             <div class="dropdown-content">
                                 {% if document.id %}
-                                    <a href="{% url 'edit_outgoing' document.id %}">تعديل</a>  <!-- Edit link -->
+                                    <a href="{% url 'edit_outgoing' document.id %}">تعديل</a>
                                     <a href="{% url 'download_outgoing_pdf' outgoing_id=document.id %}">تحميل PDF الرئيسي</a>
                                 {% else %}
                                     <span>لا يوجد ID</span>
@@ -70,8 +74,9 @@
             </tbody>
         </table>
     </div>
-
 </div>
 
+<!-- Link to the external JavaScript file -->
+<script src="{% static 'js/search.js' %}"></script>
 </body>
 </html>
