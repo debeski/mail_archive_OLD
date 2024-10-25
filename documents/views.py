@@ -6,6 +6,8 @@ from django.apps import apps
 import os
 from django.views.decorators.csrf import csrf_exempt
 from .models import Incoming, Outgoing, Internal, Decree
+from django.core.paginator import Paginator
+
 
 
 #index+outgoing_index functions.
@@ -25,10 +27,13 @@ def index(request):
     })
 
 def outgoing_mail(request):
-    documents = Outgoing.objects.all()  # Use the correct model name here
-    return render(request, 'outgoing_mail.html', {'documents': documents})
+    documents = Outgoing.objects.order_by('-id')  # Order by ID descending
+    paginator = Paginator(documents, 10)  # Show 20 documents per page
 
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
+    return render(request, 'outgoing_mail.html', {'documents': page_obj})
 #add+edit+delete functions.
 
 

@@ -1,67 +1,179 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Roboto', sans-serif; /* Change font for Material style */
     direction: rtl; /* Right-to-left direction for Arabic */
     margin: 0;
     height: 100vh; /* Full height */
     display: flex;
     flex-direction: column; /* Stack elements vertically */
+    background-color: #f5f5f5; /* Light background for the body */
 }
 
 .title {
-    background-color: #007bff; /* Title background color */
+    background-color: #007FFF; /* Azure color for title */
     color: white;
     text-align: right;
-    padding: 20px; /* Space around the title */
-    margin-bottom: 20px; /* Space below the title */
+    padding: 5px; /* Reduced height */
+    margin: 0; /* Remove margin below the title */
+    box-shadow: none; /* Light shadow only below */
+    display: flex; /* Flex for title and button */
+    align-items: center; /* Center items vertically */
+    height: 70px;
+}
+
+.title h1 {
+    flex: 1; /* Allow the title to take up remaining space */
+    text-align: center; /* Center the title text */
+    margin-top: 10px;
+}
+
+.menu-toggle {
+    background: none; /* No background */
+    border: none; /* No border */
+    color: white; /* White color for the icon */
+    font-size: 24px; /* Size for the icon */
+    cursor: pointer; /* Pointer cursor */
+    margin-right: 10px; /* Space from the left */
 }
 
 .container {
     display: flex;
     flex-grow: 1; /* Allow the container to grow */
-    justify-content: flex-end; /* Align dashboard to the right */
-    padding: 20px; /* Add padding to the container */
 }
 
-.table-container {
-    flex-grow: 1; /* Allow the table container to grow */
-    margin-right: 20px; /* Space between table and dashboard */
+.layout {
+    display: flex; /* Keep dashboard and table side by side */
+    flex-grow: 1; /* Allow layout to grow */
 }
 
 .dashboard {
-    display: inline-block; /* Keep it from pushing down */
-    vertical-align: top; /* Align with the action container */
-    width: 200px; /* Adjust width as needed */
-    margin-left: 20px; /* Space from the action container */
+    background-color: #007FFF; /* Match title background (azure) */
+    color: white; /* Text color */
+    width: 200px; /* Fixed width for navigation pane */
+    margin: 0; /* Remove space from left */
+    padding: 0; /* Remove padding */
+    box-shadow: none; /* Shadow for depth */
+    transition: width 0.3s; /* Smooth transition for width */
+    border-top: none; /* Ensure there's no border at the top */
+}
+
+.dashboard.collapsed {
+    width: 0; /* Collapse width */
+    overflow: hidden; /* Hide overflow */
 }
 
 .dashboard button {
     width: 100%; /* Make buttons full width */
-    margin: 10px 0;
-    padding: 10px;
-    background-color: #007bff;
+    margin: 0; /* Remove margin */
+    padding: 25px 0; /* Increased padding for buttons */
+    background-color: #007FFF; /* Azure for options */
     color: white;
     border: none;
-    border-radius: 4px;
     cursor: pointer;
+    transition: background-color 0.3s; /* Smooth transition */
+    font-size: 18px; /* Increase font size for buttons */
 }
 
 .dashboard button:hover {
-    background-color: #0056b3;
+    background-color: #0056a3; /* Darker blue on hover */
+}
+
+.main-content {
+    flex-grow: 1; /* Allow main content to grow */
+    transition: margin-left 0.3s; /* Smooth transition for margin */
+}
+
+.header {
+    display: flex; /* Use flexbox for header layout */
+    align-items: center; /* Center items vertically */
+    margin-bottom: 20px; /* Space below the header */
+}
+
+.header button {
+    margin-right: 25px; /* Space between the button and the search field */
+    padding: 15px; /* Make buttons the same size */
+    border: none; /* Remove default border */
+    background-color: #007FFF; /* Azure for "إضافة وثيقة" button */
+    color: white; /* Text color */
+    border-radius: 4px; /* Rounded corners for buttons */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s; /* Smooth transition */
+    font-size: 18px; /* Increase font size for the button */
+    margin-top: 15px;
+}
+
+.header button:hover {
+    background-color: #0056a3; /* Darker button color on hover */
+}
+
+.search-container {
+    flex: 1; /* Allow search input to grow */
+    display: flex; /* Use flexbox for alignment */
+    padding-right: 30px;
+    padding-top: 15px
+}
+
+.search-container input {
+    padding: 15px; /* Increased padding for input */
+    width: 200px; /* Set a specific width for the search input */
+    border: 1px solid #ccc; /* Light gray border */
+    border-radius: 4px; /* Rounded corners */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+    font-size: 16px; /* Font size for readability */
+    transition: border-color 0.3s; /* Smooth transition for border color */
+}
+
+#search-input:focus {
+    border-color: #007FFF; /* Change border color when focused */
+    outline: none; /* Remove default outline */
+}
+
+.table-container {
+    flex-grow: 1; /* Allow the table container to grow */
+    margin-left: 20px; /* Space between table and dashboard */
+    margin-right: 20px;
+    overflow: auto; /* Allow scrolling if the table is too wide */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    background-color: #ffffff; /* White background for the table container */
 }
 
 table {
-    width: 100%;
-    border-collapse: collapse;
+    width: 100%; /* Ensure the table takes full width */
+    border-collapse: collapse; /* Remove spacing between cells */
 }
 
 th, td {
-    padding: 10px;
-    border: 1px solid #ccc;
-    text-align: right; /* Align text to the right for Arabic */
+    padding: 10px 15px; /* Padding for cells */
+    border-bottom: 1px solid #e0e0e0; /* Light border for separation */
 }
 
 th {
-    background-color: #f2f2f2;
+    background-color: #f5f5f5; /* Light grey background for header */
+    color: #333; /* Dark text color */
+    font-weight: 600; /* Bold header text */
+}
+
+td {
+    text-align: right; /* Align text to the right for Arabic */
+    color: #666; /* Slightly lighter text for body */
+}
+
+/* Row hover effect */
+tbody tr:hover {
+    background-color: #eeeeee; /* Light grey background on hover */
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    th, td {
+        padding: 10px; /* Reduce padding on smaller screens */
+        font-size: 14px; /* Adjust font size */
+    }
+
+    th:nth-child(1),
+    td:nth-child(1) {
+        display: none; /* Hide document number on small screens */
+    }
 }
 
 .dropdown {
@@ -70,82 +182,46 @@ th {
 }
 
 .dropbtn {
-    background-color: #007bff;
+    background-color: #007FFF; /* Azure color for dropdown button */
     color: white;
     padding: 10px;
     border: none;
     cursor: pointer;
     border-radius: 4px;
+    transition: background-color 0.3s; /* Smooth transition */
 }
 
 .dropdown-content {
     display: none;
     position: absolute;
-    background-color: #f9f9f9;
+    background-color: #ffffff; /* White background for dropdown */
     min-width: 160px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
+    border-radius: 4px; /* Rounded corners */
 }
 
 .dropdown-content a, .dropdown-content span {
-    color: black;
+    color: black; /* Default color for available options */
     padding: 12px 16px;
     text-decoration: none;
     display: block;
 }
 
 .dropdown-content a:hover, .dropdown-content span:hover {
-    background-color: #007bff; /* Highlight on hover */
+    background-color: #007FFF; /* Azure for hovered options */
     color: white;
 }
 
+.disabled-option {
+    color: gray; /* Gray for unavailable options */
+    cursor: not-allowed; /* Change cursor to indicate it's not clickable */
+    pointer-events: none; /* Prevent any pointer events */
+}
+
+/* Show dropdown content on hover */
 .dropdown:hover .dropdown-content {
     display: block;
-}
-
-/* Flexbox for the button and search field */
-.action-container {
-    display: flex;
-    align-items: center; /* Center vertically */
-    margin-bottom: 20px; /* Space below the action container */
-}
-
-.action-container button {
-    margin-right: 10px; /* Space between button and input */
-    flex: 1; /* Allow button to grow */
-}
-
-.search-container {
-    flex: 2; /* Allow search input to grow */
-}
-
-.search-container input {
-    padding: 10px;
-    width: 100%; /* Make input full width */
-}
-
-/* Separator */
-.separator {
-    height: 3px;
-    background-color: #ccc;
-    margin: 10px 0; /* Space above and below */
-}
-
-/* Search Field */
-#search-input:focus {
-    border-color: #007bff;    /* Changes border color when the input is focused */
-    outline: none;             /* Removes the default outline */
-}
-
-#search-input {
-    padding: 10px;             /* Adds padding inside the input for better usability */
-    width: 90%;              /* Makes the input take the full width of its container */
-    border: 1px solid #ccc;   /* Adds a light gray border */
-    border-radius: 4px;       /* Rounds the corners for a softer look */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow */
-    margin-bottom: 10px;      /* Space below the input */
-    font-size: 16px;          /* Sets the font size for better readability */
-    transition: border-color 0.3s; /* Smooth transition for border color */
 }
 
 .modal {
@@ -168,6 +244,8 @@ th {
     width: 80%; 
     max-width: 400px;
     text-align: center;
+    border-radius: 8px; /* Rounded corners for modal */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Shadow for modal */
 }
 
 .close {
@@ -203,54 +281,58 @@ th {
     cursor: pointer; /* Ensure edit button also has pointer */
 }
 
-/* Set specific widths for table columns */
-table {
-    width: 100%; /* Ensure the table takes full width */
-}
-
-th:nth-child(1),
-td:nth-child(1) {
-    width: 5%; /* رقم الوثيقة */
-}
-
-th:nth-child(2),
-td:nth-child(2) {
-    width: 10%; /* التاريخ */
-}
-
-th:nth-child(3),
-td:nth-child(3) {
-    width: 12%; /* من */
-}
-
-th:nth-child(4),
-td:nth-child(4) {
-    width: 12%; /* إلى */
-}
-
-th:nth-child(5),
-td:nth-child(5) {
-    width: 25%; /* العنوان */
-}
-
-th:nth-child(6),
-td:nth-child(6) {
-    width: 25%; /* الكلمات المفتاحية */
-}
-
-/* Ensure header and body cells are styled the same */
-th {
-    text-align: right; /* Align text to the right for Arabic */
-}
-
-td {
-    text-align: right; /* Align text to the right for Arabic */
-}
-
 .disabled-option {
     color: gray;  /* Grayed out text */
     cursor: not-allowed;  /* Change cursor to indicate it's not clickable */
     pointer-events: none;  /* Prevent any pointer events */
     display: block;  /* Ensures it behaves like a block element */
-    padding: 8px 12px;  /* Match link padding */
+}
+
+/* Button styles enhancements */
+button {
+    margin-top: 5px; /* Space above buttons */
+    padding: 10px; /* Padding for buttons */
+    border: none; /* Remove default border */
+    background-color: #6200ee; /* Button color */
+    color: white; /* Text color */
+    border-radius: 4px; /* Rounded corners for buttons */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s; /* Smooth transition */
+}
+
+button:hover {
+    background-color: #0056a3; /* Darker button color on hover */
+}
+
+.pagination {
+    display: flex; /* Use flexbox for layout */
+    justify-content: center; /* Center the pagination */
+    margin: 20px 0; /* Space around the paginator */
+}
+
+.step-links {
+    display: flex; /* Flex for spacing */
+    align-items: center; /* Center items vertically */
+}
+
+.pagination-button {
+    background-color: #007FFF; /* Material purple */
+    color: white; /* Text color */
+    padding: 10px 15px; /* Padding */
+    margin: 0 5px; /* Space between buttons */
+    border: none; /* Remove border */
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor */
+    transition: background-color 0.3s; /* Smooth transition */
+    text-decoration: none; /* Remove underline */
+}
+
+.pagination-button:hover {
+    background-color: #3700b3; /* Darker purple on hover */
+}
+
+.current {
+    margin: 0 10px; /* Space around current page text */
+    font-weight: bold; /* Bold text for current page */
+    color: #333; /* Darker color for better visibility */
 }
