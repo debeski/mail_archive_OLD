@@ -6,9 +6,7 @@ from django.apps import apps
 from django.views.decorators.csrf import csrf_exempt
 from .models import Incoming, Outgoing, Internal, Decree
 from django.core.paginator import Paginator
-from pdf2image import convert_from_path
-from django.core.files.storage import default_storage
-import os
+
 
 
 #index+outgoing_index functions.
@@ -30,16 +28,13 @@ def index(request):
 # Outgoing_mail Functions:
 
 def outgoing_mail(request):
-    documents = Outgoing.objects.order_by('-id')
-    paginator = Paginator(documents, 10)
+    documents = Outgoing.objects.order_by('-id')  # Order by ID descending
+    paginator = Paginator(documents, 10)  # Show 20 documents per page
+
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    return render(request, 'outgoing_mail.html', {
-        'documents': page_obj,
-        'show_add_and_search': True,  # Show both the add button and search field
-        'page_name': 'outgoing_mail',  # Set page_name for this view
-    })
+    return render(request, 'outgoing_mail.html', {'documents': page_obj})
 
 
 def add_outgoing(request):
@@ -47,11 +42,11 @@ def add_outgoing(request):
         form = add_outgoing_form(request.POST, request.FILES)
         if form.is_valid():
             form.save()  # Save the form data to the database
-            return redirect('outgoing_mail')  # Redirect back to the outgoing mail view
+            return redirect('outgoing_mail')  # Redirect back to the same form
     else:
         form = add_outgoing_form()
     
-    return render(request, 'add_outgoing.html', {'form': form})  # Use the new form template
+    return render(request, 'add_outgoing.html', {'form': form})
 
 
 def edit_outgoing(request, outgoing_id):
@@ -66,25 +61,47 @@ def edit_outgoing(request, outgoing_id):
     else:
         form = add_outgoing_form(instance=outgoing_document)  # Populate the form with existing data
     
-    # Use the new form template for editing
+    # Use the same template for adding and editing
     return render(request, 'add_outgoing.html', {'form': form})
 
+# Internal_mail Functions:
 
-def get_document_details(request, document_id):
-    document = Outgoing.objects.get(id=document_id)
+# def incoming_mail(request):
+#     documents = Incoming.objects.order_by('-id')  # Order by ID descending
+#     paginator = Paginator(documents, 10)  # Show 10 documents per page
 
-    data = {
-        'id': document.id,
-        'reg_number': document.reg_number,
-        'out_date': document.out_date.strftime('%Y-%m-%d'),
-        'dept_from': document.dept_from,
-        'dept_to': document.dept_to,
-        'title': document.title,
-        'keywords': document.keywords,
-        'pdf_file': document.pdf_file.url if document.pdf_file else None,  # Send the PDF file URL
-    }
-    return JsonResponse(data)
+#     page_number = request.GET.get('page')
+#     page_obj = paginator.get_page(page_number)
+
+#     return render(request, 'incoming_mail.html', {'documents': page_obj})
+
+
+# def add_incoming(request):
+#     if request.method == 'POST':
+#         form = add_incoming_form(request.POST, request.FILES)
+#         if form.is_valid():
+#             form.save()  # Save the form data to the database
+#             return redirect('incoming_mail')  # Redirect back to the incoming mail view
+#     else:
+#         form = add_incoming_form()
     
+#     return render(request, 'add_incoming.html', {'form': form})
+
+
+# def edit_incoming(request, incoming_id):
+#     incoming_document = get_object_or_404(Incoming, id=incoming_id)
+
+#     if request.method == 'POST':
+#         form = add_incoming_form(request.POST, request.FILES, instance=incoming_document)
+#         if form.is_valid():
+#             form.save()  # Save the updated data to the database
+#             return redirect('incoming_mail')  # Redirect to the incoming mail view
+#     else:
+#         form = add_incoming_form(instance=incoming_document)
+    
+#     return render(request, 'add_incoming.html', {'form': form})
+
+
 def delete_document(request, model_name, document_id):
     if request.method == 'DELETE':
         try:
@@ -93,13 +110,24 @@ def delete_document(request, model_name, document_id):
             document = model.objects.get(id=document_id)
             document.delete()
             return JsonResponse({'success': True})
-        except (model.DoesNotExist, LookupError):
-            return JsonResponse({'success': False, 'error': 'Document or model not found'}, status=404)
+        except model.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Document not found'}, status=404)
+        except LookupError:
+            return JsonResponse({'success': False, 'error': 'Model not found'}, status=404)
 
     return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=400)
 
 
 #download pdf functions.
+
+def get_model_prefix(model_name):
+    prefixes = {
+        'outgoing': 'pdf_outgoing',
+        'incoming': 'pdf_incoming',
+        'internal': 'pdf_internal',
+        'decree': 'pdf_decree',
+    }
+    return prefixes.get(model_name.lower(), '')
 
 def download_pdf(request, model_name, object_id):
     model_mapping = {
