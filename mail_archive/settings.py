@@ -120,10 +120,36 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "documents/static"),
-    #os.path.join(BASE_DIR, ".\pdfs"),
 ]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# MEDIA_URL is the URL where files will be accessed from the browser
+MEDIA_URL = '/media/'
+
+# MEDIA_ROOT is the actual filesystem path where the files are stored
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # This will create the 'media/' folder in your root directory
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'django_debug.log'),
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}

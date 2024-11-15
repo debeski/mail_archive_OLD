@@ -7,9 +7,15 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <meta name="csrf-token" content="{{ csrf_token }}">
-
-    <!-- Include PDF.js Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+    <!-- Include PDF.js Library (using local mjs files) -->
+    <script type="module">
+        import * as pdfjsLib from "{% static 'pdfjs/build/pdf.mjs' %}";
+        
+        // Set the worker path for PDF.js
+        pdfjsLib.GlobalWorkerOptions.workerSrc = "{% static 'pdfjs/build/pdf.worker.mjs' %}";
+    </script>
+    <!-- Include PDF.js Viewer Styles (optional, for a better viewer layout) -->
+    <!-- <link rel="stylesheet" href="{% static 'pdfjs/web/viewer.css' %}"> -->
 </head>
 <body>
     <div class="title">

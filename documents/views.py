@@ -9,7 +9,7 @@ from django.core.paginator import Paginator
 from pdf2image import convert_from_path
 from django.core.files.storage import default_storage
 import os
-
+import logging
 
 #index+outgoing_index functions.
 
@@ -55,19 +55,48 @@ def add_outgoing(request):
 
 
 def edit_outgoing(request, outgoing_id):
-    # Retrieve the specific Outgoing instance
     outgoing_document = get_object_or_404(Outgoing, id=outgoing_id)
 
     if request.method == 'POST':
         form = add_outgoing_form(request.POST, request.FILES, instance=outgoing_document)
         if form.is_valid():
-            form.save()  # Save the updated data to the database
+            new_reg_number = form.cleaned_data['reg_number']
+            new_out_date = form.cleaned_data['out_date']
+
+            old_reg_number = outgoing_document.reg_number
+            old_out_date = outgoing_document.out_date
+            
+            form.save()  # Save the form data first
+
+            if old_reg_number != new_reg_number or old_out_date != new_out_date:
+                rename_pdf_file(outgoing_document, new_reg_number, new_out_date)
+
             return redirect('outgoing_mail')  # Redirect to the outgoing mail view
+        else:
+            logger.error(f"Form errors: {form.errors}")
     else:
-        form = add_outgoing_form(instance=outgoing_document)  # Populate the form with existing data
-    
-    # Use the new form template for editing
+        form = add_outgoing_form(instance=outgoing_document)
+
     return render(request, 'add_outgoing.html', {'form': form})
+
+def rename_pdf_file(document, new_reg_number, new_out_date):
+    old_file_path = document.pdf_file.path
+    new_pdf_name = f'{new_reg_number}_{new_out_date.strftime("%Y-%m-%d")}.pdf'
+    new_file_path = os.path.join(settings.MEDIA_ROOT, 'pdfs', 'outgoing', new_pdf_name)
+
+    logger.debug(f"Old file path: {old_file_path}")
+    logger.debug(f"New file path: {new_file_path}")
+
+    if os.path.exists(old_file_path):
+        try:
+            os.rename(old_file_path, new_file_path)
+            logger.info(f"Successfully renamed '{old_file_path}' to '{new_file_path}'")
+            document.pdf_file.name = f'pdfs/outgoing/{new_pdf_name}'
+            document.save()  # Save the updated document name
+        except Exception as e:
+            logger.error(f"Error renaming file: {e}")
+    else:
+        logger.warning(f"Old file path does not exist: {old_file_path}")
 
 
 def get_document_details(request, document_id):
