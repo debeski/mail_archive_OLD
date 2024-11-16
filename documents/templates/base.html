@@ -18,7 +18,7 @@
 <body>
     <div class="title">
             <button class="menu-toggle" onclick="toggleMenu()">☰</button>
-        <h1>منظومة الأرشيف{% block header %}{% endblock %}</h1>
+        <h1>منظومة الأرشيف الإلكتروني{% block header %}{% endblock %}</h1>
     </div>
 
     <div class="container">
@@ -89,6 +89,7 @@
     </div>
 
     <script src="{% static 'js/details.js' %}"></script>
+    <script src="{% static 'js/pdf.js' %}"></script> <!-- Include pdf.js library -->
     
     {% if page_name == 'outgoing_mail' %}
         <script>

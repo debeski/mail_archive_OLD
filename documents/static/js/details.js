@@ -47,34 +47,57 @@ function openDocumentDetails(documentId) {
         .catch(error => console.error('Error fetching document details:', error));
 }
 
-// Function to render a specific page
+function renderPDF() {
+    const fileInput = document.getElementById('pdf_file');
+    const pdfContainer = document.getElementById('pdf-preview');
+
+    if (fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        const fileReader = new FileReader();
+
+        fileReader.onload = function() {
+            const typedarray = new Uint8Array(this.result);
+            const loadingTask = pdfjsLib.getDocument(typedarray);
+            loadingTask.promise.then(pdf => {
+                pdfDoc = pdf; // Store the loaded PDF document
+                currentPage = 1; // Reset the current page
+                renderPage(currentPage); // Render the first page
+
+                // Add scroll event listener
+                pdfContainer.addEventListener('wheel', handleScroll);
+            }).catch(error => {
+                console.error('Error loading PDF:', error);
+            });
+        };
+
+        fileReader.readAsArrayBuffer(file); // Read the PDF file as ArrayBuffer
+    }
+}
+
+// Unified renderPage function to handle both initial rendering and scrolling
 function renderPage(pageNumber) {
     const pdfContainer = document.getElementById('pdf-preview');
     pdfContainer.innerHTML = ''; // Clear previous content
 
     pdfDoc.getPage(pageNumber).then(page => {
-        const viewport = page.getViewport({ scale: 1 }); // Get the viewport at 100%
-        
-        const containerWidth = pdfContainer.clientWidth; // Get the width of the container
-        const containerHeight = pdfContainer.clientHeight; // Get the height of the container
+        const viewport = page.getViewport({ scale: 1 });
+        const containerWidth = pdfContainer.clientWidth;
+        const containerHeight = pdfContainer.clientHeight;
 
         // Calculate scale based on the container size and the PDF page size
         const scaleWidth = containerWidth / viewport.width;
         const scaleHeight = containerHeight / viewport.height;
-        const scale = Math.min(scaleWidth, scaleHeight); // Use the smaller scale to ensure full visibility
+        const scale = Math.min(scaleWidth, scaleHeight);
 
-        const scaledViewport = page.getViewport({ scale: scale }); // Get the viewport with the calculated scale
+        const scaledViewport = page.getViewport({ scale: scale });
 
-        // Create a canvas to render the PDF page
         const canvas = document.createElement('canvas');
         const context = canvas.getContext('2d');
         canvas.height = scaledViewport.height;
         canvas.width = scaledViewport.width;
 
-        // Append the canvas to the PDF preview container
         pdfContainer.appendChild(canvas);
 
-        // Render the page to the canvas
         const renderContext = {
             canvasContext: context,
             viewport: scaledViewport
@@ -87,7 +110,7 @@ function renderPage(pageNumber) {
         pageNumberDiv.style.position = 'absolute';
         pageNumberDiv.style.bottom = '10px';
         pageNumberDiv.style.right = '10px';
-        pageNumberDiv.style.backgroundColor = 'rgba(255, 255, 255, 0.7)'; // Semi-transparent background
+        pageNumberDiv.style.backgroundColor = 'rgba(255, 255, 255, 0.7)';
         pageNumberDiv.style.padding = '5px';
         pageNumberDiv.style.borderRadius = '3px';
 
@@ -113,8 +136,6 @@ function handleScroll(event) {
         }
     }
 }
-
-
 
 
 function searchDocuments() {

@@ -44,7 +44,7 @@
 
         <div class="input-group">
             <label for="pdf_file">ملف PDF:</label>
-            <input type="file" id="pdf_file" name="pdf_file" accept="application/pdf" style="display: none;" onchange="upFileName()">
+            <input type="file" id="pdf_file" name="pdf_file" accept="application/pdf" style="display: none;" onchange="renderPDF()">
             <label for="pdf_file" class="upload-label">Choose file</label>
             <span id="file-name">
                 {% if form.instance.pdf_file %}
@@ -60,6 +60,8 @@
             <a href="{% url 'outgoing_mail' %}" class="cancel-button">إلغاء</a>
         </div>
     </form>
-</div>
+    <div id="pdf-preview" class="pdf-preview-container2"></div> <!-- PDF Preview Container -->
+    
 <script src="{% static 'js/date.js' %}" defer></script>
+
 {% endblock %}
