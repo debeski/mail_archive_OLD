@@ -7,12 +7,15 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import Incoming, Outgoing, Internal, Decree
 from django.core.paginator import Paginator
 from pdf2image import convert_from_path
-from django.core.files.storage import default_storage
+from django.core.files.storage import default_storage, FileSystemStorage
 import os
+import uuid
 import logging
 
 #index+outgoing_index functions.
 
+# Set up logging
+logger = logging.getLogger(__name__)
 
 def index(request):
     incoming = Incoming.objects.order_by('-reg_date')[:3]
@@ -69,7 +72,8 @@ def edit_outgoing(request, outgoing_id):
             form.save()  # Save the form data first
 
             if old_reg_number != new_reg_number or old_out_date != new_out_date:
-                rename_pdf_file(outgoing_document, new_reg_number, new_out_date)
+                # If renaming logic is removed, you can still log changes if needed
+                logger.info(f"Document {outgoing_id} updated: {old_reg_number} -> {new_reg_number}, {old_out_date} -> {new_out_date}")
 
             return redirect('outgoing_mail')  # Redirect to the outgoing mail view
         else:
@@ -150,8 +154,12 @@ def download_pdf(request, model_name, object_id):
         if content_type is None:
             content_type = 'application/pdf'  # Default to PDF if unknown
 
+        # Create the filename in the desired format
+        date_str = obj.out_date.strftime('%Y-%m-%d') if hasattr(obj, 'out_date') else 'unknown_date'
+        filename = f"{model_name}_{obj.reg_number}_{date_str}.pdf"
+
         response = HttpResponse(content_type=content_type)
-        response['Content-Disposition'] = f'attachment; filename="{obj.pdf_file.name}"'
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
 
         with obj.pdf_file.open('rb') as pdf_file:
             response.write(pdf_file.read())
@@ -190,4 +198,3 @@ def download_attach(request, model_name, object_id):
         return response
     else:
         return HttpResponseNotFound('Attachment file not found or invalid')
-

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}البريد الصادر{% endblock %}</title>
+    <title>الأرشيف - {% block title %}{% endblock %}</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <meta name="csrf-token" content="{{ csrf_token }}">
@@ -14,32 +14,52 @@
         // Set the worker path for PDF.js
         pdfjsLib.GlobalWorkerOptions.workerSrc = "{% static 'pdfjs/build/pdf.worker.mjs' %}";
     </script>
-    <!-- Include PDF.js Viewer Styles (optional, for a better viewer layout) -->
-    <!-- <link rel="stylesheet" href="{% static 'pdfjs/web/viewer.css' %}"> -->
 </head>
 <body>
     <div class="title">
-        {% if page_name == 'outgoing_mail' %}
             <button class="menu-toggle" onclick="toggleMenu()">☰</button>
-        {% endif %}
-        <h1>{% block header %}البريد الصادر{% endblock %}</h1>
+        <h1>منظومة الأرشيف{% block header %}{% endblock %}</h1>
     </div>
 
     <div class="container">
         <div class="layout">
-            {% if page_name == 'outgoing_mail' %}
-                <div class="dashboard collapsed" id="dashboard">
-                    <button onclick="#">البريد الوارد</button>
-                    <button onclick="#">المذكرات الداخلية</button>
-                    <button onclick="#">القرارات</button>
-                    <button onclick="#">الإعدادات</button>
+                <div class="dashboard" id="dashboard">
+                    <a href="{% url 'outgoing_mail' %}">
+                        <button class="{% if request.path == '/outgoing_mail/' or request.path == '/add_outgoing/' %}active{% endif %}">
+                            <img src="{% static 'img/outgoing-mail.png' %}" alt="Outgoing Mail" class="dbutton-icon"> 
+                            البريد الصادر
+                        </button>
+                    </a>
+                    <a href="incoming_mail">
+                        <button>
+                            <img src="{% static 'img/incoming-mail.png' %}" alt="Incoming Mail" class="dbutton-icon"> 
+                            البريد الوارد
+                        </button>
+                    </a>
+                    <a href="internal_mail">
+                        <button>
+                            <img src="{% static 'img/internal-mail.png' %}" alt="Internal Mail" class="dbutton-icon"> 
+                            المذكرات الداخلية
+                        </button>
+                    </a>
+                    <a href="decrees">
+                        <button>
+                            <img src="{% static 'img/decrees.png' %}" alt="Decrees" class="dbutton-icon"> 
+                            القرارات
+                        </button>
+                    </a>
+                    <a href="settings">
+                        <button>
+                            <img src="{% static 'img/settings.png' %}" alt="Settings" class="dbutton-icon"> 
+                            الإعدادات
+                        </button>
+                    </a>
                 </div>
-            {% endif %}
             <div class="main-content">
                 <div class="header">
                     {% if show_add_and_search %}
                         <div class="add-search-container">
-                            <button class="add-button" onclick="location.href='{% url 'add_outgoing' %}'">إضــافــة</button>
+                            <button class="add-button" onclick="location.href='{% url 'add_outgoing' %}'">+ إضــافــة</button>
                             <div class="search-container">
                                 <input type="text" placeholder="ابحث هنا..." id="search-input" onkeyup="searchDocuments()">
                             </div>
@@ -68,17 +88,6 @@
         </div>
     </div>
 
-    <div id="deleteModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <p>هل أنت متأكد أنك تريد حذف هذا العنصر؟</p>
-            <button id="confirmDeleteButton">تأكيد</button>
-            <button onclick="closeModal()">إلغاء</button>
-        </div>
-    </div>
-
-    <script src="{% static 'js/search.js' %}"></script>
-    <script src="{% static 'js/delete.js' %}"></script>
     <script src="{% static 'js/details.js' %}"></script>
     
     {% if page_name == 'outgoing_mail' %}

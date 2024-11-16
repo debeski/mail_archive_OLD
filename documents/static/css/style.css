@@ -1,10 +1,41 @@
 /* General styles */
 * {
     box-sizing: border-box; /* Ensure consistent box sizing */
+    font-family: 'NotoSansAr', sans-serif; /* Change font for Material style */
 }
 
+@font-face {
+    font-family: 'Dubai';
+    font-weight: 400; /* Regular */
+    font-style: normal;
+    src: url('static/fonts/dubai.ttf') format('truetype'); /* Adjust the path as necessary */
+}
+
+@font-face {
+    font-family: 'Dubai';
+    font-weight: 700; /* Bold */
+    font-style: normal;
+    src: url('static/fonts/dubai-bold.ttf') format('truetype'); /* Adjust the path as necessary */
+}
+
+@font-face {
+    font-family: 'NotoSansAr';
+    font-weight: 400; /* Regular */
+    font-style: normal;
+    src: url('static/fonts/NotoSansAr.ttf') format('truetype'); /* Adjust the path as necessary */
+}
+
+@font-face {
+    font-family: 'NotoSansAr';
+    font-weight: 700; /* Bold */
+    font-style: normal;
+    src: url('static/fonts/NotoSansAr-bold.ttf') format('truetype'); /* Adjust the path as necessary */
+}
+
+/* Add more @font-face rules for other styles (italic, light, etc.) as needed */
+
+
 body {
-    font-family: 'Roboto', sans-serif; /* Change font for Material style */
     direction: rtl; /* Right-to-left direction for Arabic */
     margin: 0;
     height: 100vh; /* Full height */
@@ -15,7 +46,7 @@ body {
 
 /* Title styles */
 .title {
-    background-color: #007FFF; /* Azure color for title */
+    background-color: #014d9a; /* Azure color for title */
     color: white;
     text-align: right;
     padding: 5px; /* Reduced height */
@@ -28,14 +59,14 @@ body {
 
 .title h1 {
     flex: 1; /* Allow the title to take up remaining space */
-    text-align: center; /* Center the title text */
+    text-align: right; /* align the title text */
+    margin: 0 20px;
 }
 
 /* Form container styles */
 .form-container {
     flex: 1; /* Take remaining space below the title */
     padding: 15px;
-    background-color: white; /* White background for the form */
     border-radius: 0; /* No border radius for full-width effect */
     box-shadow: none; /* Remove shadow for a flat design */
 }
@@ -62,43 +93,32 @@ input[type="file"] {
     font-size: 16px; /* Font size for readability */
 }
 
-/* Button styles */
-button {
-    background-color: #007FFF; /* Azure button color */
-    color: white;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 4px; /* Rounded corners */
-    cursor: pointer; /* Pointer cursor on hover */
-    transition: background-color 0.3s; /* Smooth transition */
-    width: 100%; /* Full width for the button */
-}
-
-button:hover {
-    background-color: #0056b3; /* Darker blue on hover */
-}
-
-/* Anchor styles */
-a {
+.upload-label {
     display: inline-block;
-    color: white;
-    background-color: #ffffff; /* Red background for links */
-    padding: 8px 16px;
-    text-decoration: none;
-    border-radius: 5px;
-    margin-top: 10px;
-    width: 100%; /* Full width for the cancel button */
-    text-align: center; /* Center text in button */
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: box-shadow 0.3s, transform 0.05s;
 }
 
-.cancel-button {
-    background-color: hsl(0, 100%, 50%); /* Red background for links */
+.upload-label:hover {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Stronger shadow */
 }
 
-.cancel-button:hover {
-    background-color: darkred; /* Darker red on hover */
+.upload-label:active {
+    transform: scale(0.95); /* Scale down slightly to simulate a press */
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1); /* Reduce shadow on press */
 }
 
+
+#file-name {
+    margin-right: 10px;
+    font-family: 'NotoSansAr', sans-serif;
+    font-size: 14px;
+    font-style: italic;
+    font-stretch: semi-expanded;
+}
 
 /* Container and layout styles */
 .container {
@@ -111,11 +131,30 @@ a {
     flex-grow: 1; /* Allow layout to grow */
 }
 
+
+.save-button {
+    background-color: #007FFF; /* Red background for links */
+    color: white;
+}
+
+.save-button:hover {
+    background-color: #014d9a; /* Darker red on hover */
+}
+
+.cancel-button {
+    background-color: hsl(0, 100%, 50%); /* Red background for links */
+}
+
+.cancel-button:hover {
+    background-color: darkred; /* Darker red on hover */
+}
+
+
 /* Dashboard styles */
 .dashboard {
-    background-color: #007FFF; /* Match title background (azure) */
-    color: white; /* Text color */
-    width: 200px; /* Fixed width for navigation pane */
+    background-color: white; /* Match title background (azure) */
+    color: black; /* Text color */
+    width: 240px; /* Fixed width for navigation pane */
     margin: 0; /* Remove space from left */
     padding: 0; /* Remove padding */
     box-shadow: none; /* Shadow for depth */
@@ -128,6 +167,51 @@ a {
     overflow: hidden; /* Hide overflow */
 }
 
+.dashboard span.active {
+    background-color: #f5f5f5; /* Darker color on click */
+    transition: background-color 0.2s, font-size 0.3s;
+    width: 100%; /* Full width for the button */
+    font-size: 24px;
+    padding: 30px 20px;
+    text-align: right;
+    height: 100%;
+}
+
+.dashboard button {
+    font-size: 20px;
+    padding: 30px 20px;
+    text-align: right;
+    background-color: white; /* Azure button color */
+    color: black;
+    border: none;
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s, font-size 0.3s; /* Smooth transition */
+    width: 100%; /* Full width for the button */
+}
+
+.dbutton-icon {
+    width: 27px; /* Adjust size as needed */
+    height: auto; /* Maintain aspect ratio */
+    margin-right: 0px; /* Space between image and text */
+    margin-left: 4px; /* Space between image and text */
+    vertical-align: middle; /* Aligns the icon with the text */
+}
+.dashboard button:hover {
+    font-size: 22px;
+    transition: font-size 0.3s;
+    background-color: #e8e8e8;
+}
+
+.dashboard button.active {
+    background-color: #f5f5f5; /* Darker color on click */
+    transition: background-color 0.2s, font-size 0.3s;
+    font-weight: bold;
+    font-size: 20px;
+    cursor:default;
+
+}
+
+
 /* Main content styles */
 .main-content {
     flex-grow: 1; /* Allow main content to grow */
@@ -135,13 +219,6 @@ a {
 }
 
 /* Header styles */
-.header button {
-    width: auto; /* Allow width to adjust based on content */
-    max-width: 150px; /* Set a maximum width */
-    padding: 10px 15px; /* Adjust padding */
-    margin: 5px; /* Space between buttons */
-    font-size: 16px; /* Font size */
-}
 
 .header {
     display: flex; /* Use flexbox for horizontal alignment */
@@ -150,7 +227,7 @@ a {
 }
 
 .menu-toggle {
-    background-color: #007FFF; /* Button color */
+    background-color: #014d9a; /* Button color */
     color: white; /* Text color */
     padding: 10px 15px; /* Padding for the button */
     border: none; /* Remove default border */
@@ -162,36 +239,43 @@ a {
 }
 
 .menu-toggle:hover {
-    background-color: #0056b3; /* Darker blue on hover */
+    background-color: white; /* Darker blue on hover */
+    color: black;
 }
 
 .add-search-container {
     display: flex; /* Use flexbox for alignment */
     align-items: center; /* Center items vertically */
-    margin-bottom: 20px; /* Space below the header */
+    margin-bottom: 0px; /* Space below the header */
+    width: auto; /* Allow width to adjust based on content */
+    margin: 20px 20px; /* Space between buttons */
 }
 
 .add-button {
-    background-color: #007FFF; /* Button color */
+    background-color: #014d9a; /* Button color */
     color: white; /* Text color */
     padding: 10px 15px; /* Padding for the button */
-    border: none; /* Remove default border */
     border-radius: 4px; /* Rounded corners */
     cursor: pointer; /* Pointer cursor */
-    margin-right: 15px; /* Space between button and search field */
     transition: background-color 0.3s; /* Smooth hover transition */
     width: auto; /* Set width to auto to prevent stretching */
     min-width: 100px; /* Minimum width to maintain size */
+    transition: box-shadow 0.3s; /* Smooth transition */
+    font-size: 18px; /* Font size */
 }
 
 .add-button:hover {
-    background-color: #0056b3; /* Darker blue on hover */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Stronger shadow */
 }
 
 .search-container {
     flex-grow: 1; /* Allow search input to grow */
+    transition: box-shadow 0.3s; /* Smooth transition */
+    margin-right: 15px;
 }
-
+.search-container:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Stronger shadow */
+}
 .search-container input {
     padding: 10px; /* Padding for input */
     border: 1px solid #ccc; /* Light gray border */
@@ -209,9 +293,7 @@ a {
 /* Table styles */
 .table-container {
     flex-grow: 1; /* Allow the table container to grow */
-    margin-left: 20px; /* Space between table and dashboard */
-    margin-right: 20px;
-    overflow: visible; /* Allow dropdowns to be visible */
+    margin: 20px; /* Combined margins for simplicity */
     border-radius: 8px; /* Rounded corners */
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
@@ -225,6 +307,7 @@ th, td {
     padding: 5px 15px; /* Padding for cells */
     border-bottom: 1px solid #e0e0e0; /* Light border for separation */
     border-right: 1px solid #e0e0e0; /* Right border for vertical separation */
+    position: relative; /* Enable positioning for pseudo-elements */
 }
 
 /* Remove the right border for the last column */
@@ -234,10 +317,9 @@ td:last-child, th:last-child {
 
 /* Last column adjustments */
 td:last-child, th:last-child {
-    width: 150px; /* Allow flexibility */
-    overflow: visible; /* Allow dropdown to be visible */
-    white-space: nowrap; /* Prevent text wrapping */
-    position: relative; /* Allow dropdown to be positioned correctly */
+    width: auto; /* Allow flexibility */
+    min-width: 150px; /* Allow flexibility */
+    padding: 4px 4px; /* Ensure no extra padding */
 }
 
 th {
@@ -250,74 +332,55 @@ th {
 td {
     text-align: right; /* Align text to the right for Arabic */
     color: #666; /* Slightly lighter text for body */
+    max-width: 200px; /* Set a max width for the cells */
+    overflow: hidden; /* Hide overflow */
+    text-overflow: ellipsis; /* Show ellipsis (...) */
+    white-space: nowrap; /* Allow text to wrap */
 }
 
-/* Prevent text wrapping in the first and second columns */
-table td:nth-child(1), 
-table th:nth-child(1),
-table td:nth-child(2), 
-table th:nth-child(2) {
-    white-space: nowrap; /* Prevent text wrapping */
-    overflow: hidden; /* Hide overflow if text is too long */
-    text-overflow: ellipsis; /* Add ellipsis for overflowed text */
+/* Add ellipsis for long text */
+td.long-text {
+    overflow: hidden; /* Hide overflow */
+    text-overflow: ellipsis; /* Show ellipsis */
+    white-space: nowrap; /* Prevent wrapping */
 }
+
 
 .action-container {
-    display: flex; /* Use flexbox for horizontal alignment */
-    align-items: center; /* Center items vertically */
+    display: flex; /* Use flexbox for horizontal layout */
+    justify-content:space-evenly; /* Space icons evenly */
+    align-items: center; /* Center icons vertically */
+    margin: 0; /* Remove any default margin */
 }
 
-.dropdown {
-    position: relative; /* Ensure dropdown is positioned relative to its button */
-    display: inline-block; /* Keep dropdown inline with buttons */
+.action-icon {
+    width: auto; /* Set a fixed width for the icons */
+    height: 40px; /* Set a fixed height for the icons */
+    display: flex; /* Ensure the icon is centered */
+    justify-content: center; /* Center the image */
+    align-items: center; /* Center the image */
+    cursor: pointer; /* Change cursor on hover */
+    text-decoration: none; /* Remove underline from links */
+    margin: 0; /* Remove any default margin */
+    padding: 0; /* Remove any default padding */
+    background-color: inherit; /* Inherit background color from parent */
 }
 
-.dropbtn {
-    background-color: #007FFF; /* Button color */
-    color: white; /* Text color */
-    padding: 15px 15px; /* Padding for the button */
-    border: none; /* Remove default border */
-    border-radius: 4px; /* Rounded corners */
-    cursor: pointer; /* Pointer cursor */
-    transition: background-color 0.3s; /* Smooth hover transition */
+.action-icon img {
+    width: 80%; /* Scale the image to the width of the container */
+    height: 100%; /* Scale the image to the height of the container */
+    object-fit: contain; /* Ensures the image maintains its aspect ratio */
+    display: block; /* Prevent any inline spacing */
+    transition: opacity 0.3s ease; /* Smooth transition */
+    opacity: 60%;
 }
 
-.dropbtn:hover {
-    background-color: #0056b3; /* Darker blue on hover */
+.action-icon img:hover {
+    opacity: 1.2; /* Increase opacity on hover */
 }
 
-.dropdown-content {
-    display: none; /* Hidden by default */
-    position: absolute; /* Position dropdown relative to the button */
-    background-color: #ffffff; /* Background color for dropdown */
-    min-width: 160px; /* Minimum width */
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Shadow for depth */
-    z-index: 1000; /* High z-index to ensure it appears above other elements */
-}
-
-.dropdown:hover .dropdown-content {
-    display: block; /* Show dropdown on hover */
-}
-
-.dropdown-content a,
-.dropdown-content span {
-    color: black; /* Default color for available options */
-    padding: 12px 16px; /* Padding for links */
-    text-decoration: none; /* Remove underline */
-    display: block; /* Make links block elements */
-}
-
-.dropdown-content a:hover,
-.dropdown-content span:hover {
-    background-color: #007FFF; /* Azure for hovered options */
-    color: white; /* Change text color on hover */
-}
-
-/* Disabled option styles */
-.disabled-option {
-    color: gray; /* Style for disabled options */
-    padding: 12px 16px; /* Padding for disabled options */
-    cursor: not-allowed; /* Change cursor for disabled options */
+.action-icon:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Stronger shadow */
 }
 
 /* Modal styles */
@@ -361,6 +424,13 @@ table th:nth-child(2) {
     overflow-y: auto;
 }
 
+/* Specific styles for the delete modal */
+#deleteModal .modal-content {
+    width: 250px; /* Adjust width for delete modal */
+    padding: 15px; /* Adjust padding for delete modal */
+    font-size: 16px; /* Adjust font size if necessary */
+}
+
 .pdf-preview-container {
     flex: 1; /* Take up 70% of the modal width */
     height: 100%; /* 100% of the modal height */
@@ -384,36 +454,6 @@ table th:nth-child(2) {
 
 }
 
-
-/* Edit and delete button styles */
-.edit-button,
-.delete-button {
-    display: inline-block; /* Ensure buttons are inline */
-    margin: 0; /* Remove any default margin */
-    padding: 10px; /* Add padding for better click area */
-    background-color: transparent; /* Set initial background to transparent */
-    border: 1px solid transparent; /* Prevent default border styles */
-    transition: background-color 0.3s, border-color 0.3s; /* Smooth transition */
-    border-radius: 4px; /* Rounded corners */
-}
-
-.edit-button:hover,
-.delete-button:hover {
-    background-color: #f0f0f0; /* Light background on hover */
-    border-color: #ccc; /* Optional: Light border on hover */
-}
-
-.edit-button img,
-.delete-button img {
-    width: 20px; /* Set a specific size for icons */
-    height: 20px; /* Set a specific size for icons */
-    vertical-align: middle; /* Align images vertically in the center */
-}
-
-.delete-button,
-.edit-button {
-    cursor: pointer; /* Change cursor to pointer on hover */
-}
 
 /* Pagination styles */
 .pagination {

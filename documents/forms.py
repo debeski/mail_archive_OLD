@@ -4,7 +4,7 @@ from .models import Outgoing, Incoming, Internal, Decree
 class add_outgoing_form(forms.ModelForm):
     class Meta:
         model = Outgoing
-        fields = ['id', 'reg_number', 'out_date', 'dept_from', 'dept_to', 'title', 'keywords', 'pdf_file', 'attach']
+        fields = ['id', 'reg_number', 'out_date', 'dept_from', 'dept_to', 'title', 'keywords', 'pdf_file']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -15,7 +15,7 @@ class add_outgoing_form(forms.ModelForm):
 class add_incoming_form(forms.ModelForm):
     class Meta:
         model = Incoming
-        fields = ['id', 'orig_date', 'reg_date', 'orig_number', 'reg_number', 'dept_from', 'dept_to', 'title', 'keywords', 'pdf_file', 'attach']
+        fields = ['id', 'orig_number', 'reg_number', 'orig_date', 'reg_date', 'dept_from', 'dept_to', 'title', 'keywords', 'pdf_file']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -29,7 +29,7 @@ class add_incoming_form(forms.ModelForm):
 class add_internal_form(forms.ModelForm):
     class Meta:
         model = Internal
-        fields = ['id', 'int_date', 'reg_number', 'dept_from', 'dept_to', 'title', 'keywords', 'pdf_file', 'attach']
+        fields = ['id', 'reg_number', 'int_date', 'dept_from', 'dept_to', 'title', 'keywords', 'pdf_file']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

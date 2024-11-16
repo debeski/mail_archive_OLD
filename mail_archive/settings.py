@@ -134,15 +134,28 @@ MEDIA_URL = '/media/'
 # MEDIA_ROOT is the actual filesystem path where the files are stored
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # This will create the 'media/' folder in your root directory
 
+LOG_FILE_PATH = os.path.join(BASE_DIR, 'logs', 'mail_archive.log')
+
 
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
     'handlers': {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'django_debug.log'),
+            'filename': LOG_FILE_PATH,
+            'formatter': 'verbose',
         },
     },
     'loggers': {
@@ -150,6 +163,11 @@ LOGGING = {
             'handlers': ['file'],
             'level': 'DEBUG',
             'propagate': True,
+        },
+        'documents': {  # Replace with your app name
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': False,
         },
     },
 }

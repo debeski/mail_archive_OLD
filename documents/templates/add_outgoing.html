@@ -1,11 +1,10 @@
 {% extends 'base.html' %}
 
 {% load static %}  <!-- Ensure this line is included at the top -->
-<!-- <link rel="stylesheet" href="{% static 'css/style.css' %}"> -->
 
 {% block title %}{% if form.instance.id %}تعديل{% else %}إضافة{% endif %} بريد صادر{% endblock %}
 
-{% block header %}{% if form.instance.id %}تعديل{% else %}إضافة{% endif %} بريد صادر{% endblock %}
+{% block header %}{% if form.instance.id %} - تعديل{% else %} - إضافة{% endif %} بريد صادر{% endblock %}
 
 {% block content %}
 <div class="form-container">
@@ -19,7 +18,7 @@
 
         <div class="input-group date-input-container">
             <label for="out_date">التاريخ:</label>
-            <input type="text" id="out_date" name="out_date" value="{{ form.out_date.value|default:'' }}" required placeholder="DD-MM-YYYY" style="direction: ltr; text-align: right;">
+            <input type="text" id="out_date" name="out_date" value="{{ form.out_date.value|default:'' }}" required placeholder="DD-MM-YYYY" dir="ltr" style="text-align: right;">
             <input type="date" id="out_date_native" name="out_date_native" style="display:none;" onchange="document.getElementById('out_date').value = this.value">
         </div>
 
@@ -40,24 +39,24 @@
 
         <div class="input-group">
             <label for="keywords">الكلمات المفتاحية:</label>
-            <input type="text" id="keywords" name="keywords" value="{{ form.keywords.value|default:'' }}">
+            <textarea id="keywords" name="keywords" rows="4" required>{{ form.keywords.value|default:'' }}</textarea>
         </div>
 
         <div class="input-group">
-            <label for="pdf_file">ملف PDF الرئيسي:</label>
-            <input type="file" id="pdf_file" name="pdf_file" accept="application/pdf">
-            {% if form.instance.pdf_file %}
-                <p>Current file: {{ form.instance.pdf_file.name }}</p>
-            {% endif %}
-        </div>
-
-        <div class="input-group">
-            <label for="attach">ملف PDF مرفق:</label>
-            <input type="file" id="attach" name="attach" accept="application/pdf">
-        </div>
+            <label for="pdf_file">ملف PDF:</label>
+            <input type="file" id="pdf_file" name="pdf_file" accept="application/pdf" style="display: none;" onchange="upFileName()">
+            <label for="pdf_file" class="upload-label">Choose file</label>
+            <span id="file-name">
+                {% if form.instance.pdf_file %}
+                    تنبيه! تم العثور على ملف PDF. سيتم استبداله في حالة اختيارك لملف جديد!
+                {% else %}
+                    لم يتم إختيار ملف.
+                {% endif %}
+            </span>
+        </div>        
 
         <div class="button-group">
-            <button type="submit">حفظ</button>
+            <button type="submit" class="save-button">حفظ</button>
             <a href="{% url 'outgoing_mail' %}" class="cancel-button">إلغاء</a>
         </div>
     </form>
