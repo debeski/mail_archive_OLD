@@ -78,9 +78,8 @@ form {
 
 /* form PDF Preview Container */
 .pdf-preview-container2 {
-    flex: 1.2;
-    min-width: 600;
-    overflow: hidden; /* Enable scrolling if needed */
+    flex: 1.3;
+    overflow: auto; /* Enable scrolling if needed */
     border: 2px solid #ddd; 
     box-sizing: border-box;
     padding: 10px; /* Add some padding */
@@ -91,6 +90,13 @@ form {
     width: 100%; /* Full width for input groups */
     border-radius: 2; /* No border radius for full-width effect */
 }
+
+.input-group input {
+    direction: rtl; /* Ensure all inputs are treated as RTL */
+    text-align: right; /* Align text to the right */
+}
+
+
 textarea {
     width: 100%; /* Make the textarea take the full width */
     padding: 10px; /* Add some padding for better visuals */

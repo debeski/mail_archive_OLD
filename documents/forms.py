@@ -1,16 +1,20 @@
 from django import forms
+from datetime import datetime
 from .models import Outgoing, Incoming, Internal, Decree
+
+
 
 class add_outgoing_form(forms.ModelForm):
     class Meta:
         model = Outgoing
         fields = ['id', 'reg_number', 'out_date', 'dept_from', 'dept_to', 'title', 'keywords', 'pdf_file']
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        if 'instance' in kwargs and kwargs['instance']:
-            self.initial['out_date'] = kwargs['instance'].out_date.strftime('%Y-%m-%d')
-
+        widgets = {
+            'out_date': forms.DateInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'YYYY-MM-DD',  # Optional placeholder
+                'type': 'date',  # Use the native HTML5 date picker
+            }),
+        }
 
 class add_incoming_form(forms.ModelForm):
     class Meta:

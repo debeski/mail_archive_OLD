@@ -8,7 +8,7 @@
 
 {% block content %}
 <div class="form-container">
-    <form action="{% if form.instance.id %}{% url 'edit_outgoing' form.instance.id %}{% else %}{% url 'add_outgoing' %}{% endif %}" method="POST" enctype="multipart/form-data">
+    <form action="{% if form.instance.id %}{% url 'edit_outgoing' form.instance.id %}{% else %}{% url 'add_outgoing' %}{% endif %}" method="POST" enctype="multipart/form-data" dir="rtl">
         {% csrf_token %}
         
         <div class="input-group">
@@ -18,8 +18,7 @@
 
         <div class="input-group date-input-container">
             <label for="out_date">التاريخ:</label>
-            <input type="text" id="out_date" name="out_date" value="{{ form.out_date.value|default:'' }}" required placeholder="DD-MM-YYYY" dir="ltr" style="text-align: right;">
-            <input type="date" id="out_date_native" name="out_date_native" style="display:none;" onchange="document.getElementById('out_date').value = this.value">
+            {{ form.out_date }}  <!-- This will render the DatePickerInput widget -->
         </div>
 
         <div class="input-group">
@@ -43,8 +42,8 @@
         </div>
 
         <div class="input-group">
-            <label for="pdf_file">ملف PDF:</label>
-            <input type="file" id="pdf_file" name="pdf_file" accept="application/pdf" style="display: none;" onchange="renderPDF()">
+            <span for="pdf_file" style="font-size: 20px; font-weight: 600;">ملف PDF:</span><br>
+            <input type="file" id="pdf_file" name="pdf_file" accept="application/pdf" style="display: none;" onchange="renderPDF(), upFileName()">
             <label for="pdf_file" class="upload-label">Choose file</label>
             <span id="file-name">
                 {% if form.instance.pdf_file %}
@@ -61,7 +60,5 @@
         </div>
     </form>
     <div id="pdf-preview" class="pdf-preview-container2"></div> <!-- PDF Preview Container -->
-    
-<script src="{% static 'js/date.js' %}" defer></script>
-
+</div>    
 {% endblock %}

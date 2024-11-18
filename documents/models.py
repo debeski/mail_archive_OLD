@@ -1,6 +1,4 @@
 from django.db import models
-import os
-import datetime
 import uuid
 
 

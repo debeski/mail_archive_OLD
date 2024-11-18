@@ -3,19 +3,14 @@ from .forms import add_outgoing_form, add_incoming_form, add_internal_form, add_
 from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
 import mimetypes
 from django.apps import apps
-from django.views.decorators.csrf import csrf_exempt
 from .models import Incoming, Outgoing, Internal, Decree
 from django.core.paginator import Paginator
-from pdf2image import convert_from_path
 from django.core.files.storage import default_storage, FileSystemStorage
 import os
-import uuid
-import logging
+
 
 #index+outgoing_index functions.
 
-# Set up logging
-logger = logging.getLogger(__name__)
 
 def index(request):
     incoming = Incoming.objects.order_by('-reg_date')[:3]
@@ -56,6 +51,7 @@ def add_outgoing(request):
     
     return render(request, 'add_outgoing.html', {'form': form})  # Use the new form template
 
+    
 
 def edit_outgoing(request, outgoing_id):
     outgoing_document = get_object_or_404(Outgoing, id=outgoing_id)

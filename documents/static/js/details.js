@@ -219,3 +219,14 @@ document.querySelectorAll('td').forEach(cell => {
     }
 });
 
+function upFileName() {
+    const fileInput = document.getElementById('pdf_file');
+    const fileNameSpan = document.getElementById('file-name');
+
+    if (fileInput.files.length > 0) {
+        fileNameSpan.innerText = fileInput.files[0].name; // Show selected file name
+    } else {
+        fileNameSpan.innerText = 'لا يوجد ملف مختار.'; // Default message
+    }
+}
+
