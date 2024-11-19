@@ -9,6 +9,13 @@ import logging
 from django.utils import timezone
 from .models import Department, Affiliate, Minister, Government
 from .forms import DepartmentForm, AffiliateForm, MinisterForm, GovernmentForm
+import matplotlib
+matplotlib.use('Agg')
+from matplotlib import pyplot as plt
+from matplotlib import rcParams
+import numpy as np
+import os
+from django.conf import settings
 
 
 logger = logging.getLogger('myapp')  # Adjust to your app's name
@@ -17,6 +24,87 @@ def log_action(action, model, object_id=None):
     timestamp = timezone.now()
     message = f"{timestamp} - Performed {action} on {model.__name__} (ID: {object_id})"
     logger.info(message)
+
+from datetime import datetime
+
+def create_charts():
+    # Set font properties
+    rcParams['font.family'] = 'Shabwa'  # Ensure you have the font installed
+    rcParams['font.size'] = 12
+
+    # Define the years you want to analyze
+    years = range(2000, 2024)  # Adjust the range as necessary
+    counts = {model: [] for model in ['Incoming', 'Outgoing', 'Internal', 'Decree']}
+
+    for year in years:
+        counts['Incoming'].append(Incoming.objects.filter(date__year=year).count() or 0)
+        counts['Outgoing'].append(Outgoing.objects.filter(date__year=year).count() or 0)
+        counts['Internal'].append(Internal.objects.filter(date__year=year).count() or 0)
+        counts['Decree'].append(Decree.objects.filter(date__year=year).count() or 0)
+
+    print("Counts per model per year:", counts)
+
+    # Create a grouped bar chart
+    fig, ax = plt.subplots()
+    bar_width = 0.2
+    index = np.arange(len(years))
+
+    for i, model in enumerate(counts.keys()):
+        ax.bar(index + i * bar_width, counts[model], bar_width, label=model)
+
+    ax.set_xlabel('السنوات', labelpad=10, fontsize=14, ha='right')  # Align right
+    ax.set_ylabel('عدد الوثائق', labelpad=10, fontsize=14, ha='right')  # Align right
+    ax.set_title('عدد الوثائق حسب السنة', fontsize=16, ha='right')  # Align right
+    ax.set_xticks(index + bar_width * 1.5)
+    ax.set_xticklabels(years, ha='right')  # Align right
+    ax.legend()
+
+    # Save the grouped bar chart
+    bar_chart_path = os.path.join(settings.BASE_DIR, 'documents/static/chart', 'grouped_bar_chart.png')
+    plt.savefig(bar_chart_path, bbox_inches='tight')
+    plt.close(fig)
+
+    # Prepare data for the pie chart
+    total_counts = [sum(counts[model]) for model in counts.keys()]
+    print("Total counts for pie chart before plotting:", total_counts)
+
+    # Check if all counts are zero
+    if all(count == 0 for count in total_counts):
+        print("No data available for pie chart.")
+        return  # Skip pie chart creation
+
+    # Handle NaN values
+    total_counts = [0 if np.isnan(count) else count for count in total_counts]  # Ensure no NaNs
+
+    # Create the pie chart
+    fig, ax = plt.subplots()
+    ax.pie(total_counts, labels=counts.keys(), autopct='%1.1f%%', startangle=90)
+    ax.axis('equal')  # Equal aspect ratio ensures the pie is drawn as a circle.
+
+    # Set title for the pie chart
+    ax.set_title('توزيع الوثائق حسب النوع', fontsize=16, ha='right')  # Align right
+
+    # Save the pie chart
+    pie_chart_path = os.path.join(settings.BASE_DIR, 'documents/static/chart', 'pie_chart.png')
+    plt.savefig(pie_chart_path)
+    plt.close(fig)
+
+
+
+# Html Rendering Functions:
+def index(request):
+    create_charts()  # Generate charts before rendering the template
+
+    latest_documents = (
+        list(Incoming.objects.order_by('-created_at')[:5]) +
+        list(Outgoing.objects.order_by('-created_at')[:5]) +
+        list(Internal.objects.order_by('-created_at')[:5]) +
+        list(Decree.objects.order_by('-created_at')[:5])
+    )[:5]  # Combine and limit to the latest 7 documents
+
+    return render(request, 'index.html', {
+        'latest_documents': latest_documents,
+    })
 
 
 def manage_sections(request):
@@ -59,78 +147,6 @@ def manage_sections(request):
     })
 
 
-
-def index(request):
-    incoming = Incoming.objects.order_by('-reg_date')[:3]
-    outgoing = Outgoing.objects.order_by('-out_date')[:3]
-    internal = Internal.objects.order_by('-int_date')[:3]
-    decrees = Decree.objects.order_by('-dec_date')[:3]
-    
-    return render(request, 'index.html', {
-        'incoming': incoming,
-        'outgoing': outgoing,
-        'internal': internal,
-        'decrees': decrees,
-    })
-
-
-
-# Outgoing Mail Functions:
-def outgoing_mail(request):
-    documents = Outgoing.objects.order_by('-id')
-    paginator = Paginator(documents, 10)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-
-    return render(request, 'outgoing_mail.html', {
-        'documents': page_obj,
-        'show_add_and_search': True,  # Show both the add button and search field
-        'page_name': 'outgoing_mail',  # Set page_name for this view
-    })
-
-
-def add_outgoing(request):
-    if request.method == 'POST':
-        form = AddOutgoingForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()  # Save the form data to the database
-            return redirect('outgoing_mail')  # Redirect back to the outgoing mail view
-    else:
-        form = AddOutgoingForm()
-    
-    return render(request, 'add_outgoing.html', {'form': form})  # Use the new form template
-
-    
-
-# def edit_outgoing(request, outgoing_id):
-#     outgoing_document = get_object_or_404(Outgoing, id=outgoing_id)
-
-#     if request.method == 'POST':
-#         form = AddOutgoingForm(request.POST, request.FILES, instance=outgoing_document)
-#         if form.is_valid():
-#             new_reg_number = form.cleaned_data['reg_number']
-#             new_out_date = form.cleaned_data['out_date']
-
-#             old_reg_number = outgoing_document.reg_number
-#             old_out_date = outgoing_document.out_date
-            
-#             form.save()  # Save the form data first
-
-#             if old_reg_number != new_reg_number or old_out_date != new_out_date:
-#                 # If renaming logic is removed, you can still log changes if needed
-#                 logger.info(f"Document {outgoing_id} updated: {old_reg_number} -> {new_reg_number}, {old_out_date} -> {new_out_date}")
-
-#             return redirect('outgoing_mail')  # Redirect to the outgoing mail view
-#         else:
-#             logger.error(f"Form errors: {form.errors}")
-#     else:
-#         form = AddOutgoingForm(instance=outgoing_document)
-
-#     return render(request, 'add_outgoing.html', {'form': form})
-
-
-
-# Incoming Mail Functions:
 def incoming_mail(request):
     documents = Incoming.objects.order_by('-id')
     paginator = Paginator(documents, 10)
@@ -141,103 +157,82 @@ def incoming_mail(request):
         'documents': page_obj,
         'show_add_and_search': True,  # Show both the add button and search field
         'page_name': 'incoming_mail',  # Set page_name for this view
+        'model_name': 'incoming'.strip(),  # Pass the model name
+
     })
 
-def add_incoming(request):
-    if request.method == 'POST':
-        form = AddIncomingForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()  # Save the form data to the database
-            return redirect('incoming_mail')  # Redirect back to the incoming mail view
-    else:
-        form = AddIncomingForm()
-    
-    return render(request, 'add_incoming.html', {'form': form})  # Use the new form template
+
+def outgoing_mail(request):
+    documents = Outgoing.objects.order_by('-id')
+    paginator = Paginator(documents, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'outgoing_mail.html', {
+        'documents': page_obj,
+        'show_add_and_search': True,
+        'page_name': 'outgoing_mail',
+        'model_name': 'outgoing'.strip(),  # Pass the model name
+    })
 
 
-# def edit_incoming(request, incoming_id):
-#     incoming_document = get_object_or_404(Incoming, id=incoming_id)
+def internal_mail(request):
+    documents = Internal.objects.order_by('-id')
+    paginator = Paginator(documents, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
-#     if request.method == 'POST':
-#         form = AddIncomingForm(request.POST, request.FILES, instance=incoming_document)
-#         if form.is_valid():
-#             form.save()  # Save the form data first
-#             return redirect('incoming_mail')  # Redirect to the incoming mail view
-#         else:
-#             logger.error(f"Form errors: {form.errors}")
-#     else:
-#         form = AddIncomingForm(instance=incoming_document)
+    return render(request, 'internal_mail.html', {
+        'documents': page_obj,
+        'show_add_and_search': True,
+        'page_name': 'internal_mail',
+        'model_name': 'internal'.strip(),  # Pass the model name
+    })
 
-#     return render(request, 'add_incoming.html', {'form': form})
 
+def decree_mail(request):
+    documents = Decree.objects.order_by('-id')
+    paginator = Paginator(documents, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'decree_mail.html', {
+        'documents': page_obj,
+        'show_add_and_search': True,
+        'page_name': 'decree_mail',
+        'model_name': 'decree'.strip(),  # Pass the model name
+    })
 
 
 #Shared Functions:
-def edit_document(request, model_name, document_id):
+def get_model_and_form(model_name):
     model_mapping = {
         'incoming': Incoming,
         'outgoing': Outgoing,
         'internal': Internal,
         'decree': Decree,
+    }
+
+    form_mapping = {
+        'incoming': AddIncomingForm,
+        'outgoing': AddOutgoingForm,
+        'internal': AddInternalForm,
+        'decree': AddDecreeForm,
     }
 
     model = model_mapping.get(model_name.lower())
-    if model is None:
-        return HttpResponseNotFound('Invalid model name')
+    form_class = form_mapping.get(model_name.lower())
 
-    document = get_object_or_404(model, id=document_id)
-
-    # Determine the form to use based on the model
-    form_mapping = {
-        Incoming: AddIncomingForm,
-        Outgoing: AddOutgoingForm,
-        Internal: AddInternalForm,
-        Decree: AddDecreeForm,
-    }
-
-    FormClass = form_mapping.get(type(document))
-    if request.method == 'POST':
-        form = FormClass(request.POST, request.FILES, instance=document)
-        if form.is_valid():
-            form.save()  # Save the form data first
-            logger.info(f"Document {document_id} updated successfully.")
-            return redirect(f'{model_name}_mail')  # Redirect based on model
-        else:
-            logger.error(f"Form errors: {form.errors}")
-    else:
-        form = FormClass(instance=document)
-
-    return render(request, f'add_{model_name}.html', {'form': form})
-
-
-
-def delete_document(request, model_name, document_id):
-    if request.method == 'DELETE':
-        try:
-            # Dynamically get the model class
-            model = apps.get_model('documents', model_name)
-            document = model.objects.get(id=document_id)
-            document.delete()
-            return JsonResponse({'success': True})
-        except (model.DoesNotExist, LookupError):
-            return JsonResponse({'success': False, 'error': 'Document or model not found'}, status=404)
-
-    return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=400)
+    return model, form_class
 
 
 def get_document_details(request, model_type, document_id):
-    model_mapping = {
-        'outgoing': Outgoing,
-        'incoming': Incoming,
-        'internal': Internal,
-        'decree': Decree,
-    }
-
-    DocumentModel = model_mapping.get(model_type)
-    if DocumentModel is None:
+    model, _ = get_model_and_form(model_type)
+    
+    if model is None:
         return JsonResponse({'error': 'Invalid model type'}, status=400)
 
-    document = get_object_or_404(DocumentModel, id=document_id)
+    document = get_object_or_404(model, id=document_id)
 
     # Prepare the response data based on the model type
     data = {
@@ -277,16 +272,62 @@ def get_document_details(request, model_type, document_id):
     return JsonResponse(data)
 
 
+def add_document(request, model_name, document_id=None):
+    model, form_class = get_model_and_form(model_name)
+    
+    if model is None or form_class is None:
+        return HttpResponseNotFound('Invalid model name')
+
+    form = form_class(request.POST or None, request.FILES or None, instance=document_id and get_object_or_404(model, id=document_id))
+
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            return redirect(f'{model_name}_mail')  # Adjust this as needed
+        else:
+            logger.error(f"Form errors: {form.errors}")
+
+    return render(request, f'add_edit_doc.html', {'form': form, 'model_name': model_name})
+
+
+def edit_document(request, model_name, document_id):
+    model, form_class = get_model_and_form(model_name)
+    
+    if model is None or form_class is None:
+        return HttpResponseNotFound('Invalid model name')
+
+    document = get_object_or_404(model, id=document_id)
+    form = form_class(request.POST or None, request.FILES or None, instance=document)
+
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            logger.info(f"Document {document_id} updated successfully.")
+            return redirect(f'{model_name}_mail')  # Redirect based on model
+        else:
+            logger.error(f"Form errors: {form.errors}")
+
+    return render(request, f'add_{model_name}.html', {'form': form})
+
+
+def delete_document(request, model_name, document_id):
+    model, _ = get_model_and_form(model_name)
+    
+    if model is None:
+        return HttpResponseNotFound('Invalid model name')
+
+    if request.method == 'DELETE':
+        document = get_object_or_404(model, id=document_id)
+        document.delete()
+        return JsonResponse({'success': True})
+
+    return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=400)
+
+
 #download functions.
 def download_document(request, model_name, object_id):
-    model_mapping = {
-        'outgoing': Outgoing,
-        'incoming': Incoming,
-        'internal': Internal,
-        'decree': Decree,
-    }
-
-    model = model_mapping.get(model_name.lower())
+    model, _ = get_model_and_form(model_name)
+    
     if model is None:
         return HttpResponseNotFound('Invalid model name')
 

@@ -5,84 +5,102 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>الأرشيف - {% block title %}{% endblock %}</title>
     {% load static %}
+    <!-- Include Bootstrap CSS -->
+    <link href="{% static 'css/bootstrap.rtl.css' %}" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <meta name="csrf-token" content="{{ csrf_token }}">
-    <!-- Include PDF.js Library (using local mjs files) -->
+    <!-- Include PDF.js Library -->
     <script type="module">
         import * as pdfjsLib from "{% static 'pdfjs/build/pdf.mjs' %}";
-        
-        // Set the worker path for PDF.js
         pdfjsLib.GlobalWorkerOptions.workerSrc = "{% static 'pdfjs/build/pdf.worker.mjs' %}";
     </script>
 </head>
 <body>
-    <div class="title">
-            <button class="menu-toggle" onclick="toggleMenu()">☰</button>
-        <h1>منظومة الأرشيف الإلكتروني{% block header %}{% endblock %}</h1>
+    <div class="titlebar">
+        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+        <a href="{% url 'index' %}" style="text-decoration: none; color: inherit;">
+            <h1>منظومة الأرشيف الإلكتروني{% block header %}{% endblock %}</h1>
+        </a>
     </div>
 
-    <div class="container">
-        <div class="layout">
-                <div class="dashboard" id="dashboard">
-                    <a href="{% url 'outgoing_mail' %}">
-                        <button class="{% if request.path == '/outgoing_mail/' or request.path == '/add_outgoing/' %}active{% endif %}">
-                            <img src="{% static 'img/outgoing-mail.png' %}" alt="Outgoing Mail" class="dbutton-icon"> 
-                            البريد الصادر
-                        </button>
-                    </a>
-                    <a href="{% url 'incoming_mail' %}">
-                        <button class="{% if request.path == '/incoming_mail/' or request.path == '/add_incoming/' %}active{% endif %}">
-                            <img src="{% static 'img/incoming-mail.png' %}" alt="Incoming Mail" class="dbutton-icon"> 
-                            البريد الوارد
-                        </button>
-                    </a>
-                    <a href="internal_mail">
-                        <button>
-                            <img src="{% static 'img/internal-mail.png' %}" alt="Internal Mail" class="dbutton-icon"> 
-                            المذكرات الداخلية
-                        </button>
-                    </a>
-                    <a href="decrees">
-                        <button>
-                            <img src="{% static 'img/decrees.png' %}" alt="Decrees" class="dbutton-icon"> 
-                            القرارات
-                        </button>
-                    </a>
-                    <a href="settings">
-                        <button>
-                            <img src="{% static 'img/settings.png' %}" alt="Settings" class="dbutton-icon"> 
-                            الإعدادات
-                        </button>
-                    </a>
+    <div class="container-fluid layout">
+        <div class="sidebar" id="sidebar">
+            <a href="{% url 'outgoing_mail' %}">
+                <button class="{% if request.path == '/outgoing_mail/' or request.path == '/add/outgoing/' %}active{% endif %}">
+                    <img src="{% static 'img/outgoing-mail.png' %}" alt="Outgoing Mail" class="dbutton-icon"> 
+                    البريد الصادر
+                </button>
+            </a>
+            <a href="{% url 'incoming_mail' %}">
+                <button class="{% if request.path == '/incoming_mail/' or request.path == '/add/incoming/' %}active{% endif %}">
+                    <img src="{% static 'img/incoming-mail.png' %}" alt="Incoming Mail" class="dbutton-icon"> 
+                    البريد الوارد
+                </button>
+            </a>
+            <a href="{% url 'internal_mail' %}">
+                <button class="{% if request.path == '/internal_mail/' or request.path == '/add/internal/' %}active{% endif %}">
+                    <img src="{% static 'img/internal-mail.png' %}" alt="Internal Mail" class="dbutton-icon"> 
+                    المذكرات الداخلية
+                </button>
+            </a>
+            <a href="{% url 'decree_mail' %}">
+                <button class="{% if request.path == '/decree_mail/' or request.path == '/add/decree/' %}active{% endif %}">
+                    <img src="{% static 'img/decrees.png' %}" alt="Decree Mail" class="dbutton-icon"> 
+                    القرارات
+                </button>
+            </a>
+            <a href="{% url 'manage_sections' %}">
+                <button class="{% if request.path == '/manage_sections/' %}active{% endif %}">
+                    <img src="{% static 'img/settings.png' %}" alt="Settings" class="dbutton-icon"> 
+                    الإعدادات
+                </button>
+            </a>
+        </div>
+        <div class="main-content">
+            <div class="header">
+                {% if show_add_and_search %}
+                <div class="add-search-container">
+                    <button class="add-button" onclick="location.href='{% url 'add_document' model_name=model_name %}'">+ إضــافــة</button>
+                    <div class="search-container">
+                        <input type="text" placeholder="ابحث هنا..." id="search-input" onkeyup="searchDocuments()">
+                    </div>
                 </div>
-            <div class="main-content">
-                <div class="header">
-                    {% if show_add_and_search %}
-                        <div class="add-search-container">
-                            <button class="add-button" onclick="location.href='{% url 'add_outgoing' %}'">+ إضــافــة</button>
-                            <div class="search-container">
-                                <input type="text" placeholder="ابحث هنا..." id="search-input" onkeyup="searchDocuments()">
-                            </div>
-                        </div>
-                    {% endif %}
+            {% endif %}
+            </div>
+            <div class="content">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">تأكيد الحذف!</h5>
                 </div>
-                <div class="content">
-                    {% block content %}{% endblock %}
+                <div class="modal-body">
+                    <p>هل أنت متأكد من حذف الوثيقة رقم <span id="documentNumber"></span>؟</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" id="confirmDeleteButton">نعم، احذف</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
                 </div>
             </div>
         </div>
     </div>
 
+    <script>
+        function toggleMenu() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+        }
+    </script>
+
+    <!-- Include Pdf.js, Bootstrap JS and dependencies -->
+    <!-- <script src="{% static 'js/jquery-3.7.1.min.js' %}"></script> -->
+    <script src="{% static 'js/bootstrap.bundle.js' %}"></script>
     <script src="{% static 'js/details.js' %}"></script>
-    <script src="{% static 'js/pdf.js' %}"></script> <!-- Include pdf.js library -->
-    
-    {% if page_name == 'outgoing_mail' %}
-        <script>
-            function toggleMenu() {
-                const dashboard = document.getElementById('dashboard');
-                dashboard.classList.toggle('collapsed');
-            }
-        </script>
-    {% endif %}
+    <script src="{% static 'js/pdf.js' %}"></script>
 </body>
 </html>

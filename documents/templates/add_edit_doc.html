@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}{% if form.instance.id %}تعديل{% else %}إضافة{% endif %} {{ model_name | title }}{% endblock %}
+
+{% block header %}{% if form.instance.id %} - تعديل{% else %} - إضافة{% endif %} {{ model_name | title }}{% endblock %}
+
+{% block content %}
+<link href="{% static 'css/bootstrap.rtl.css' %}" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/flatpickr.css' %}">
+
+<div class="form-container">
+    <form action="{% if form.instance.id %}{% url 'edit_document' model_name form.instance.id %}{% else %}{% url 'add_document' model_name %}{% endif %}" method="POST" enctype="multipart/form-data" dir="rtl">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <div class="button-group">
+            <button type="submit" class="btn btn-primary">حفظ</button>
+            {% if model_name == 'outgoing' %}
+                <a href="{% url 'outgoing_mail' %}" class="btn btn-secondary">إلغاء</a>
+            {% elif model_name == 'incoming' %}
+                <a href="{% url 'incoming_mail' %}" class="btn btn-secondary">إلغاء</a>
+            {% elif model_name == 'internal' %}
+                <a href="{% url 'internal_mail' %}" class="btn btn-secondary">إلغاء</a>
+            {% elif model_name == 'decree' %}
+                <a href="{% url 'decree_mail' %}" class="btn btn-secondary">إلغاء</a>
+            {% endif %}
+        </div>
+    </form>
+    <div id="pdf-preview" class="pdf-container-add"></div>
+</div>
+
+<script src="{% static 'js/bootstrap.bundle.js' %}"></script>
+<script src="{% static 'js/flatpickr.js' %}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        flatpickr("#id_date", {
+            dateFormat: "Y-m-d",
+            locale: {
+                firstDayOfWeek: 7 // Start week on Sunday
+            },
+            allowInput: true // Allow user input
+        });
+    });
+</script>
+{% endblock %}

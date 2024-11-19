@@ -33,11 +33,8 @@
                 <td>{{ document.keywords }}</td>
                 <td>
                     <div class="action-container">
-                        <a href="#" onclick="openDocumentDetails({{ document.id }})" class="action-icon" title="View">
+                        <a href="#" onclick="openDocumentDetails('{{ document.model_type }}', {{ document.id }})" class="action-icon" title="View">
                             <img src="{% static 'img/view.png' %}" alt="View" class="icon">
-                        </a>
-                        <a href="#" onclick="printDocument({{ document.id }})" class="action-icon" title="Print">
-                            <img src="{% static 'img/print.png' %}" alt="Print" class="icon">
                         </a>
                         <a href="{% url 'download_document' model_name='incoming' object_id=document.id %}" class="action-icon" title="Download PDF">
                             <img src="{% static 'img/pdf.png' %}" alt="Download PDF" class="icon">
@@ -45,7 +42,7 @@
                         <a href="{% url 'edit_document' model_name='incoming' document_id=document.id %}" class="action-icon" title="Edit">
                             <img src="{% static 'img/edit.png' %}" alt="Edit" class="icon">
                         </a>
-                        <a class="action-icon" onclick="confirmDeletion('Incoming', {{ document.id }})" title="Delete">
+                        <a class="action-icon" onclick="confirmDeletion('Incoming', {{ document.id }}, '{{ document.number }}')" title="Delete">
                             <img src="{% static 'img/delete.png' %}" alt="Delete" class="icon">
                         </a>
                     </div>
@@ -72,16 +69,6 @@
                 <a href="?page={{ documents.paginator.num_pages }}" class="pagination-button">الأخير &raquo;</a>
             {% endif %}
         </span>
-    </div>
-</div>
-
-<!-- Delete Confirmation Modal -->
-<div id="deleteModal" style="display:none;">
-    <div class="modal-content">
-        <h2>تأكيد الحذف</h2>
-        <p>هل أنت متأكد أنك تريد حذف هذا العنصر؟</p>
-        <button class="cancel-button" id="confirmDeleteButton">نعم، احذف</button>
-        <button onclick="closeModal()">إلغاء</button>
     </div>
 </div>
 
