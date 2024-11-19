@@ -76,6 +76,22 @@ form {
     margin-left: 20px; /* Space between form and PDF preview */
 }
 
+.form-select {
+    height: auto; /* Make the dropdown height auto */
+    width: 50%;
+    padding: 10px; /* Increase padding for better spacing */
+    font-size: 20px; /* Increase font size */
+}
+
+
+/* Custom styles for date picker */
+input[type="date"] {
+    padding: 10px; /* Padding for date input */
+    font-size: 20px; /* Adjust font size */
+    width: 50%;
+    text-align: right;
+}
+
 /* form PDF Preview Container */
 .pdf-preview-container2 {
     flex: 1.3;
@@ -254,9 +270,8 @@ input[type="file"] {
     background-color: #f5f5f5; /* Darker color on click */
     transition: background-color 0.2s, font-size 0.3s;
     font-weight: bold;
-    font-size: 20px;
+    font-size: 22px;
     cursor:default;
-
 }
 
 
@@ -519,6 +534,7 @@ td.long-text {
     box-sizing: border-box;
     margin-left: 20px; /* Space between the details and PDF preview */
     position: relative;
+    text-align: center; /* Center text */
 }
 
 /* Ensure the PDF pages maintain A4 ratio and adjust scaling */
@@ -530,9 +546,14 @@ td.long-text {
     border-radius: 8px;
     background-color: #fff;
     display: block; /* Ensure block-level for proper layout */
-
 }
 
+.no-pdf-message {
+    font-size: 20px; /* Change font size */
+    color: #ff0000; /* Change text color (red) */
+    font-weight: bold; /* Make text bold */
+    margin: 300px 0; 
+}
 
 /* Pagination styles */
 .pagination {

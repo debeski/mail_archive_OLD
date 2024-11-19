@@ -2,80 +2,53 @@ let currentPage = 1; // Track the current page number
 let pdfDoc = null; // Store the PDF document
 
 // Function to open the document details modal
-function openDocumentDetails(documentId) {
-    fetch(`/get_document_details/${documentId}/`)
-        .then(response => response.json())
-        .then(data => {
-            // Populate modal fields with labels on separate lines
-            document.getElementById('modal-title').innerText = data.title;
-            document.getElementById('modal-reg-number').innerHTML = `رقم الرسالة:<br>${data.reg_number}`;
-            document.getElementById('modal-out-date').innerHTML = `التاريخ:<br>${data.out_date}`;
-            document.getElementById('modal-dept-from').innerHTML = `من:<br>${data.dept_from}`;
-            document.getElementById('modal-dept-to').innerHTML = `إلى:<br>${data.dept_to}`;
-            document.getElementById('modal-keywords').innerHTML = `الكلمات المفتاحية:<br>${data.keywords}`;
-
-            const pdfContainer = document.getElementById('pdf-preview');
-            pdfContainer.innerHTML = ''; // Clear previous content
-
-            if (data.pdf_file) {
-                const loadingTask = pdfjsLib.getDocument(data.pdf_file);
-                loadingTask.promise.then(pdf => {
-                    pdfDoc = pdf; // Store the loaded PDF document
-                    currentPage = 1; // Reset the current page
-
-                    renderPage(currentPage); // Render the first page
-
-                    // Add scroll event listener
-                    pdfContainer.addEventListener('wheel', handleScroll);
-                }).catch(error => {
-                    console.error('Error loading PDF:', error);
-                });
-            }
-
-            // Show the modal
-            const modal = document.getElementById('documentModal');
-            modal.style.display = 'block';
-
-            // Close modal behavior
-            modal.onclick = function(event) {
-                if (event.target === modal) {
-                    modal.style.display = 'none';
-                    pdfContainer.removeEventListener('wheel', handleScroll); // Clean up
-                }
-            };
-        })
-        .catch(error => console.error('Error fetching document details:', error));
-}
-
-function renderPDF() {
-    const fileInput = document.getElementById('pdf_file');
+// Main function to render PDF based on the source (file input or URL)
+function renderPDF(source, isFileInput = false) {
     const pdfContainer = document.getElementById('pdf-preview');
+    pdfContainer.innerHTML = ''; // Clear previous content
 
-    if (fileInput.files.length > 0) {
-        const file = fileInput.files[0];
+    if (isFileInput) {
+        // Handle PDF from file input
         const fileReader = new FileReader();
-
         fileReader.onload = function() {
             const typedarray = new Uint8Array(this.result);
-            const loadingTask = pdfjsLib.getDocument(typedarray);
-            loadingTask.promise.then(pdf => {
-                pdfDoc = pdf; // Store the loaded PDF document
-                currentPage = 1; // Reset the current page
-                renderPage(currentPage); // Render the first page
-
-                // Add scroll event listener
-                pdfContainer.addEventListener('wheel', handleScroll);
-            }).catch(error => {
-                console.error('Error loading PDF:', error);
-            });
+            loadAndRenderPDF(typedarray);
         };
-
-        fileReader.readAsArrayBuffer(file); // Read the PDF file as ArrayBuffer
+        fileReader.readAsArrayBuffer(source.files[0]); // Use the file input directly
+    } else {
+        // Handle PDF from URL
+        fetch(source)
+            .then(response => response.json())
+            .then(data => {
+                if (data.pdf_file) {
+                    loadAndRenderPDF(data.pdf_file);
+                } else {
+                    pdfContainer.innerHTML = '<div class="no-pdf-message">لا يوجد ملف PDF!</div>';
+                }
+            })
+            .catch(error => console.error('Error fetching PDF:', error));
     }
 }
 
-// Unified renderPage function to handle both initial rendering and scrolling
-function renderPage(pageNumber) {
+// Load and render the PDF document
+function loadAndRenderPDF(pdfSource) {
+    const loadingTask = pdfjsLib.getDocument(pdfSource);
+    loadingTask.promise.then(pdf => {
+        pdfDoc = pdf; // Store the loaded PDF document
+        currentPage = 1; // Reset the current page
+        drawPage(currentPage); // Render the first page
+
+        // Add scroll event listener for page navigation
+        const pdfContainer = document.getElementById('pdf-preview');
+        pdfContainer.addEventListener('wheel', handleScroll);
+    }).catch(error => {
+        console.error('Error loading PDF:', error);
+        document.getElementById('pdf-preview').innerHTML = 'Error loading PDF file.';
+    });
+}
+
+// Draw the specified page on the canvas and handle scroll events
+function drawPage(pageNumber) {
     const pdfContainer = document.getElementById('pdf-preview');
     pdfContainer.innerHTML = ''; // Clear previous content
 
@@ -84,11 +57,7 @@ function renderPage(pageNumber) {
         const containerWidth = pdfContainer.clientWidth;
         const containerHeight = pdfContainer.clientHeight;
 
-        // Calculate scale based on the container size and the PDF page size
-        const scaleWidth = containerWidth / viewport.width;
-        const scaleHeight = containerHeight / viewport.height;
-        const scale = Math.min(scaleWidth, scaleHeight);
-
+        const scale = Math.min(containerWidth / viewport.width, containerHeight / viewport.height);
         const scaledViewport = page.getViewport({ scale: scale });
 
         const canvas = document.createElement('canvas');
@@ -118,22 +87,62 @@ function renderPage(pageNumber) {
     });
 }
 
-// Handle scroll events
+// Handle scroll events to navigate pages
 function handleScroll(event) {
     event.preventDefault(); // Prevent default scroll behavior
 
-    if (event.deltaY < 0) {
+    if (event.deltaY < 0 && currentPage > 1) {
         // Scrolling up
-        if (currentPage > 1) {
-            currentPage--;
-            renderPage(currentPage);
-        }
-    } else {
+        currentPage--;
+        drawPage(currentPage);
+    } else if (event.deltaY > 0 && pdfDoc && currentPage < pdfDoc.numPages) {
         // Scrolling down
-        if (pdfDoc && currentPage < pdfDoc.numPages) {
-            currentPage++;
-            renderPage(currentPage);
-        }
+        currentPage++;
+        drawPage(currentPage);
+    }
+}
+
+
+// Usage for opening document details
+function openDocumentDetails(modelType, documentId) {
+    fetch(`/get_document_details/${modelType}/${documentId}/`)
+        .then(response => response.json())
+        .then(data => {
+            // Populate modal fields dynamically based on the model type
+            document.getElementById('modal-title').innerText = data.title || 'No title available';
+            document.getElementById('modal-number').innerHTML = `رقم:<br>${data.number || ''}`;
+            document.getElementById('modal-date').innerHTML = `التاريخ:<br>${data.date || ''}`;
+            document.getElementById('modal-keywords').innerHTML = `الكلمات المفتاحية:<br>${data.keywords || ''}`;
+            document.getElementById('modal-dept-from').innerHTML = `من:<br>${data.dept_from || ''}`;
+            document.getElementById('modal-dept-to').innerHTML = `إلى:<br>${data.dept_to || ''}`;
+            if (data.orig_number) {
+                document.getElementById('modal-orig-number').innerHTML = `رقم الأصل:<br>${data.orig_number || ''}`;
+                document.getElementById('modal-orig-date').innerHTML = `تاريخ الأصل:<br>${data.orig_date || ''}`;
+            }
+            if (data.minister) {
+                document.getElementById('modal-minister').innerHTML = `الوزير:<br>${data.minister || ''}`;
+            }
+            if (data.government) {
+                document.getElementById('modal-government').innerHTML = `الحكومة:<br>${data.government || ''}`;
+            }
+            if (data.attach_file) {
+                document.getElementById('modal-attach-file').innerHTML = `<a href="${data.attach_file}">ملف مرفق</a>`;
+            }
+
+            // Render PDF from fetched data
+            renderPDF(data.pdf_file, false); // Pass URL and indicate it's not a file input
+
+            // Show the modal using Bootstrap's method
+            $('#documentModal').modal('show');
+        })
+        .catch(error => console.error('Error fetching document details:', error));
+}
+
+// Usage for rendering PDF from file input
+function handleFileInputChange() {
+    const fileInput = document.getElementById('pdf_file');
+    if (fileInput.files.length > 0) {
+        renderPDF(fileInput, true); // Pass file input and indicate it's a file input
     }
 }
 

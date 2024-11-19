@@ -21,8 +21,8 @@
         <tbody id="document-table-body">
             {% for document in documents %}
             <tr id="document-row-{{ document.id }}">
-                <td>{{ document.reg_number }}</td>
-                <td>{{ document.out_date|date:"Y-m-d" }}</td>
+                <td>{{ document.number }}</td>
+                <td>{{ document.date|date:"Y-m-d" }}</td>
                 <td>{{ document.dept_from }}</td>
                 <td>{{ document.dept_to }}</td>
                 <td>{{ document.title }}</td>
@@ -35,10 +35,10 @@
                         <a href="#" onclick="printDocument({{ document.id }})" class="action-icon" title="Print">
                             <img src="{% static 'img/print.png' %}" alt="Print" class="icon">
                         </a>
-                        <a href="{% url 'download_pdf' model_name='outgoing' object_id=document.id %}" class="action-icon" title="Download PDF">
+                        <a href="{% url 'download_document' model_name='outgoing' object_id=document.id %}" class="action-icon" title="Download PDF">
                             <img src="{% static 'img/pdf.png' %}" alt="Download PDF" class="icon">
                         </a>
-                        <a href="{% url 'edit_outgoing' document.id %}" class="action-icon" title="Edit">
+                        <a href="{% url 'edit_document' model_name='outgoing' document_id=document.id %}" class="action-icon" title="Edit">
                             <img src="{% static 'img/edit.png' %}" alt="Edit" class="icon"> 
                         </a>
                         <a class="action-icon" onclick="confirmDeletion('Outgoing', {{ document.id }})" title="Delete">
@@ -78,6 +78,21 @@
         <p>هل أنت متأكد أنك تريد حذف هذا العنصر؟</p>
         <button class="cancel-button" id="confirmDeleteButton">نعم، احذف</button>
         <button onclick="closeModal()">إلغاء</button>
+    </div>
+</div>
+
+<!-- Modal for Document Details -->
+<div id="documentModal" class="modal">
+    <div class="modal-content" onclick="event.stopPropagation();">
+        <div class="modal-details">
+            <h2 id="modal-title"></h2>
+            <p id="modal-number"></p>
+            <p id="modal-date"></p>
+            <p id="modal-dept-from"></p>
+            <p id="modal-dept-to"></p>
+            <p id="modal-keywords"></p>
+        </div>
+        <div id="pdf-preview" class="pdf-preview-container"></div>
     </div>
 </div>
 

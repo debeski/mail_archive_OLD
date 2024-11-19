@@ -1,88 +1,138 @@
 from django.db import models
 import uuid
+from django.core.validators import RegexValidator
 
+# Define the regex validator at the module level:
+number_validator = RegexValidator(
+    regex=r'^[0-9/-]*$',  # Only allows digits, dashes, and slashes
+    message='Enter a valid number with dashes or slashes.',
+    code='invalid_number'
+)
 
-
-def get_file_date(instance):
-    if isinstance(instance, Outgoing):
-        return instance.out_date
-    elif isinstance(instance, Incoming):
-        return instance.reg_date  # Adjust as needed for other models
-    elif isinstance(instance, Internal):
-        return instance.int_date
-    elif isinstance(instance, Decree):
-        return instance.dec_date
-    return None
-
-def get_pdf_upload_path(instance, filename):
-    # Generate a random filename
+# PDF & Attachment Naming Functions:
+def generate_random_filename(instance, filename):
+    """Generate a random filename for uploaded files."""
     random_filename = f"{uuid.uuid4().hex}.pdf"
     model_name = instance.__class__.__name__.lower()
-    
-    return f'pdfs/{model_name}/{random_filename}'
+    return f'{model_name}/{random_filename}'
+
+def get_pdf_upload_path(instance, filename):
+    """Get the upload path for PDF files."""
+    return f'pdfs/{generate_random_filename(instance, filename)}'
 
 def get_attach_upload_path(instance, filename):
-    date_part = get_file_date(instance)
-    date_part = date_part.strftime('%Y-%m-%d') if date_part else 'unknown_date'
-    model_name = instance.__class__.__name__.lower()
-    
-    # Generate the filename using the specified format
-    return f'attach/{model_name}/{instance.reg_number}_{date_part}.pdf'
+    """Get the upload path for attachment files."""
+    return f'attach/{generate_random_filename(instance, filename)}'
 
+# Section Models:
+class Department(models.Model):
+    """Model representing a department."""
+    name = models.CharField(max_length=255)
 
+    def __str__(self):
+        return self.name
 
+class Affiliate(models.Model):
+    """Model representing an affiliate."""
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+class Minister(models.Model):
+    """Model representing a minister."""
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+class Government(models.Model):
+    """Model representing a government entity."""
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+# The 4 Primary Mail Models:
 class Incoming(models.Model):
-    id = models.AutoField(primary_key=True)
-    orig_date = models.DateField(blank=False, null=False)
-    reg_date = models.DateField(blank=False, null=False)
-    orig_number = models.CharField(max_length=10, blank=True, null=True)
-    reg_number = models.CharField(max_length=10, blank=False, null=False)
-    dept_from = models.CharField(max_length=100, blank=False, null=False)
-    dept_to = models.CharField(max_length=100, blank=False, null=False)
-    title = models.CharField(max_length=100, blank=False, null=False)
-    keywords = models.CharField(max_length=500, blank=True)
+    """Model representing incoming mail."""
+    number = models.CharField(
+        max_length=10,
+        validators=[number_validator],  # Reuse the validator
+        blank=False,
+        null=False
+    )
+    orig_number = models.CharField(max_length=10, blank=True)
+    date = models.DateField(blank=False)
+    orig_date = models.DateField(blank=True)
+    dept_from = models.ForeignKey(Affiliate, on_delete=models.CASCADE, related_name='incoming_affiliates')
+    dept_to = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='incoming_departments')
+    title = models.CharField(max_length=255, blank=False)
+    keywords = models.CharField(max_length=999, blank=True)
     pdf_file = models.FileField(upload_to=get_pdf_upload_path, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.title
-
 
 class Outgoing(models.Model):
-    id = models.AutoField(primary_key=True)
-    out_date = models.DateField(blank=False, null=False)
-    reg_number = models.CharField(max_length=10, blank=False, null=False)
-    dept_from = models.CharField(max_length=100, blank=False, null=False)
-    dept_to = models.CharField(max_length=100, blank=False, null=False)
-    title = models.CharField(max_length=100, blank=False, null=False)
-    keywords = models.CharField(max_length=500, blank=True)
+    """Model representing outgoing mail."""
+    number = models.CharField(
+        max_length=10,
+        validators=[number_validator],
+        blank=False,
+        null=False
+    )
+    date = models.DateField(blank=False)
+    dept_from = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='outgoing_departments')
+    dept_to = models.ForeignKey(Affiliate, on_delete=models.CASCADE, related_name='outgoing_affiliates')
+    title = models.CharField(max_length=255, blank=False)
+    keywords = models.CharField(max_length=999, blank=True)
     pdf_file = models.FileField(upload_to=get_pdf_upload_path, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.title
-
 
 class Internal(models.Model):
-    id = models.AutoField(primary_key=True)
-    int_date = models.DateField(blank=True, null=True)
-    reg_number = models.CharField(max_length=10, blank=True, null=True)
-    dept_from = models.CharField(max_length=100, blank=False, null=False)
-    dept_to = models.CharField(max_length=100, blank=False, null=False)
-    title = models.CharField(max_length=100, blank=False, null=False)
-    keywords = models.CharField(max_length=500, blank=True)
+    """Model representing internal mail between departments."""
+    number = models.CharField(
+        max_length=10,
+        validators=[number_validator],
+        blank=True,
+        null=True
+    )
+    date = models.DateField(blank=True)
+    dept_from = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='internal_departments_from')
+    dept_to = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='internal_departments_to')
+    title = models.CharField(max_length=255, blank=False)
+    keywords = models.CharField(max_length=999, blank=True)
     pdf_file = models.FileField(upload_to=get_pdf_upload_path, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.title
 
-
 class Decree(models.Model):
-    id = models.AutoField(primary_key=True)
-    dec_date = models.DateField(blank=False, null=False)
-    dec_number = models.CharField(max_length=10, blank=False, null=False)
-    title = models.CharField(max_length=100, blank=False, null=False)
-    keywords = models.CharField(max_length=500, blank=True)
+    """Model representing a monister decree."""
+    number = models.CharField(
+        max_length=10,
+        validators=[number_validator],
+        blank=True,
+        null=True
+    )
+    date = models.DateField(blank=False)
+    minister = models.ForeignKey(Minister, on_delete=models.CASCADE, related_name='decrees')
+    government = models.ForeignKey(Government, on_delete=models.CASCADE, related_name='decrees')
+    title = models.CharField(max_length=255, blank=False)
+    keywords = models.CharField(max_length=999, blank=True)
     pdf_file = models.FileField(upload_to=get_pdf_upload_path, blank=True)
     attach = models.FileField(upload_to=get_attach_upload_path, blank=True)
-    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
     def __str__(self):
         return self.title

@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Manage Sections</h2>
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="departments-tab" data-toggle="tab" href="#departments" role="tab">Departments</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="affiliates-tab" data-toggle="tab" href="#affiliates" role="tab">Affiliates</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="ministers-tab" data-toggle="tab" href="#ministers" role="tab">Ministers</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="governments-tab" data-toggle="tab" href="#governments" role="tab">Governments</a>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="departments" role="tabpanel">
+            <h3>Departments</h3>
+            <form method="post">
+                {% csrf_token %}
+                {{ department_form.as_p }}
+                <button type="submit" name="department" class="btn btn-primary">Add Department</button>
+            </form>
+            <ul>
+                {% for department in departments %}
+                    <li>{{ department.id }}: {{ department.name }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="tab-pane fade" id="affiliates" role="tabpanel">
+            <h3>Affiliates</h3>
+            <form method="post">
+                {% csrf_token %}
+                {{ affiliate_form.as_p }}
+                <button type="submit" name="affiliate" class="btn btn-primary">Add Affiliate</button>
+            </form>
+            <ul>
+                {% for affiliate in affiliates %}
+                    <li>{{ affiliate.id }}: {{ affiliate.name }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="tab-pane fade" id="ministers" role="tabpanel">
+            <h3>Ministers</h3>
+            <form method="post">
+                {% csrf_token %}
+                {{ minister_form.as_p }}
+                <button type="submit" name="minister" class="btn btn-primary">Add Minister</button>
+            </form>
+            <ul>
+                {% for minister in ministers %}
+                    <li>{{ minister.id }}: {{ minister.name }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="tab-pane fade" id="governments" role="tabpanel">
+            <h3>Governments</h3>
+            <form method="post">
+                {% csrf_token %}
+                {{ government_form.as_p }}
+                <button type="submit" name="government" class="btn btn-primary">Add Government</button>
+            </form>
+            <ul>
+                {% for government in governments %}
+                    <li>{{ government.id }}: {{ government.name }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

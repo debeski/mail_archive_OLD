@@ -30,8 +30,8 @@
                             البريد الصادر
                         </button>
                     </a>
-                    <a href="incoming_mail">
-                        <button>
+                    <a href="{% url 'incoming_mail' %}">
+                        <button class="{% if request.path == '/incoming_mail/' or request.path == '/add_incoming/' %}active{% endif %}">
                             <img src="{% static 'img/incoming-mail.png' %}" alt="Incoming Mail" class="dbutton-icon"> 
                             البريد الوارد
                         </button>
@@ -70,21 +70,6 @@
                     {% block content %}{% endblock %}
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Modal for Document Details -->
-    <div id="documentModal" class="modal">
-        <div class="modal-content" onclick="event.stopPropagation();">
-            <div class="modal-details">
-                <h2 id="modal-title"></h2>
-                <p id="modal-reg-number"></p>
-                <p id="modal-out-date"></p>
-                <p id="modal-dept-from"></p>
-                <p id="modal-dept-to"></p>
-                <p id="modal-keywords"></p>
-            </div>
-            <div id="pdf-preview" class="pdf-preview-container"></div>
         </div>
     </div>
 

@@ -1,50 +1,55 @@
 {% extends 'base.html' %}
 
-{% load static %}  <!-- Ensure this line is included at the top -->
+{% load static %} <!-- Ensure this line is included at the top -->
 
 {% block title %}{% if form.instance.id %}تعديل{% else %}إضافة{% endif %} بريد صادر{% endblock %}
 
 {% block header %}{% if form.instance.id %} - تعديل{% else %} - إضافة{% endif %} بريد صادر{% endblock %}
 
 {% block content %}
+<!-- Include Bootstrap CSS -->
+<link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
+<!-- Include Flatpickr CSS -->
+<link rel="stylesheet" href="{% static 'css/flatpickr.css' %}">
+
 <div class="form-container">
     <form action="{% if form.instance.id %}{% url 'edit_outgoing' form.instance.id %}{% else %}{% url 'add_outgoing' %}{% endif %}" method="POST" enctype="multipart/form-data" dir="rtl">
         {% csrf_token %}
-        
-        <div class="input-group">
-            <label for="reg_number">رقم الرسالة:</label>
-            <input type="text" id="reg_number" name="reg_number" value="{{ form.reg_number.value|default:'' }}" required>
+
+        <div class="mb-3">
+            <label for="number" class="form-label">رقم الرسالة:</label>
+            <input type="text" id="number" name="number" class="form-control" value="{{ form.number.value|default:'' }}" required>
         </div>
 
-        <div class="input-group date-input-container">
-            <label for="out_date">التاريخ:</label>
-            {{ form.out_date }}  <!-- This will render the DatePickerInput widget -->
+        <div class="mb-3">
+            <label for="date" class="form-label">التاريخ:</label>
+            {{ form.date }}  <!-- Render the date field directly -->
         </div>
 
-        <div class="input-group">
-            <label for="dept_from">من:</label>
-            <input type="text" id="dept_from" name="dept_from" value="{{ form.dept_from.value|default:'' }}" required>
+        <div class="mb-3">
+            <label for="dept_from" class="form-label">من:</label>
+            {{ form.dept_from }}  <!-- Render the department from field directly -->
         </div>
 
-        <div class="input-group">
-            <label for="dept_to">إلى:</label>
-            <input type="text" id="dept_to" name="dept_to" value="{{ form.dept_to.value|default:'' }}" required>
+        <div class="mb-3">
+            <label for="dept_to" class="form-label">إلى:</label>
+            {{ form.dept_to }}  <!-- Render the department to field directly -->
         </div>
 
-        <div class="input-group">
-            <label for="title">العنوان:</label>
-            <input type="text" id="title" name="title" value="{{ form.title.value|default:'' }}" required>
+        <div class="mb-3">
+            <label for="title" class="form-label">العنوان:</label>
+            <input type="text" id="title" name="title" class="form-control" value="{{ form.title.value|default:'' }}" required>
         </div>
 
-        <div class="input-group">
-            <label for="keywords">الكلمات المفتاحية:</label>
-            <textarea id="keywords" name="keywords" rows="4" required>{{ form.keywords.value|default:'' }}</textarea>
+        <div class="mb-3">
+            <label for="keywords" class="form-label">الكلمات المفتاحية:</label>
+            <textarea id="keywords" name="keywords" class="form-control" rows="4" required>{{ form.keywords.value|default:'' }}</textarea>
         </div>
 
-        <div class="input-group">
-            <span for="pdf_file" style="font-size: 20px; font-weight: 600;">ملف PDF:</span><br>
+        <div class="mb-3">
+            <span style="font-size: 20px; font-weight: 600;">ملف PDF:</span><br>
             <input type="file" id="pdf_file" name="pdf_file" accept="application/pdf" style="display: none;" onchange="renderPDF(), upFileName()">
-            <label for="pdf_file" class="upload-label">Choose file</label>
+            <label for="pdf_file" class="upload-label">اختر ملف</label>
             <span id="file-name">
                 {% if form.instance.pdf_file %}
                     تنبيه! تم العثور على ملف PDF. سيتم استبداله في حالة اختيارك لملف جديد!
@@ -55,10 +60,26 @@
         </div>        
 
         <div class="button-group">
-            <button type="submit" class="save-button">حفظ</button>
-            <a href="{% url 'outgoing_mail' %}" class="cancel-button">إلغاء</a>
+            <button type="submit" class="btn btn-primary">حفظ</button>
+            <a href="{% url 'outgoing_mail' %}" class="btn btn-secondary">إلغاء</a>
         </div>
     </form>
     <div id="pdf-preview" class="pdf-preview-container2"></div> <!-- PDF Preview Container -->
-</div>    
+</div>
+
+<!-- Include Bootstrap JS and dependencies -->
+<script src="{% static 'js/bootstrap.bundle.js' %}"></script>
+<!-- Include Flatpickr JS -->
+<script src="{% static 'js/flatpickr.js' %}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        flatpickr("#id_date", {
+            dateFormat: "Y-m-d",
+            locale: {
+                firstDayOfWeek: 7 // Start week on Sunday
+            },
+            allowInput: true // Allow user input
+        });
+    });
+</script>
 {% endblock %}
