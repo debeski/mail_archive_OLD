@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}القرارات{% endblock %}
+
+{% block content %}
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>الرقم</th>
+                <th>التاريخ</th>
+                <th>الوزير</th>
+                <th>الحكومة</th>
+                <th>العنوان</th>
+                <th>الكلمات المفتاحية</th>
+                <th>الإجراءات</th>
+            </tr>
+        </thead>
+        <tbody id="document-table-body">
+            {% for document in documents %}
+            <tr id="document-row-{{ document.id }}">
+                <td>{{ document.number }}</td>
+                <td>{{ document.date }}</td>
+                <td>{{ document.minister }}</td>
+                <td>{{ document.government }}</td>
+                <td>{{ document.title }}</td>
+                <td>{{ document.keywords }}</td>
+                <td>
+                    <div class="action-container">
+                        <a href="#" onclick="openDocumentDetails('{{ document.model_type }}', {{ document.id }})" class="action-icon" title="View">
+                            <img src="{% static 'img/view.png' %}" alt="View" class="icon">
+                        </a>
+                        {% if not pdf_exists and attach_exists %}
+                            <a href="{% url 'download_document' model_name='decree' object_id=document.id %}" class="action-icon" title="Download Files">
+                                <img src="{% static 'img/pdf.png' %}" alt="Download Files" class="icon">
+                            </a>
+                        {% else %}
+                            <span title="No files available">
+                                <img src="{% static 'img/nopdf.png' %}" alt="No files available" class="action-icon" style="opacity: 0.5;"> <!-- Optional styling for visual cue -->
+                            </span>
+                        {% endif %}
+
+                        <a href="{% url 'edit_document' model_name='decree' document_id=document.id %}" class="action-icon" title="Edit">
+                            <img src="{% static 'img/edit.png' %}" alt="Edit" class="icon"> 
+                        </a>
+                        <a class="action-icon" onclick="confirmDeletion('decree', {{ document.id }}, '{{ document.number }}')" title="Delete">
+                            <img src="{% static 'img/delete.png' %}" alt="Delete" class="icon">
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7">لا توجد بيانات لعرضها.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="pagination">
+        <span class="step-links">
+            {% if documents.has_previous %}
+                <a href="?page=1" class="pagination-button">&laquo; الأول</a>
+                <a href="?page={{ documents.previous_page_number }}" class="pagination-button">السابق</a>
+            {% endif %}
+            <span class="current">
+                صفحة {{ documents.number }} من {{ documents.paginator.num_pages }}.
+            </span>
+            {% if documents.has_next %}
+                <a href="?page={{ documents.next_page_number }}" class="pagination-button">التالي</a>
+                <a href="?page={{ documents.paginator.num_pages }}" class="pagination-button">الأخير &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+</div>
+{% endblock %}

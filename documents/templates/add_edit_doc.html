@@ -7,7 +7,6 @@
 {% block header %}{% if form.instance.id %} - تعديل{% else %} - إضافة{% endif %} {{ model_name | title }}{% endblock %}
 
 {% block content %}
-<link href="{% static 'css/bootstrap.rtl.css' %}" rel="stylesheet">
 <link rel="stylesheet" href="{% static 'css/flatpickr.css' %}">
 
 <div class="form-container">
@@ -32,17 +31,5 @@
     <div id="pdf-preview" class="pdf-container-add"></div>
 </div>
 
-<script src="{% static 'js/bootstrap.bundle.js' %}"></script>
 <script src="{% static 'js/flatpickr.js' %}"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        flatpickr("#id_date", {
-            dateFormat: "Y-m-d",
-            locale: {
-                firstDayOfWeek: 7 // Start week on Sunday
-            },
-            allowInput: true // Allow user input
-        });
-    });
-</script>
 {% endblock %}

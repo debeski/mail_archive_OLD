@@ -16,6 +16,9 @@ from matplotlib import rcParams
 import numpy as np
 import os
 from django.conf import settings
+from io import BytesIO
+import zipfile
+
 
 
 logger = logging.getLogger('myapp')  # Adjust to your app's name
@@ -29,11 +32,11 @@ from datetime import datetime
 
 def create_charts():
     # Set font properties
-    rcParams['font.family'] = 'Shabwa'  # Ensure you have the font installed
+    rcParams['font.family'] = 'Arial'  # Ensure you have the font installed
     rcParams['font.size'] = 12
 
     # Define the years you want to analyze
-    years = range(2000, 2024)  # Adjust the range as necessary
+    years = range(2018, 2024)  # Adjust the range as necessary
     counts = {model: [] for model in ['Incoming', 'Outgoing', 'Internal', 'Decree']}
 
     for year in years:
@@ -325,6 +328,7 @@ def delete_document(request, model_name, document_id):
 
 
 #download functions.
+
 def download_document(request, model_name, object_id):
     model, _ = get_model_and_form(model_name)
     
@@ -337,8 +341,37 @@ def download_document(request, model_name, object_id):
     date_str = document.date.strftime('%Y-%m-%d') if hasattr(document, 'date') and document.date else 'unknown_date'
     identifier = document.number if hasattr(document, 'number') else 'unknown'
 
-    # Check for PDF download
-    if hasattr(document, 'pdf_file') and document.pdf_file:
+    # Check for PDF and attachment
+    pdf_exists = hasattr(document, 'pdf_file') and document.pdf_file
+    attach_exists = hasattr(document, 'attach') and document.attach
+
+    if not pdf_exists and not attach_exists:
+        # Neither PDF nor attachment exist; return a 404 response
+        return JsonResponse({'error': 'No document or attachment available for download.'}, status=404)
+
+    if pdf_exists and attach_exists:
+        # Both PDF and attachment exist; create a zip file
+        zip_buffer = BytesIO()
+        with zipfile.ZipFile(zip_buffer, 'w') as zip_file:
+            # Add the PDF file to the zip
+            pdf_filename = f"{model_name}_pdf_{identifier}_{date_str}.pdf"
+            with document.pdf_file.open('rb') as pdf_file:
+                zip_file.writestr(pdf_filename, pdf_file.read())
+
+            # Add the attachment file to the zip
+            attach_filename = f"{model_name}_attach_{identifier}_{date_str}.{document.attach.name.split('.')[-1]}"
+            with document.attach.open('rb') as attach_file:
+                zip_file.writestr(attach_filename, attach_file.read())
+
+        # Prepare the zip response
+        zip_buffer.seek(0)
+        response = HttpResponse(zip_buffer.getvalue(), content_type='application/zip')
+        response['Content-Disposition'] = f'attachment; filename="{model_name}_{identifier}_{date_str}.zip"'
+        
+        return response
+
+    elif pdf_exists:
+        # Only PDF exists; download it
         content_type, _ = mimetypes.guess_type(document.pdf_file.name)
         if content_type is None:
             content_type = 'application/pdf'  # Default to PDF if unknown
@@ -352,20 +385,20 @@ def download_document(request, model_name, object_id):
 
         return response
 
-    # Check for attachment download
-    elif hasattr(document, 'attach') and document.attach:
+    elif attach_exists:
+        # Only attachment exists; download it
         content_type, _ = mimetypes.guess_type(document.attach.name)
         if content_type is None:
             content_type = 'application/octet-stream'  # Default to binary if unknown
 
-        filename = f"{model_name}_attach_{identifier}_{date_str}.{document.attach.name.split('.')[-1]}"
+        attach_filename = f"{model_name}_attach_{identifier}_{date_str}.{document.attach.name.split('.')[-1]}"
         response = HttpResponse(content_type=content_type)
-        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        response['Content-Disposition'] = f'attachment; filename="{attach_filename}"'
 
         with document.attach.open('rb') as attach_file:
             response.write(attach_file.read())
 
         return response
 
-    else:
-        return HttpResponseNotFound('Document or attachment not found')
+    # Fallback if nothing matches (this should be unreachable due to the initial check)
+    return HttpResponseNotFound('No document or attachment available for download.')

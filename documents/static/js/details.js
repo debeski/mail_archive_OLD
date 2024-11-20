@@ -1,4 +1,22 @@
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize flatpickr for the main date field
+    flatpickr("#id_date", {
+        dateFormat: "Y-m-d",
+        locale: {
+            firstDayOfWeek: 7, // Start week on Sunday
+        },
+        allowInput: true, // Allow user input
+    });
 
+    // Initialize flatpickr for the orig_date field
+    flatpickr("#id_orig_date", {
+        dateFormat: "Y-m-d",
+        locale: {
+            firstDayOfWeek: 7 // Start week on Sunday
+        },
+        allowInput: true // Allow user input
+    });
+});
 
 // Print the PDF document
 function printDocument() {
@@ -130,4 +148,5 @@ function upFileName() {
         fileNameSpan.innerText = 'لا يوجد ملف مختار.'; // Default message
     }
 }
+
 
