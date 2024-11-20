@@ -228,6 +228,9 @@ def get_model_and_form(model_name):
 
     return model, form_class
 
+def get_documents_with_files():
+    results = Document.objects.filter(Q(pdf_file__isnull=False) | Q(attachment__isnull=False))
+    return results
 
 def get_document_details(request, model_type, document_id):
     model, _ = get_model_and_form(model_type)

@@ -415,27 +415,6 @@ td.long-text {
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1); /* Reduce shadow on press */
 }
 
-.span {
-    width: auto; /* Set a fixed width for the icons */
-    height: 40px; /* Set a fixed height for the icons */
-    display: flex; /* Ensure the icon is centered */
-    justify-content: center; /* Center the image */
-    align-items: center; /* Center the image */
-    cursor: pointer; /* Change cursor on hover */
-    text-decoration: none; /* Remove underline from links */
-    margin: 0; /* Remove any default margin */
-    padding: 0; /* Remove any default padding */
-    background-color: inherit; /* Inherit background color from parent */
-}
-
-.span img {
-    width: 80%; /* Scale the image to the width of the  */
-    height: 100%; /* Scale the image to the height of the  */
-    object-fit: contain; /* Ensures the image maintains its aspect ratio */
-    display: block; /* Prevent any inline spacing */
-    transition: opacity 0.3s ease; /* Smooth transition */
-    opacity: 60%;
-}
 
 /* Pagination styles */
 .pagination {
