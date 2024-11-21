@@ -31,6 +31,15 @@ class AddOutgoingForm(forms.ModelForm):
     class Meta:
         model = Outgoing
         fields = ['number', 'date', 'dept_from', 'dept_to', 'title', 'keywords', 'pdf_file']
+        labels = {
+            'number': 'رقم الرسالة',
+            'date': 'تاريخ الرسالة',
+            'dept_from': 'من (إدارة)',
+            'dept_to': 'إلى (جهة)',
+            'title': 'العنوان',
+            'keywords': 'الكلمات المفتاحية',
+            'pdf_file': 'ملف PDF',    
+        }
         widgets = {
             'number': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -59,11 +68,9 @@ class AddOutgoingForm(forms.ModelForm):
             'keywords': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'الكلمات المفتاحية',
-                'required': 'required'
             }),
             'pdf_file': forms.ClearableFileInput(attrs={
                 'class': 'form-control',
-                'required': 'required'
             }),
         }
 
@@ -74,6 +81,17 @@ class AddIncomingForm(forms.ModelForm):
     class Meta:
         model = Incoming
         fields = ['number', 'orig_number', 'date', 'orig_date', 'dept_from', 'dept_to', 'title', 'keywords', 'pdf_file']
+        labels = {
+            'number': 'رقم التسجيل',
+            'orig_number': 'رقم الاصل',
+            'date': 'تاريخ التسجيل',
+            'orig_date': 'تاريخ الاصل ',
+            'dept_from': 'من (جهة)',
+            'dept_to': 'إلى (إدارة)',
+            'title': 'العنوان',
+            'keywords': 'الكلمات المفتاحية',
+            'pdf_file': 'ملف PDF',    
+        }
         widgets = {
             'number': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -113,11 +131,9 @@ class AddIncomingForm(forms.ModelForm):
             'keywords': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'الكلمات المفتاحية',
-                'required': 'required'
             }),
             'pdf_file': forms.ClearableFileInput(attrs={
                 'class': 'form-control',
-                'required': 'required'
             }),
         }
 
@@ -128,11 +144,19 @@ class AddInternalForm(forms.ModelForm):
     class Meta:
         model = Internal
         fields = ['number', 'date', 'dept_from', 'dept_to', 'title', 'keywords', 'pdf_file']
+        labels = {
+            'number': 'رقم الرسالة',
+            'date': 'تاريخ الرسالة',
+            'dept_from': 'من',
+            'dept_to': 'إلى',
+            'title': 'العنوان',
+            'keywords': 'الكلمات المفتاحية',
+            'pdf_file': 'ملف PDF',    
+        }
         widgets = {
             'number': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'ادخل رقم الرسالة',
-                'required': 'required'
             }),
             'date': forms.DateInput(attrs={
                 'class': 'form-control form-control-lg',
@@ -156,11 +180,9 @@ class AddInternalForm(forms.ModelForm):
             'keywords': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'الكلمات المفتاحية',
-                'required': 'required'
             }),
             'pdf_file': forms.ClearableFileInput(attrs={
                 'class': 'form-control',
-                'required': 'required'
             }),
         }
 
@@ -171,6 +193,16 @@ class AddDecreeForm(forms.ModelForm):
     class Meta:
         model = Decree
         fields = ['number', 'date', 'minister', 'government', 'title', 'keywords', 'pdf_file', 'attach']
+        labels = {
+            'number': 'رقم القرار',
+            'date': 'تاريخ القرار',
+            'dept_from': 'الوزير',
+            'dept_to': 'الحكومة',
+            'title': 'العنوان',
+            'keywords': 'الكلمات المفتاحية',
+            'pdf_file': 'ملف PDF',
+            'attach': 'ملف مرفق',
+        }
         widgets = {
             'number': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -199,14 +231,11 @@ class AddDecreeForm(forms.ModelForm):
             'keywords': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'الكلمات المفتاحية',
-                'required': 'required'
             }),
             'pdf_file': forms.ClearableFileInput(attrs={
                 'class': 'form-control',
-                'required': 'required'
             }),
             'attach': forms.ClearableFileInput(attrs={
                 'class': 'form-control',
-                'required': 'required'
             }),
         }

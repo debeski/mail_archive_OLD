@@ -2,14 +2,14 @@ from django.db import models
 import uuid
 from django.core.validators import RegexValidator
 
-# Define the regex validator at the module level:
+# Define REGex Validator at moduler level:
 number_validator = RegexValidator(
     regex=r'^[0-9/-]*$',  # Only allows digits, dashes, and slashes
     message='Enter a valid number with dashes or slashes.',
     code='invalid_number'
 )
 
-# PDF & Attachment Naming Functions:
+# PDF Files Naming Functions:
 def generate_random_filename(instance, filename):
     """Generate a random filename for uploaded files."""
     random_filename = f"{uuid.uuid4().hex}.pdf"
@@ -23,6 +23,7 @@ def get_pdf_upload_path(instance, filename):
 def get_attach_upload_path(instance, filename):
     """Get the upload path for attachment files."""
     return f'attach/{generate_random_filename(instance, filename)}'
+
 
 # Section Models:
 class Department(models.Model):
@@ -53,7 +54,8 @@ class Government(models.Model):
     def __str__(self):
         return self.name
 
-# The 4 Primary Mail Models:
+
+# Primary Mail Models:
 class Incoming(models.Model):
     """Model representing incoming mail."""
     number = models.CharField(
@@ -76,6 +78,10 @@ class Incoming(models.Model):
     def __str__(self):
         return self.title
 
+    @property
+    def get_model_name(self):
+        return "بريد وارد"
+
 class Outgoing(models.Model):
     """Model representing outgoing mail."""
     number = models.CharField(
@@ -95,6 +101,10 @@ class Outgoing(models.Model):
 
     def __str__(self):
         return self.title
+
+    @property
+    def get_model_name(self):
+        return "بريد صادر"
 
 class Internal(models.Model):
     """Model representing internal mail between departments."""
@@ -116,8 +126,12 @@ class Internal(models.Model):
     def __str__(self):
         return self.title
 
+    @property
+    def get_model_name(self):
+        return "مذكرات داخلية"
+
 class Decree(models.Model):
-    """Model representing a monister decree."""
+    """Model representing a minister decree."""
     number = models.CharField(
         max_length=10,
         validators=[number_validator],
@@ -136,4 +150,8 @@ class Decree(models.Model):
 
     def __str__(self):
         return self.title
+    
+    @property
+    def get_model_name(self):
+        return "قرارات"
     

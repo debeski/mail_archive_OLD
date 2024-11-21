@@ -5,7 +5,8 @@
 {% block title %}الصفحة الرئيسية{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
+
+<div class="container-fluid index">
     <h2>أحدث الوثائق</h2>
     <table class="table-container">
         <thead>
@@ -33,11 +34,11 @@
     </table>
 
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-sm-5">
             <h3>مخطط الأعمدة حسب السنوات</h3>
             <img src="{% static 'chart/grouped_bar_chart.png' %}" alt="مخطط الأعمدة" class="img-fluid">
         </div>
-        <div class="col-md-6">
+        <div class="col-sm-5">
             <h3>مخطط دائري حسب السنوات</h3>
             <img src="{% static 'chart/pie_chart.png' %}" alt="مخطط دائري" class="img-fluid">
         </div>

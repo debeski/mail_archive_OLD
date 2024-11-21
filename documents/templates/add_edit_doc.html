@@ -2,11 +2,12 @@
 
 {% load static %}
 
-{% block title %}{% if form.instance.id %}تعديل{% else %}إضافة{% endif %} {{ model_name | title }}{% endblock %}
+{% block title %}{% if form.instance.id %}تعديل{% else %}إضافة{% endif %} {{ arabic_name | title }}{% endblock %}
 
-{% block header %}{% if form.instance.id %} - تعديل{% else %} - إضافة{% endif %} {{ model_name | title }}{% endblock %}
+{% block header %}{% if form.instance.id %} - تعديل{% else %} - إضافة{% endif %} {{ arabic_name | title }}{% endblock %}
 
 {% block content %}
+
 <link rel="stylesheet" href="{% static 'css/flatpickr.css' %}">
 
 <div class="form-container">
@@ -17,15 +18,7 @@
 
         <div class="button-group">
             <button type="submit" class="btn btn-primary">حفظ</button>
-            {% if model_name == 'outgoing' %}
-                <a href="{% url 'outgoing_mail' %}" class="btn btn-secondary">إلغاء</a>
-            {% elif model_name == 'incoming' %}
-                <a href="{% url 'incoming_mail' %}" class="btn btn-secondary">إلغاء</a>
-            {% elif model_name == 'internal' %}
-                <a href="{% url 'internal_mail' %}" class="btn btn-secondary">إلغاء</a>
-            {% elif model_name == 'decree' %}
-                <a href="{% url 'decree_mail' %}" class="btn btn-secondary">إلغاء</a>
-            {% endif %}
+            <a href="{% url 'document_view' model_name=model_name %}" class="btn btn-secondary">إلغاء</a>
         </div>
     </form>
     <div id="pdf-preview" class="pdf-container-add"></div>

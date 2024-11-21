@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+
+{% load static %}  <!-- Load static files here -->
+
+{% block title %}{{ arabic_name | title }}{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+<div class="header">
+    <div class="add-search-container">
+        <button class="btn btn-info" onclick="location.href='{% url 'add_document' model_name=model_name %}'">
+            <i class="bi bi-plus"></i> إضافة جديد
+        </button>        
+    <!-- Sort Dropdown -->
+    <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            فرز <span id="sortIndicator"></span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="sortDropdown">
+            <li>
+                <a class="dropdown-item" href="#" onclick="setSort('number')">الرقم <span class="sort-arrow" id="numberArrow"></span></a>
+            </li>
+            <li>
+                <a class="dropdown-item" href="#" onclick="setSort('date')">التاريخ <span class="sort-arrow" id="dateArrow"></span></a>
+            </li>
+            <li>
+                <a class="dropdown-item" href="#" onclick="setSort('title')">العنوان <span class="sort-arrow" id="titleArrow"></span></a>
+            </li>
+            <li>
+                <a class="dropdown-item" href="#" onclick="setSort('updated_at')">اخر تعديل <span class="sort-arrow" id="updatedAtArrow"></span></a>
+            </li>
+        </ul>
+    </div>
+        
+    <form id="search-form" method="GET" action="{% url 'document_view' model_name=model_name %}" class="d-flex">
+        <div class="input-group">
+            <input type="text" name="search" class="form-control" placeholder="ابحث هنا..." id="search-input" value="{{ search_term }}" onkeyup="searchDocuments()">
+            <button class="btn btn-outline-secondary" type="submit">Search</button>
+        </div>
+        <input type="hidden" name="sort" value="{{ sort_option }}">
+        <input type="hidden" name="order" value="{{ order }}">
+    </form>
+    </div>
+</div>
+
+<table class="table-container">
+    <thead>
+        <tr>
+            <th>الرقم</th>
+            <th>التاريخ</th>
+            <th>العنوان</th>
+            {% if model_name == 'incoming' %}
+                <th>رقم الاصل</th>
+                <th>تاريخ الاصل</th>
+                <th>من</th>
+                <th>الى</th>
+            {% elif model_name == 'outgoing' %}
+                <th>من</th>
+                <th>الى</th>
+            {% elif model_name == 'internal' %}
+                <th>من</th>
+                <th>الى</th>
+            {% elif model_name == 'decree' %}
+                <th>الوزير</th>
+                <th>الحكومة</th>
+            {% endif %}
+            <th>إجراءات</th>
+        </tr>
+    </thead>
+    <tbody id="document-table-body">
+        {% for document, has_file in documents_with_files %}
+        <tr id="document-row-{{ document.id }}">
+            <td>{{ document.number }}</td>
+            <td>{{ document.date }}</td>
+            <td 
+                data-bs-toggle="tooltip" 
+                data-bs-placement="left" 
+                data-bs-html="true"
+                data-bs-custom-class="custom-tooltip"
+                data-bs-original-title="
+                    <span class='tooltip-title'>الكلمات المفتاحية:</span> 
+                    <br>{{ document.keywords }}">
+                {{ document.title }}
+            </td>
+            {% if model_name == 'incoming' %}
+                <td>{{ document.orig_number }}</td>
+                <td>{{ document.orig_date }}</td>
+                <td>{{ document.dept_from.name }}</td>
+                <td>{{ document.dept_to.name }}</td>
+            {% elif model_name == 'outgoing' %}
+                <td>{{ document.dept_from.name }}</td>
+                <td>{{ document.dept_to.name }}</td>
+            {% elif model_name == 'internal' %}
+                <td>{{ document.dept_from.name }}</td>
+                <td>{{ document.dept_to.name }}</td>
+            {% elif model_name == 'decree' %}
+                <td>{{ document.minister.name }}</td>
+                <td>{{ document.government.name }}</td>
+            {% endif %}
+            <td>
+                <div class="action-container">
+                    <a href="#" onclick="openDocumentDetails('{{ document.model_type }}', {{ document.id }})" class="action-icon" title="عرض">
+                        <img src="{% static 'img/view.png' %}" alt="View" class="icon">
+                    </a>
+                    {% if has_file %}
+                        <a href="{% url 'download_document' model_name=model_name object_id=document.id %}" class="action-icon" title="تحميل">
+                            <img src="{% static 'img/pdf.png' %}" alt="Download" class="icon">
+                        </a>
+                    {% else %}
+                        <span title="لا يوجد ملف" class="action-icon disabled">
+                            <img src="{% static 'img/nopdf.png' %}" alt="No Files" class="icon" style="opacity: 0.5;">
+                        </span>
+                    {% endif %}
+                    <a href="{% url 'edit_document' model_name=model_name document_id=document.id %}" class="action-icon" title="تعديل">
+                        <img src="{% static 'img/edit.png' %}" alt="Edit" class="icon"> 
+                    </a>
+                    <a class="action-icon" onclick="confirmDeletion('{{ model_name }}', {{ document.id }}, '{{ document.number }}')" title="حذف">
+                        <img src="{% static 'img/delete.png' %}" alt="Delete" class="icon">
+                    </a>
+                </div>
+            </td>
+        </tr>
+        {% empty %}
+            <tr>
+                <td colspan="7">لا توجد بيانات لعرضها.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Pagination Controls -->
+<nav aria-label="Page navigation">
+    <div class="pagination-container">
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a href="?page=1&sort={{ sort_option }}" class="page-link" aria-label="First">الاولى</a>
+                <a href="?page={{ page_obj.previous_page_number }}&sort={{ sort_option }}" class="page-link" aria-label="Previous">السابق</a>
+            {% endif %}
+            
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <span class="page-item active" aria-current="page">
+                        <strong class="page-link">{{ num }}</strong>
+                    </span>
+                {% else %}
+                    <a href="?page={{ num }}&sort={{ sort_option }}" class="page-link">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}&sort={{ sort_option }}" class="page-link" aria-label="Next">التالي</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}&sort={{ sort_option }}" class="page-link" aria-label="Last">الاخير</a>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">تأكيد الحذف!</h5>
+            </div>
+            <div class="modal-body">
+                <p>هل أنت متأكد من حذف الوثيقة رقم <span id="documentNumber"></span>؟</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" id="confirmDeleteButton">نعم، احذف</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

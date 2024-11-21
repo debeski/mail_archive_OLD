@@ -1,13 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 from .forms import AddOutgoingForm, AddIncomingForm, AddInternalForm, AddDecreeForm
 from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
 import mimetypes
 from django.apps import apps
-from .models import Incoming, Outgoing, Internal, Decree
-from django.core.paginator import Paginator
+from .models import Incoming, Outgoing, Internal, Decree, Department, Affiliate, Minister, Government
 import logging
 from django.utils import timezone
-from .models import Department, Affiliate, Minister, Government
 from .forms import DepartmentForm, AffiliateForm, MinisterForm, GovernmentForm
 import matplotlib
 matplotlib.use('Agg')
@@ -18,18 +17,21 @@ import os
 from django.conf import settings
 from io import BytesIO
 import zipfile
+from django.core.paginator import Paginator
+from django.db.models import Q
 
 
+logger = logging.getLogger('documents')  # Adjust to your app's name
 
-logger = logging.getLogger('myapp')  # Adjust to your app's name
 
+# Logger initiation Function:
 def log_action(action, model, object_id=None):
     timestamp = timezone.now()
     message = f"{timestamp} - Performed {action} on {model.__name__} (ID: {object_id})"
     logger.info(message)
 
-from datetime import datetime
 
+# Chart Creation Function:
 def create_charts():
     # Set font properties
     rcParams['font.family'] = 'Arial'  # Ensure you have the font installed
@@ -55,9 +57,7 @@ def create_charts():
     for i, model in enumerate(counts.keys()):
         ax.bar(index + i * bar_width, counts[model], bar_width, label=model)
 
-    ax.set_xlabel('السنوات', labelpad=10, fontsize=14, ha='right')  # Align right
-    ax.set_ylabel('عدد الوثائق', labelpad=10, fontsize=14, ha='right')  # Align right
-    ax.set_title('عدد الوثائق حسب السنة', fontsize=16, ha='right')  # Align right
+    ax.set_ylabel('count', labelpad=10, fontsize=14, ha='right')  # Align right
     ax.set_xticks(index + bar_width * 1.5)
     ax.set_xticklabels(years, ha='right')  # Align right
     ax.legend()
@@ -85,7 +85,6 @@ def create_charts():
     ax.axis('equal')  # Equal aspect ratio ensures the pie is drawn as a circle.
 
     # Set title for the pie chart
-    ax.set_title('توزيع الوثائق حسب النوع', fontsize=16, ha='right')  # Align right
 
     # Save the pie chart
     pie_chart_path = os.path.join(settings.BASE_DIR, 'documents/static/chart', 'pie_chart.png')
@@ -93,8 +92,7 @@ def create_charts():
     plt.close(fig)
 
 
-
-# Html Rendering Functions:
+# Html & Chart Rendering Functions:
 def index(request):
     create_charts()  # Generate charts before rendering the template
 
@@ -150,64 +148,7 @@ def manage_sections(request):
     })
 
 
-def incoming_mail(request):
-    documents = Incoming.objects.order_by('-id')
-    paginator = Paginator(documents, 10)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-
-    return render(request, 'incoming_mail.html', {
-        'documents': page_obj,
-        'show_add_and_search': True,  # Show both the add button and search field
-        'page_name': 'incoming_mail',  # Set page_name for this view
-        'model_name': 'incoming'.strip(),  # Pass the model name
-
-    })
-
-
-def outgoing_mail(request):
-    documents = Outgoing.objects.order_by('-id')
-    paginator = Paginator(documents, 10)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-
-    return render(request, 'outgoing_mail.html', {
-        'documents': page_obj,
-        'show_add_and_search': True,
-        'page_name': 'outgoing_mail',
-        'model_name': 'outgoing'.strip(),  # Pass the model name
-    })
-
-
-def internal_mail(request):
-    documents = Internal.objects.order_by('-id')
-    paginator = Paginator(documents, 10)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-
-    return render(request, 'internal_mail.html', {
-        'documents': page_obj,
-        'show_add_and_search': True,
-        'page_name': 'internal_mail',
-        'model_name': 'internal'.strip(),  # Pass the model name
-    })
-
-
-def decree_mail(request):
-    documents = Decree.objects.order_by('-id')
-    paginator = Paginator(documents, 10)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-
-    return render(request, 'decree_mail.html', {
-        'documents': page_obj,
-        'show_add_and_search': True,
-        'page_name': 'decree_mail',
-        'model_name': 'decree'.strip(),  # Pass the model name
-    })
-
-
-#Shared Functions:
+# Unified Functions:
 def get_model_and_form(model_name):
     model_mapping = {
         'incoming': Incoming,
@@ -223,14 +164,92 @@ def get_model_and_form(model_name):
         'decree': AddDecreeForm,
     }
 
+    arabic_name_mapping = {
+        'incoming': "بريد وارد",
+        'outgoing': "بريد صادر",
+        'internal': "مذكرة داخلية",
+        'decree': "قرار",
+    }
+
     model = model_mapping.get(model_name.lower())
     form_class = form_mapping.get(model_name.lower())
+    arabic_name = arabic_name_mapping.get(model_name.lower())
 
-    return model, form_class
+    return model, form_class, arabic_name
 
-def get_documents_with_files():
-    results = Document.objects.filter(Q(pdf_file__isnull=False) | Q(attachment__isnull=False))
-    return results
+
+def has_files(instance):
+    if isinstance(instance, Incoming):
+        has_file = hasattr(instance, 'pdf_file') and bool(instance.pdf_file)
+        print(f"Checking Incoming: {has_file} (pdf: {instance.pdf_file if has_file else 'N/A'})")
+        return has_file
+    elif isinstance(instance, Outgoing):
+        has_file = hasattr(instance, 'pdf_file') and bool(instance.pdf_file)
+        print(f"Checking Outgoing: {has_file} (pdf: {instance.pdf_file if has_file else 'N/A'})")
+        return has_file
+    elif isinstance(instance, Internal):
+        has_file = hasattr(instance, 'pdf_file') and bool(instance.pdf_file)
+        print(f"Checking Internal: {has_file} (pdf: {instance.pdf_file if has_file else 'N/A'})")
+        return has_file
+    elif isinstance(instance, Decree):
+        pdf_file_exists = hasattr(instance, 'pdf_file') and bool(instance.pdf_file)
+        attach_exists = hasattr(instance, 'attach') and bool(instance.attach)
+        has_file = pdf_file_exists or attach_exists
+        print(f"Checking Decree: {has_file} (pdf: {pdf_file_exists}, attach: {attach_exists})")
+        return has_file
+    return False
+
+
+def document_view(request, model_name):
+    model, form_class, arabic_name = get_model_and_form(model_name)
+
+    if model is None:
+        return HttpResponseNotFound('Invalid model name')
+
+    # Get all instances of the specified model
+    documents = model.objects.all()
+
+    # Handle search query
+    search_term = request.GET.get('search', '').strip()
+    if search_term:
+        documents = documents.filter(
+            Q(title__icontains=search_term) | 
+            Q(date__icontains=search_term) | 
+            Q(number__icontains=search_term) | 
+            Q(updated_at__icontains=search_term)  # Adjust fields as necessary
+        )
+
+    # Determine sort option and order
+    sort_option = request.GET.get('sort', 'updated_at')  # Default sort by updated_at
+    order = request.GET.get('order', 'desc')  # Default order is descending
+
+    if sort_option == 'date':
+        documents = documents.order_by('-date' if order == 'desc' else 'date')
+    elif sort_option == 'number':
+        documents = documents.order_by('-number' if order == 'desc' else 'number')
+    elif sort_option == 'title':
+        documents = documents.order_by('-title' if order == 'desc' else 'title')
+    elif sort_option == 'updated_at':
+        documents = documents.order_by('-updated_at' if order == 'desc' else 'updated_at')
+
+    # Pagination setup
+    paginator = Paginator(documents, 10)  # Show 10 documents per page
+    page_number = request.GET.get('page', 1)  # Default to first page
+    page_obj = paginator.get_page(page_number)
+
+    # Generate a list of tuples (document, has_files)
+    documents_with_files = [(doc, has_files(doc)) for doc in page_obj]
+
+    return render(request, 'documents.html', {
+        'documents_with_files': documents_with_files,
+        'model_name': model_name,
+        'arabic_name': arabic_name,  # Pass the Arabic name to the template
+        'page_obj': page_obj,         # Pass the page object for pagination controls
+        'sort_option': sort_option,    # Pass the current sort option to the template
+        'order': order,                # Pass the current order to the template
+        'search_term': search_term      # Pass the search term to the template
+    })
+
 
 def get_document_details(request, model_type, document_id):
     model, _ = get_model_and_form(model_type)
@@ -279,7 +298,7 @@ def get_document_details(request, model_type, document_id):
 
 
 def add_document(request, model_name, document_id=None):
-    model, form_class = get_model_and_form(model_name)
+    model, form_class, arabic_name = get_model_and_form(model_name)
     
     if model is None or form_class is None:
         return HttpResponseNotFound('Invalid model name')
@@ -289,15 +308,15 @@ def add_document(request, model_name, document_id=None):
     if request.method == 'POST':
         if form.is_valid():
             form.save()
-            return redirect(f'{model_name}_mail')  # Adjust this as needed
+            return redirect(reverse('document_view', kwargs={'model_name': model_name}))  # Use reverse to construct URL
         else:
             logger.error(f"Form errors: {form.errors}")
 
-    return render(request, f'add_edit_doc.html', {'form': form, 'model_name': model_name})
+    return render(request, f'add_edit_doc.html', {'form': form, 'model_name': model_name, 'arabic_name': arabic_name})
 
 
 def edit_document(request, model_name, document_id):
-    model, form_class = get_model_and_form(model_name)
+    model, form_class, arabic_name = get_model_and_form(model_name)
     
     if model is None or form_class is None:
         return HttpResponseNotFound('Invalid model name')
@@ -313,11 +332,15 @@ def edit_document(request, model_name, document_id):
         else:
             logger.error(f"Form errors: {form.errors}")
 
-    return render(request, f'add_{model_name}.html', {'form': form})
+    # Pass the arabic_name to the template context
+    return render(request, f'edit_{model_name}.html', {
+        'form': form,
+        'arabic_name': arabic_name,  # Pass the Arabic name to the template
+    })
 
 
 def delete_document(request, model_name, document_id):
-    model, _ = get_model_and_form(model_name)
+    model, _, _ = get_model_and_form(model_name)
     
     if model is None:
         return HttpResponseNotFound('Invalid model name')
@@ -330,10 +353,8 @@ def delete_document(request, model_name, document_id):
     return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=400)
 
 
-#download functions.
-
 def download_document(request, model_name, object_id):
-    model, _ = get_model_and_form(model_name)
+    model, _, _ = get_model_and_form(model_name)
     
     if model is None:
         return HttpResponseNotFound('Invalid model name')
@@ -405,3 +426,4 @@ def download_document(request, model_name, object_id):
 
     # Fallback if nothing matches (this should be unreachable due to the initial check)
     return HttpResponseNotFound('No document or attachment available for download.')
+

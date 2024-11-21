@@ -1,203 +1,172 @@
 /* General styles */
 * {
-    box-sizing: border-box; /* Ensure consistent box sizing */
-    font-family: 'Shabwa', sans-serif; /* Change font for Material style */
+    box-sizing: border-box;
+    font-family: 'Shabwa', sans-serif;
 }
 
 @font-face {
     font-family: 'Shabwa';
     font-weight: 400; /* Regular */
     font-style: normal;
-    src: url('../fonts/Shabwa.ttf') format('truetype'); /* Adjusted path */
+    src: url('../fonts/Shabwa.ttf') format('truetype');
 }
 
 @font-face {
     font-family: 'Shabwa';
     font-weight: 600; /* Medium */
     font-style: normal;
-    src: url('../fonts/Shabwa-Medium.ttf') format('truetype'); /* Adjusted path */
+    src: url('../fonts/Shabwa-Medium.ttf') format('truetype');
 }
 
 @font-face {
     font-family: 'Shabwa';
     font-weight: 800; /* Bold */
     font-style: normal;
-    src: url('../fonts/Shabwa-Bold.ttf') format('truetype'); /* Adjusted path */
+    src: url('../fonts/Shabwa-Bold.ttf') format('truetype');
 }
 
 @font-face {
     font-family: 'NotoSansAr';
     font-weight: 400; /* Regular */
     font-style: normal;
-    src: url('../fonts/NotoSansAr.ttf') format('truetype'); /* Adjust the path as necessary */
+    src: url('../fonts/NotoSansAr.ttf') format('truetype');
 }
 
 @font-face {
     font-family: 'NotoSansAr';
     font-weight: 700; /* Bold */
     font-style: normal;
-    src: url('../fonts/NotoSansAr-bold.ttf') format('truetype'); /* Adjust the path as necessary */
+    src: url('../fonts/NotoSansAr-bold.ttf') format('truetype');
 }
-
-/* Add more @font-face rules for other styles (italic, light, etc.) as needed */
 
 
 body {
-    direction: rtl; /* Right-to-left direction for Arabic */
-    margin: 0;
-    height: 100vh; /* Full height */
-    display: flex;
-    flex-direction: column; /* Stack elements vertically */
-    background-color: #f5f5f5; /* Light background for the body */
+    direction: rtl;
+    height: 100vh;
+    background-color: #f5f5f5;
 }
 
-/* Titlebar styles */
+
+/* Titlebar Style */
 .titlebar {
-    background-color: #014d9a; /* Azure color for title */
+    background-color: #014d9a;
     color: white;
     text-align: right;
-    padding: 5px; /* Reduced height */
-    margin: 0; /* Remove margin below the title */
-    box-shadow: none; /* Light shadow only below */
-    display: flex; /* Flex for title and button */
-    align-items: center; /* Center items vertically */
-    height: 70px; /* Fixed height for the title */
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+    display: flex;
+    align-items: center;
+    height: 7vh;
+    overflow: hidden;
 }
 
+/* Titlebar Text */
 .titlebar h1 {
-    flex: 1; /* Allow the title to take up remaining space */
-    text-align: right; /* align the title text */
+    flex: 1;
+    text-align: right;
     margin: 0 20px;
     font-size: 24px;
+    transition: font-size 0.3s;
+
 }
 
-.form-container {
-    display: flex;   
+@media (max-height: 600px) {
+    .titlebar h1 {
+        font-size: 20px;
+    }
+}    
+
+
+/* Titlebar Button */
+.menu-toggle {
+    background-color: #014d9a;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 15px;
+    transition: background-color 0.3s, transform 0.1s;
+    width: auto;
+}
+
+.menu-toggle:hover {
+    background-color: white;
+    color: black;
+}
+
+.menu-toggle:active {
+    transform: scale(0.95);
+}
+
+/* Main Layout */
+.layout {
+    display: flex;
+    flex-grow: 1;
+    padding-left: 0;
+    padding-right: 0;
+    height: 93vh;
+}
+
+/* Main Content */
+.main-content{
+    display: flex;
+    flex-direction:column;
+    flex-grow: 1;
+    margin-left: 10px;
+}
+
+/* Index Container Design */
+.index{
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
     padding: 15px;
 }
 
-form {
-    flex: 2; /* Allow the form to take up two-thirds of the space */
-    margin-right: 20px; /* Space between form and PDF preview */
-    margin-left: 20px; /* Space between form and PDF preview */
-}
-
-.form-select {
-    height: auto; /* Make the dropdown height auto */
-    width: 50%;
-    padding: 10px; /* Increase padding for better spacing */
-    font-size: 20px;
-}
-
-
-.input-group {
-    margin-bottom: 10px;
-    width: 100%; /* Full width for input groups */
-    border-radius: 2; /* No border radius for full-width effect */
-}
-
-.input-group input {
-    direction: rtl; /* Ensure all inputs are treated as RTL */
-    text-align: right; /* Align text to the right */
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ccc; /* Light gray border */
-    border-radius: 4px; /* Rounded corners */
-    font-size: 16px;
-}
-
-
-textarea {
-    width: 100%; /* Make the textarea take the full width */
-    padding: 10px; /* Add some padding for better visuals */
-    border: 1px solid #ccc; /* Standard border */
-    border-radius: 4px; /* Optional: rounded corners */
-    resize: vertical; /* Allow vertical resizing only */
-    box-sizing: border-box; /* Ensure padding is included in the width */
-}
-
-label {
-    font-size: 18px;
-    font-weight: bold; /* Make labels bold */
-    margin-top: 5px; /* Space between label and input */
-    margin-bottom: 5px; /* Space between label and input */
-    display: block; /* Ensure each label is on a new line */
-}
-
-
-.upload-label {
-    display: inline-block;
-    padding: 6px 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: box-shadow 0.3s, transform 0.05s;
-}
-
-.upload-label:hover {
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Stronger shadow */
-}
-
-.upload-label:active {
-    transform: scale(0.95); /* Scale down slightly to simulate a press */
-    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1); /* Reduce shadow on press */
-}
-
-
-#file-name {
-    margin-right: 10px;
-    font-size: 14px;
-    font-style: italic;
-    font-stretch: semi-expanded;
-}
-
-.container {
-    direction: rtl; /* Ensures right-to-left layout */
-}
-
-.layout {
-    display: flex; /* Keep sidebar and table side by side */
-    flex-grow: 1; /* Allow layout to grow */
-}
-
-
-/* Sidebar styles */
+/* Sidebar Design */
 .sidebar {
-    background-color: white; /* Match title background (azure) */
-    color: black; /* Text color */
-    width: 240px; /* Fixed width for navigation pane */
-    margin: 0; /* Remove space from left */
-    padding: 0; /* Remove padding */
-    box-shadow: none; /* Shadow for depth */
-    transition: width 0.3s; /* Smooth transition for width */
-    border-top: none; /* Ensure there's no border at the top */
+    background-color: white;
+    color: black;
+    width: 240px;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+    transition: width 0.5s;
+    border-top: none;
+    overflow: hidden;
 }
 
 .sidebar.collapsed {
-    width: 0; /* Collapse width */
-    overflow: hidden; /* Hide overflow */
+    width: 0;
+    overflow: hidden;
 }
 
 .sidebar button {
     font-size: 22px;
     font-weight: 600;
-    padding: 30px 20px;
+    padding: 30px 10px;
     text-align: right;
-    background-color: white; /* Azure button color */
+    background-color: white;
     color: black;
     border: none;
-    cursor: pointer; /* Pointer cursor on hover */
-    transition: background-color 0.3s, font-size 0.3s; /* Smooth transition */
-    width: 100%; /* Full width for the button */
+    cursor: pointer;
+    transition: background-color 0.3s, font-size 0.3s;
+    width: 100%;
+    white-space: nowrap; /* Prevent text wrapping */
 }
 
+/* Sidebar Icons */
 .dbutton-icon {
-    width: 27px; /* Adjust size as needed */
-    height: auto; /* Maintain aspect ratio */
-    margin-right: 0px; /* Space between image and text */
-    margin-left: 4px; /* Space between image and text */
-    vertical-align: middle; /* Aligns the icon with the text */
+    width: 27px;
+    height: auto;
+    margin-right: 0px;
+    margin-left: 4px;
+    vertical-align: middle;
+    transition: margin 0.2s, width 0.2s;
 }
+
 .sidebar button:hover {
     font-size: 24px;
     transition: font-size 0.3s;
@@ -205,128 +174,150 @@ label {
 }
 
 .sidebar button.active {
-    background-color: #f5f5f5; /* Darker color on click */
+    background-color: #f5f5f5;
     transition: background-color 0.2s, font-size 0.3s;
     font-weight: bold;
     font-size: 24px;
-    cursor:default;
+    pointer-events: none; /* Disables all mouse interactions */
 }
 
 
-/* Main content styles */
-.main-content {
-    flex-grow: 1; /* Allow main content to grow */
+@media (max-width: 1280px) {
+    .sidebar button {
+        font-size: 20px; /* Reduce font size */
+        overflow: hidden;
+    }
+    .sidebar button:hover {
+        font-size: 21px; /* Reduce font size */
+    }
+    .sidebar button.active {
+        font-size: 21px; /* Reduce font size */
+        overflow: hidden;
+    }
+    .dbutton-icon {
+        width: 24px;
+        height: auto;
+        margin-left: 0px;
+    }
+}    
+
+@media (max-width: 1110px) {
+    .sidebar {
+        width: 0; /* Start collapsed on small screens */
+        overflow: hidden;
+    }
 }
 
-/* Header styles */
 
+/* Form Design */
+form {
+    flex: 1;
+    margin-right: 20px;
+    margin-left: 20px;
+}
+
+label {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 3px;
+    margin-top: 2px;
+
+}
+
+
+/* Header Container */
 .header {
-    display: flex; /* Use flexbox for horizontal alignment */
-    align-items: center; /* Center items vertically */
-    margin-bottom: none; /* Space below the header */
+    display: flex;
+    margin-bottom: none;
 }
 
-.menu-toggle {
-    background-color: #014d9a; /* Button color */
-    color: white; /* Text color */
-    padding: 10px 15px; /* Padding for the button */
-    border: none; /* Remove default border */
-    border-radius: 4px; /* Rounded corners */
-    cursor: pointer; /* Pointer cursor */
-    margin-right: 15px; /* Space between button and the next element */
-    transition: background-color 0.3s, transform 0.1s; /* Smooth hover transition */
-    width: auto; /* Set width to auto to prevent stretching */
+/* Tooltip Design */
+.custom-tooltip {
+    color: #ffffff;
+    border-radius: 0.5rem;
+    font-size: 15px;
+    padding-top: 0px;
 }
 
-.menu-toggle:hover {
-    background-color: white; /* Darker blue on hover */
-    color: black;
+.tooltip-title {
+    font-weight: bold;
+    font-size: 16px;
+    color: rgb(58, 58, 58);
+    background-color: #f5f5f5;
+    padding: 2px 5px;
+    border-radius: 0.3rem;
+    border: 1px solid black;
 }
 
-.menu-toggle:active {
-    transform: scale(0.95); /* Scale down slightly to simulate a press */
-}
-
+/* Add Sort & Search Container */
 .add-search-container {
-    display: flex; /* Use flexbox for alignment */
-    align-items: center; /* Center items vertically */
-    margin-bottom: 0px; /* Space below the header */
-    width: auto; /* Allow width to adjust based on content */
-    margin: 20px 20px; /* Space between buttons */
+    display: flex;
+    align-items: center;
+    margin-bottom: 0px;
+    width: auto;
+    margin: 20px 20px;
+    flex-grow: 1;
+    justify-content: space-evenly;
+
 }
 
-.add-button {
-    background-color: #014d9a; /* Button color */
-    color: white; /* Text color */
-    padding: 10px 15px; /* Padding for the button */
-    border-radius: 4px; /* Rounded corners */
-    cursor: pointer; /* Pointer cursor */
-    transition: background-color 0.3s; /* Smooth hover transition */
-    width: auto; /* Set width to auto to prevent stretching */
-    min-width: 100px; /* Minimum width to maintain size */
+/* Sort Button */
+.btn-info{
+    background-color: #236db7;
+    border-color: #ffffff;
+    color: white;
+    margin-left: 15px;
+    transition: box-shadow 0.3s, background-color 0.3s;
+}
+
+.btn-info:hover {
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.2); /* Stronger shadow */
+    background-color: #014d9a;
+    color: white;
+
+}
+
+/* Sort Button Menu */
+.dropdown-toggle:hover{
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.2); /* Stronger shadow */
+    background-color: #5a5a5a;
+}
+
+.dropdown-menu{
+    position: relative; /* Change to absolute for precise positioning */
+}
+
+/* Search Input */
+#search-form{
     transition: box-shadow 0.3s; /* Smooth transition */
-    font-size: 18px; /* Font size */
 }
 
-.add-button:hover {
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Stronger shadow */
+#search-form:hover {
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.2); /* Stronger shadow */
 }
 
-.add-button:active {
-    transform: scale(0.95); /* Scale down slightly to simulate a press */
-    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1); /* Reduce shadow on press */
-}
-
-.search-container {
-    flex-grow: 1; /* Allow search input to grow */
-    transition: box-shadow 0.3s; /* Smooth transition */
-    margin-right: 15px;
-}
-.search-container:hover {
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Stronger shadow */
-}
-.search-container input {
-    padding: 10px; /* Padding for input */
-    border: 1px solid #ccc; /* Light gray border */
-    border-radius: 4px; /* Rounded corners */
-    width: 100%; /* Full width */
-    font-size: 16px; /* Font size for readability */
-    transition: border-color 0.3s; /* Smooth transition for border color */
-}
-
-.search-container input:focus {
-    border-color: #007FFF; /* Change border color when focused */
-    outline: none; /* Remove default outline */
-}
-
+/* Table Container Design */
 .table-container {
-    flex-grow: 0; /* Allow the table  to grow */
-    margin: 3px 20px; /* Combined margins for simplicity */
+    margin: 5px 15px; /* Combined margins for simplicity */
     border-radius: 0px; /* Rounded corners */
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow */
     overflow: hidden; /* Ensure no overflow */
-}
-
-/* Table styles */
-table {
-    width: 100%; /* Ensure the table takes full width */
     border-collapse: collapse; /* Remove spacing between cells */
 }
 
-/* Header styles */
+/* Table Header Style */
 th {
     background-color: #f9f9f9; /* Light grey background for header */
     color: #333; /* Dark text color */
     font-weight: 700; /* Bold header text */
     text-align: right; /* Align header text to the right */
-    padding: 10px; /* Padding for header cells */
     position: relative; /* For pseudo-elements if needed */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
     border-bottom: 1px solid #e0e0e0; /* Add border to the bottom of the header */
     font-size: 20px;
 }
 
-/* Data cell styles */
+/* Data Cell Style */
 th, td {
     padding: 10px 15px; /* Increased padding for cells */
 }
@@ -345,18 +336,18 @@ tr:hover {
     background-color: #f1f1f1; /* Slightly darker grey on hover */
 }
 
-/* Last column adjustments */
+/* Action column adjustments */
 td:last-child, th:last-child {
-    width: auto; /* Allow flexibility */
-    min-width: 150px; /* Allow flexibility */
+    width: 200px; /* Allow flexibility */
+    min-width: 110px; /* Allow flexibility */
     padding: 4px 4px; /* Ensure no extra padding */
 }
 
-/* Cell text styles */
+/* Cell Text Style */
 td {
     text-align: right; /* Align text to the right for Arabic */
     color: #666; /* Slightly lighter text for body */
-    max-width: 200px; /* Set a max width for the cells */
+    max-width: 300px; /* Set a max width for the cells */
     overflow: hidden; /* Hide overflow */
     text-overflow: ellipsis; /* Show ellipsis (...) */
     white-space: nowrap; /* Prevent wrapping */
@@ -365,13 +356,7 @@ td {
     font-weight: 600;
 }
 
-/* Add ellipsis for long text */
-td.long-text {
-    overflow: hidden; /* Hide overflow */
-    text-overflow: ellipsis; /* Show ellipsis */
-    white-space: nowrap; /* Prevent wrapping */
-}
-
+/* Action Column Container */
 .action-container {
     display: flex; /* Use flexbox for horizontal layout */
     justify-content: space-evenly; /* Space icons evenly */
@@ -379,7 +364,7 @@ td.long-text {
     margin: 0; /* Remove any default margin */
 }
 
-/* Action icon styles */
+/* Action Icon Styles */
 .action-icon {
     width: auto; /* Set a fixed width for the icons */
     height: 40px; /* Set a fixed height for the icons */
@@ -393,19 +378,6 @@ td.long-text {
     background-color: inherit; /* Inherit background color from parent */
 }
 
-.action-icon img {
-    width: 80%; /* Scale the image to the width of the  */
-    height: 100%; /* Scale the image to the height of the  */
-    object-fit: contain; /* Ensures the image maintains its aspect ratio */
-    display: block; /* Prevent any inline spacing */
-    transition: opacity 0.3s ease; /* Smooth transition */
-    opacity: 60%;
-}
-
-.action-icon img:hover {
-    opacity: 1.2; /* Increase opacity on hover */
-}
-
 .action-icon:hover {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Stronger shadow */
 }
@@ -415,42 +387,29 @@ td.long-text {
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1); /* Reduce shadow on press */
 }
 
-
-/* Pagination styles */
-.pagination {
-    display: flex; /* Use flexbox for layout */
-    justify-content: center; /* Center the pagination */
-    margin: 20px 0; /* Space around the paginator */
+/* Action Image Styles */
+.action-icon img {
+    width: 80%; /* Scale the image to the width of the  */
+    height: 100%; /* Scale the image to the height of the  */
+    object-fit: contain; /* Ensures the image maintains its aspect ratio */
+    display: block; /* Prevent any inline spacing */
+    transition: opacity 0.3s ease, width 0.5s ease; /* Smooth transition */
+    opacity: 60%;
 }
 
-.step-links {
-    display: flex; /* Flex for spacing */
-    align-items: center; /* Center items vertically */
-}
-
-.pagination-button {
-    background-color: #007FFF; /* Material purple */
-    color: white; /* Text color */
-    padding: 10px 15px; /* Padding */
-    margin: 0 5px; /* Space between buttons */
-    border: none; /* Remove border */
-    border-radius: 4px; /* Rounded corners */
-    cursor: pointer; /* Pointer cursor */
-    transition: background-color 0.3s; /* Smooth transition */
-    text-decoration: none; /* Remove underline */
-}
-
-.pagination-button:hover {
-    background-color: #3700b3; /* Darker purple on hover */
-}
-
-.current {
-    margin: 5px 10px; /* Space around current page text */
-    font-weight: bold; /* Bold text for current page */
-    color: #333; /* Darker color for better visibility */
+.action-icon img:hover {
+    width: 85%; /* Scale the image to the width of the  */
+    opacity: 1.2; /* Increase opacity on hover */
 }
 
 .disabled {
     opacity: 0.5; /* Make it appear faded */
-    cursor: not-allowed; /* Change cursor to indicate it's not clickable */
+    pointer-events: none; /* Disables all mouse interactions */
+}
+
+/* Pagination styles */
+.pagination {
+    display: flex;
+    justify-content:center;
+    margin: 20px 0;
 }

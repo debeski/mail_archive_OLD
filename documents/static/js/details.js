@@ -18,6 +18,15 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// initialize tooltips:
+document.addEventListener('DOMContentLoaded', function () {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+        new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+});
+
+
 // Print the PDF document
 function printDocument() {
     if (pdfDoc && pdfDoc.numPages > 0) {
@@ -149,4 +158,53 @@ function upFileName() {
     }
 }
 
+
+let currentSort = 'updated_at';  // Set default sort to updated_at
+let currentOrder = 'desc';        // Default order
+
+function setSort(sortOption) {
+    // Check if the option clicked is the current sort option
+    if (currentSort === sortOption) {
+        // Toggle order
+        currentOrder = currentOrder === 'desc' ? 'asc' : 'desc';
+    } else {
+        // Set new sort option and default to descending
+        currentSort = sortOption;
+        currentOrder = 'desc';
+    }
+
+    // Update the indicator for the dropdown
+    updateSortIndicators();
+
+    // Redirect to the sorted page
+    window.location.href = `?sort=${currentSort}&order=${currentOrder}`;
+}
+
+function updateSortIndicators() {
+    // Reset all arrows
+    document.getElementById('dateArrow').innerHTML = '';
+    document.getElementById('numberArrow').innerHTML = '';
+    document.getElementById('titleArrow').innerHTML = '';
+    document.getElementById('updatedAtArrow').innerHTML = '';
+
+    // Set arrow direction based on current sort
+    const arrow = currentOrder === 'desc' ? '▼' : '▲';
+    if (currentSort === 'date') {
+        document.getElementById('dateArrow').innerHTML = arrow;
+    } else if (currentSort === 'number') {
+        document.getElementById('numberArrow').innerHTML = arrow;
+    } else if (currentSort === 'title') {
+        document.getElementById('titleArrow').innerHTML = arrow;
+    } else if (currentSort === 'updated_at') {
+        document.getElementById('updatedAtArrow').innerHTML = arrow;
+    }
+}
+
+// Initialize the sort indicators based on the current URL parameters
+document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    currentSort = urlParams.get('sort') || 'updated_at'; // Default to updated_at
+    currentOrder = urlParams.get('order') || 'desc';
+    updateSortIndicators();
+});
 

@@ -25,71 +25,43 @@
 
     <div class="container-fluid layout">
         <div class="sidebar" id="sidebar">
-            <a href="{% url 'outgoing_mail' %}">
-                <button class="{% if request.path == '/outgoing_mail/' or request.path == '/add/outgoing/' %}active{% endif %}">
+            <a href="{% url 'document_view' model_name='outgoing' %}">
+                <button class="{% if request.path == '/outgoing_mail/' or request.path == '/add/outgoing/' or '/edit/outgoing/' in request.path  %}active{% endif %}">
                     <img src="{% static 'img/outgoing-mail.png' %}" alt="Outgoing Mail" class="dbutton-icon"> 
                     البريد الصادر
                 </button>
             </a>
-            <a href="{% url 'incoming_mail' %}">
-                <button class="{% if request.path == '/incoming_mail/' or request.path == '/add/incoming/' %}active{% endif %}">
+            <a href="{% url 'document_view' model_name='incoming' %}">
+                <button class="{% if request.path == '/incoming_mail/' or request.path == '/add/incoming/' or '/edit/incoming/' in request.path %}active{% endif %}">
                     <img src="{% static 'img/incoming-mail.png' %}" alt="Incoming Mail" class="dbutton-icon"> 
                     البريد الوارد
                 </button>
             </a>
-            <a href="{% url 'internal_mail' %}">
-                <button class="{% if request.path == '/internal_mail/' or request.path == '/add/internal/' %}active{% endif %}">
+            <a href="{% url 'document_view' model_name='internal' %}">
+                <button class="{% if request.path == '/internal_mail/' or request.path == '/add/internal/' or '/edit/internal/' in request.path  %}active{% endif %}">
                     <img src="{% static 'img/internal-mail.png' %}" alt="Internal Mail" class="dbutton-icon"> 
                     المذكرات الداخلية
                 </button>
             </a>
-            <a href="{% url 'decree_mail' %}">
-                <button class="{% if request.path == '/decree_mail/' or request.path == '/add/decree/' %}active{% endif %}">
+            <a href="{% url 'document_view' model_name='decree' %}">
+                <button class="{% if request.path == '/decree_mail/' or request.path == '/add/decree/' or '/edit/decree/' in request.path  %}active{% endif %}">
                     <img src="{% static 'img/decrees.png' %}" alt="Decree Mail" class="dbutton-icon"> 
                     القرارات
                 </button>
             </a>
             <a href="{% url 'manage_sections' %}">
-                <button class="{% if request.path == '/manage_sections/' %}active{% endif %}">
+                <button class="{% if request.path == '/manage-sections/' %}active{% endif %}">
                     <img src="{% static 'img/settings.png' %}" alt="Settings" class="dbutton-icon"> 
                     الإعدادات
                 </button>
             </a>
         </div>
         <div class="main-content">
-            <div class="header">
-                {% if show_add_and_search %}
-                <div class="add-search-container">
-                    <button class="add-button" onclick="location.href='{% url 'add_document' model_name=model_name %}'">+ إضــافــة</button>
-                    <div class="search-container">
-                        <input type="text" placeholder="ابحث هنا..." id="search-input" onkeyup="searchDocuments()">
-                    </div>
-                </div>
-            {% endif %}
-            </div>
-            <div class="content">
                 {% block content %}{% endblock %}
             </div>
         </div>
     </div>
-    <!-- Delete Confirmation Modal -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deleteModalLabel">تأكيد الحذف!</h5>
-                </div>
-                <div class="modal-body">
-                    <p>هل أنت متأكد من حذف الوثيقة رقم <span id="documentNumber"></span>؟</p>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-danger" id="confirmDeleteButton">نعم، احذف</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    
     <script>
         function toggleMenu() {
             const sidebar = document.getElementById('sidebar');
