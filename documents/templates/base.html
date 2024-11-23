@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>الأرشيف - {% block title %}{% endblock %}</title>
     {% load static %}
+    {% load custom_filters %}
     <!-- Include Bootstrap CSS -->
     <link href="{% static 'css/bootstrap.rtl.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/flatpickr.css' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <meta name="csrf-token" content="{{ csrf_token }}">
     <!-- Include PDF.js Library -->
@@ -49,8 +51,8 @@
                     القرارات
                 </button>
             </a>
-            <a href="{% url 'manage_sections' %}">
-                <button class="{% if request.path == '/manage-sections/' %}active{% endif %}">
+            <a href="{% url 'manage_sections' model_name='departments' %}">
+                <button class="{% if '/manage-sections/' in request.path %}active{% endif %}">
                     <img src="{% static 'img/settings.png' %}" alt="Settings" class="dbutton-icon"> 
                     الإعدادات
                 </button>
@@ -70,7 +72,8 @@
     </script>
 
     <!-- Include Pdf.js, Bootstrap JS and dependencies -->
-    <!-- <script src="{% static 'js/jquery-3.7.1.min.js' %}"></script> -->
+    <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.js"></script>
+    <script src="{% static 'js/flatpickr.js' %}"></script>
     <script src="{% static 'js/bootstrap.bundle.js' %}"></script>
     <script src="{% static 'js/details.js' %}"></script>
     <script src="{% static 'js/pdf.js' %}"></script>

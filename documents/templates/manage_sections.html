@@ -1,79 +1,91 @@
 {% extends 'base.html' %}
 
+{% block title %}ادارة الاقسام{% endblock %}
+
+{% load static %}
+{% load custom_filters %}
+
+{% block header %} - ادارة الاقسام{% endblock %}
+
 {% block content %}
 <div class="container">
-    <h2>Manage Sections</h2>
     <ul class="nav nav-tabs" id="myTab" role="tablist">
+        {% for model in models %}
         <li class="nav-item">
-            <a class="nav-link active" id="departments-tab" data-toggle="tab" href="#departments" role="tab">Departments</a>
+            <a class="nav-link {% if current_tab == model.name %}active{% endif %}" 
+               id="{{ model.name }}-tab" 
+               href="?tab={{ model.name }}&{{ model.name }}_page={{ model.name }}_page" 
+               role="tab">{{ arabic_names|get_item:model.name }}</a>  <!-- Use get_item filter -->
         </li>
-        <li class="nav-item">
-            <a class="nav-link" id="affiliates-tab" data-toggle="tab" href="#affiliates" role="tab">Affiliates</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" id="ministers-tab" data-toggle="tab" href="#ministers" role="tab">Ministers</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" id="governments-tab" data-toggle="tab" href="#governments" role="tab">Governments</a>
-        </li>
+        {% endfor %}
     </ul>
-
+    
     <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade show active" id="departments" role="tabpanel">
-            <h3>Departments</h3>
-            <form method="post">
+        {% for model in models %}
+        <div class="tab-pane fade {% if current_tab == model.name %}show active{% endif %}" id="{{ model.name }}" role="tabpanel">
+            <form method="post" class="mb-3">
                 {% csrf_token %}
-                {{ department_form.as_p }}
-                <button type="submit" name="department" class="btn btn-primary">Add Department</button>
+                {{ form.as_p }}  <!-- Use the combined form for adding/editing -->
+                <button type="submit" class="btn btn-primary">إضافة جديد</button>
             </form>
-            <ul>
-                {% for department in departments %}
-                    <li>{{ department.id }}: {{ department.name }}</li>
-                {% endfor %}
-            </ul>
-        </div>
+            <table class="table-container">
+                <thead>
+                    <tr>
+                        <th>ر.ت</th>
+                        <th>اسم {{ arabic_names|get_item:model.name }}</th>  <!-- Use get_item filter -->
+                        <th>الاجراءات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in page_obj %}
+                    <tr>
+                        <td>{{ item.id }}</td>
+                        <td>{{ item.name }}</td>
+                        <td>
+                            <a href="?tab={{ model.name }}&id={{ item.id }}" class="btn btn-sm btn-warning">Edit</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+    
+            <!-- Pagination Controls -->
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a href="?{{ current_tab }}_page=1&tab={{ current_tab }}" class="page-link" aria-label="First">الاولى</a>
+                        </li>
+                        <li class="page-item">
+                            <a href="?{{ current_tab }}_page={{ page_obj.previous_page_number }}&tab={{ current_tab }}" class="page-link" aria-label="Previous">السابق</a>
+                        </li>
+                    {% endif %}
 
-        <div class="tab-pane fade" id="affiliates" role="tabpanel">
-            <h3>Affiliates</h3>
-            <form method="post">
-                {% csrf_token %}
-                {{ affiliate_form.as_p }}
-                <button type="submit" name="affiliate" class="btn btn-primary">Add Affiliate</button>
-            </form>
-            <ul>
-                {% for affiliate in affiliates %}
-                    <li>{{ affiliate.id }}: {{ affiliate.name }}</li>
-                {% endfor %}
-            </ul>
-        </div>
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                            <li class="page-item active" aria-current="page">
+                                <span class="page-link">{{ num }}</span>
+                            </li>
+                        {% else %}
+                            <li class="page-item">
+                                <a href="?{{ current_tab }}_page={{ num }}&tab={{ current_tab }}" class="page-link">{{ num }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
 
-        <div class="tab-pane fade" id="ministers" role="tabpanel">
-            <h3>Ministers</h3>
-            <form method="post">
-                {% csrf_token %}
-                {{ minister_form.as_p }}
-                <button type="submit" name="minister" class="btn btn-primary">Add Minister</button>
-            </form>
-            <ul>
-                {% for minister in ministers %}
-                    <li>{{ minister.id }}: {{ minister.name }}</li>
-                {% endfor %}
-            </ul>
-        </div>
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a href="?{{ current_tab }}_page={{ page_obj.next_page_number }}&tab={{ current_tab }}" class="page-link" aria-label="Next">التالي</a>
+                        </li>
+                        <li class="page-item">
+                            <a href="?{{ current_tab }}_page={{ page_obj.paginator.num_pages }}&tab={{ current_tab }}" class="page-link" aria-label="Last">الاخير</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>  <!-- Close the tab-pane div -->
+        {% endfor %}
+    </div>  <!-- Close the tab-content div -->
+</div>  <!-- Close the container div -->
 
-        <div class="tab-pane fade" id="governments" role="tabpanel">
-            <h3>Governments</h3>
-            <form method="post">
-                {% csrf_token %}
-                {{ government_form.as_p }}
-                <button type="submit" name="government" class="btn btn-primary">Add Government</button>
-            </form>
-            <ul>
-                {% for government in governments %}
-                    <li>{{ government.id }}: {{ government.name }}</li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
-</div>
 {% endblock %}

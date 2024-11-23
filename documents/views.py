@@ -21,7 +21,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 
 
-logger = logging.getLogger('documents')  # Adjust to your app's name
+logger = logging.getLogger('documents')
 
 
 # Logger initiation Function:
@@ -29,6 +29,54 @@ def log_action(action, model, object_id=None):
     timestamp = timezone.now()
     message = f"{timestamp} - Performed {action} on {model.__name__} (ID: {object_id})"
     logger.info(message)
+
+
+# Function to map mpdels, forms, and arabic names:
+def get_model_and_form(model_name):
+    model_mapping = {
+        'incoming': Incoming,
+        'outgoing': Outgoing,
+        'internal': Internal,
+        'decree': Decree,
+
+        'departments': Department,
+        'affiliates': Affiliate,
+        'governments': Government,
+        'ministers': Minister,
+    }
+
+    form_mapping = {
+        'incoming': AddIncomingForm,
+        'outgoing': AddOutgoingForm,
+        'internal': AddInternalForm,
+        'decree': AddDecreeForm,
+
+        'departments': DepartmentForm,
+        'affiliates': AffiliateForm,
+        'governments': GovernmentForm,
+        'ministers': MinisterForm,
+    }
+
+    arabic_name_mapping = {
+        'incoming': "بريد وارد",
+        'outgoing': "بريد صادر",
+        'internal': "مذكرة داخلية",
+        'decree': "قرار",
+
+        'departments': "الاقسام",
+        'affiliates': "الجهات",
+        'governments': "الحكومة",
+        'ministers': "الوزير",
+    }
+
+    model = model_mapping.get(model_name.lower())
+    form_class = form_mapping.get(model_name.lower())
+    arabic_name = arabic_name_mapping.get(model_name.lower())
+
+    arabic_names = arabic_name_mapping  # Add this to pass the full dictionary for pluralization
+
+
+    return model, form_class, arabic_name, arabic_names
 
 
 # Chart Creation Function:
@@ -108,76 +156,51 @@ def index(request):
     })
 
 
-def manage_sections(request):
-    departments = Department.objects.all()
-    affiliates = Affiliate.objects.all()
-    ministers = Minister.objects.all()
-    governments = Government.objects.all()
+# Sections Management:
+def manage_sections(request, model_name):
+    current_tab = request.GET.get('tab', model_name)
 
-    if request.method == 'POST':
-        if 'department' in request.POST:
-            form = DepartmentForm(request.POST)
-            if form.is_valid():
-                form.save()
-                return redirect('manage_sections')
-        elif 'affiliate' in request.POST:
-            form = AffiliateForm(request.POST)
-            if form.is_valid():
-                form.save()
-                return redirect('manage_sections')
-        elif 'minister' in request.POST:
-            form = MinisterForm(request.POST)
-            if form.is_valid():
-                form.save()
-                return redirect('manage_sections')
-        elif 'government' in request.POST:
-            form = GovernmentForm(request.POST)
-            if form.is_valid():
-                form.save()
-                return redirect('manage_sections')
+    # Fetch model, form class, arabic name, and arabic names
+    model, form_class, arabic_name, arabic_names = get_model_and_form(current_tab)
+
+    # Wrap arabic_name in a dictionary if it’s a string
+    if isinstance(arabic_name, str):
+        arabic_name = {current_tab: arabic_name}
+
+    # Handle document editing
+    document_id = request.GET.get('id')
+    form = form_class(request.POST or None, instance=get_object_or_404(model, id=document_id) if document_id else None)
+
+    # Handle form submission
+    if request.method == 'POST' and form.is_valid():
+        form.save()
+        return redirect('manage_sections', model_name=current_tab)
+
+    # Fetch items for the current tab's model with pagination
+    items = model.objects.all()
+    paginator = Paginator(items, 10)
+    page_number = request.GET.get(f'{current_tab}_page', 1)  # Use current_tab for pagination
+    page_obj = paginator.get_page(page_number)
 
     return render(request, 'manage_sections.html', {
-        'departments': departments,
-        'affiliates': affiliates,
-        'ministers': ministers,
-        'governments': governments,
-        'department_form': DepartmentForm(),
-        'affiliate_form': AffiliateForm(),
-        'minister_form': MinisterForm(),
-        'government_form': GovernmentForm(),
+        'models': [
+            {'name': 'departments', 'form': DepartmentForm(), 'items': Department.objects.all()},
+            {'name': 'affiliates', 'form': AffiliateForm(), 'items': Affiliate.objects.all()},
+            {'name': 'ministers', 'form': MinisterForm(), 'items': Minister.objects.all()},
+            {'name': 'governments', 'form': GovernmentForm(), 'items': Government.objects.all()},
+        ],
+        'current_tab': current_tab,
+        'form': form,
+        'page_obj': page_obj,
+        'request': request,
+        'arabic_name': arabic_name,
+        'arabic_names': arabic_names,  # Ensure this is a dictionary
+        f'{current_tab}_page': page_number,  # Use current_tab for pagination
+        'arabic_name_value': arabic_name.get(current_tab, 'اسم غير معروف')
     })
 
 
-# Unified Functions:
-def get_model_and_form(model_name):
-    model_mapping = {
-        'incoming': Incoming,
-        'outgoing': Outgoing,
-        'internal': Internal,
-        'decree': Decree,
-    }
-
-    form_mapping = {
-        'incoming': AddIncomingForm,
-        'outgoing': AddOutgoingForm,
-        'internal': AddInternalForm,
-        'decree': AddDecreeForm,
-    }
-
-    arabic_name_mapping = {
-        'incoming': "بريد وارد",
-        'outgoing': "بريد صادر",
-        'internal': "مذكرة داخلية",
-        'decree': "قرار",
-    }
-
-    model = model_mapping.get(model_name.lower())
-    form_class = form_mapping.get(model_name.lower())
-    arabic_name = arabic_name_mapping.get(model_name.lower())
-
-    return model, form_class, arabic_name
-
-
+# Check for File Existence:
 def has_files(instance):
     if isinstance(instance, Incoming):
         has_file = hasattr(instance, 'pdf_file') and bool(instance.pdf_file)
@@ -199,9 +222,9 @@ def has_files(instance):
         return has_file
     return False
 
-
+# General Html Mail Rendering Function:
 def document_view(request, model_name):
-    model, form_class, arabic_name = get_model_and_form(model_name)
+    model, _, arabic_name, _ = get_model_and_form(model_name)
 
     if model is None:
         return HttpResponseNotFound('Invalid model name')
@@ -251,59 +274,18 @@ def document_view(request, model_name):
     })
 
 
-def get_document_details(request, model_type, document_id):
-    model, _ = get_model_and_form(model_type)
-    
-    if model is None:
-        return JsonResponse({'error': 'Invalid model type'}, status=400)
-
-    document = get_object_or_404(model, id=document_id)
-
-    # Prepare the response data based on the model type
-    data = {
-        'id': document.id,
-        'number': document.number,
-        'date': document.date.strftime('%Y-%m-%d') if document.date else None,
-        'title': document.title,
-        'keywords': document.keywords,
-        'pdf_file': document.pdf_file.url if document.pdf_file else None,
-    }
-
-    # Add specific fields based on the model
-    if isinstance(document, Incoming):
-        data.update({
-            'orig_number': document.orig_number,
-            'orig_date': document.orig_date.strftime('%Y-%m-%d') if document.orig_date else None,
-            'dept_from': document.dept_from.name,
-            'dept_to': document.dept_to.name,
-        })
-    elif isinstance(document, Outgoing):
-        data.update({
-            'dept_from': document.dept_from.name,
-            'dept_to': document.dept_to.name,
-        })
-    elif isinstance(document, Internal):
-        data.update({
-            'dept_from': document.dept_from.name,
-            'dept_to': document.dept_to.name,
-        })
-    elif isinstance(document, Decree):
-        data.update({
-            'minister': document.minister.name,
-            'government': document.government.name,
-            'attach_file': document.attach.url if document.attach else None,
-        })
-
-    return JsonResponse(data)
-
-
 def add_document(request, model_name, document_id=None):
-    model, form_class, arabic_name = get_model_and_form(model_name)
+    model, form_class, arabic_name, _ = get_model_and_form(model_name)
     
     if model is None or form_class is None:
         return HttpResponseNotFound('Invalid model name')
 
-    form = form_class(request.POST or None, request.FILES or None, instance=document_id and get_object_or_404(model, id=document_id))
+    if document_id:
+        instance = get_object_or_404(model, id=document_id)  # Editing existing document
+    else:
+        instance = None  # New document
+
+    form = form_class(request.POST or None, request.FILES or None, instance=instance)
 
     if request.method == 'POST':
         if form.is_valid():
@@ -312,35 +294,89 @@ def add_document(request, model_name, document_id=None):
         else:
             logger.error(f"Form errors: {form.errors}")
 
-    return render(request, f'add_edit_doc.html', {'form': form, 'model_name': model_name, 'arabic_name': arabic_name})
-
-
-def edit_document(request, model_name, document_id):
-    model, form_class, arabic_name = get_model_and_form(model_name)
-    
-    if model is None or form_class is None:
-        return HttpResponseNotFound('Invalid model name')
-
-    document = get_object_or_404(model, id=document_id)
-    form = form_class(request.POST or None, request.FILES or None, instance=document)
-
-    if request.method == 'POST':
-        if form.is_valid():
-            form.save()
-            logger.info(f"Document {document_id} updated successfully.")
-            return redirect(f'{model_name}_mail')  # Redirect based on model
-        else:
-            logger.error(f"Form errors: {form.errors}")
-
-    # Pass the arabic_name to the template context
-    return render(request, f'edit_{model_name}.html', {
-        'form': form,
-        'arabic_name': arabic_name,  # Pass the Arabic name to the template
+    return render(request, f'add_edit_doc.html', {
+        'form': form, 
+        'model_name': model_name, 
+        'arabic_name': arabic_name,
     })
 
 
+
+
+# def add_document(request, model_name, document_id=None):
+#     model, form_class, arabic_name = get_model_and_form(model_name)
+    
+#     if model is None or form_class is None:
+#         return HttpResponseNotFound('Invalid model name')
+    
+#     # Fetch all sections for datalists
+#     departments = Department.objects.all()
+#     affiliates = Affiliate.objects.all()
+#     governments = Government.objects.all()
+#     ministers = Minister.objects.all()
+
+#     if document_id:
+#         instance = get_object_or_404(model, id=document_id)
+#     else:
+#         instance = None
+
+#     form = form_class(request.POST or None, request.FILES or None, instance=instance)
+
+#     if request.method == 'POST':
+#         if form.is_valid():
+#             form.save()
+#             return redirect(reverse('document_view', kwargs={'model_name': model_name}))  # Use reverse to construct URL
+#         else:
+#             logger.error(f"Form errors: {form.errors}")
+
+#     return render(request, f'add_edit_doc.html', {
+#         'form': form, 
+#         'model_name': model_name, 
+#         'arabic_name': arabic_name,
+#         'departments': departments,
+#         'affiliates': affiliates,
+#         'governments': governments,
+#         'ministers': ministers,
+#         })
+
+
+# def edit_document(request, model_name, document_id):
+#     model, form_class, arabic_name = get_model_and_form(model_name)
+    
+#     if model is None or form_class is None:
+#         return HttpResponseNotFound('Invalid model name')
+
+#     # Fetch all sections for datalists
+#     departments = Department.objects.all
+#     affiliates = Affiliate.objects.all
+#     governments = Government.objects.all
+#     ministers = Minister.objects.all
+
+#     document = get_object_or_404(model, id=document_id)
+#     form = form_class(request.POST or None, request.FILES or None, instance=document)
+
+#     if request.method == 'POST':
+#         if form.is_valid():
+#             form.save()
+#             logger.info(f"Document {document_id} updated successfully.")
+#             return redirect(f'{model_name}_mail')  # Redirect based on model
+#         else:
+#             logger.error(f"Form errors: {form.errors}")
+
+#     # Pass the arabic_name to the template context
+#     return render(request, f'edit_{model_name}.html', {
+#         'form': form, 
+#         'model_name': model_name, 
+#         'arabic_name': arabic_name,
+#         'departments': departments,
+#         'affiliates': affiliates,
+#         'governments': governments,
+#         'ministers': ministers,
+#         })
+
+
 def delete_document(request, model_name, document_id):
-    model, _, _ = get_model_and_form(model_name)
+    model, _, _, _ = get_model_and_form(model_name)
     
     if model is None:
         return HttpResponseNotFound('Invalid model name')
@@ -354,7 +390,7 @@ def delete_document(request, model_name, document_id):
 
 
 def download_document(request, model_name, object_id):
-    model, _, _ = get_model_and_form(model_name)
+    model, _, _, _ = get_model_and_form(model_name)
     
     if model is None:
         return HttpResponseNotFound('Invalid model name')
@@ -427,3 +463,49 @@ def download_document(request, model_name, object_id):
     # Fallback if nothing matches (this should be unreachable due to the initial check)
     return HttpResponseNotFound('No document or attachment available for download.')
 
+
+# Gather information for Details Pane Function:
+# def get_document_details(request, model_type, document_id):
+#     model, _ = get_model_and_form(model_type)
+    
+#     if model is None:
+#         return JsonResponse({'error': 'Invalid model type'}, status=400)
+
+#     document = get_object_or_404(model, id=document_id)
+
+#     # Prepare the response data based on the model type
+#     data = {
+#         'id': document.id,
+#         'number': document.number,
+#         'date': document.date.strftime('%Y-%m-%d') if document.date else None,
+#         'title': document.title,
+#         'keywords': document.keywords,
+#         'pdf_file': document.pdf_file.url if document.pdf_file else None,
+#     }
+
+#     # Add specific fields based on the model
+#     if isinstance(document, Incoming):
+#         data.update({
+#             'orig_number': document.orig_number,
+#             'orig_date': document.orig_date.strftime('%Y-%m-%d') if document.orig_date else None,
+#             'dept_from': document.dept_from.name,
+#             'dept_to': document.dept_to.name,
+#         })
+#     elif isinstance(document, Outgoing):
+#         data.update({
+#             'dept_from': document.dept_from.name,
+#             'dept_to': document.dept_to.name,
+#         })
+#     elif isinstance(document, Internal):
+#         data.update({
+#             'dept_from': document.dept_from.name,
+#             'dept_to': document.dept_to.name,
+#         })
+#     elif isinstance(document, Decree):
+#         data.update({
+#             'minister': document.minister.name,
+#             'government': document.government.name,
+#             'attach_file': document.attach.url if document.attach else None,
+#         })
+
+#     return JsonResponse(data)

@@ -1,30 +1,84 @@
+// Initialize flatpickr for the main date field
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize flatpickr for the main date field
     flatpickr("#id_date", {
-        dateFormat: "Y-m-d",
+        dateFormat: "Y-m-d", // Day-Month-Year format
         locale: {
             firstDayOfWeek: 7, // Start week on Sunday
+            dir: "rtl", // Right-to-left support
+            weekdays: {
+                shorthand: ["أحد", "اثنين", "ثلاثاء", "أربعاء", "خميس", "جمعة", "سبت"], // Arabic week day names
+                longhand: ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"] // Full day names
+            },
+            months: {
+                shorthand: ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"], // Arabic month names
+                longhand: ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"] // Full month names
+            }
         },
         allowInput: true, // Allow user input
     });
 
     // Initialize flatpickr for the orig_date field
     flatpickr("#id_orig_date", {
-        dateFormat: "Y-m-d",
+        dateFormat: "Y-m-d", // Day-Month-Year format
         locale: {
-            firstDayOfWeek: 7 // Start week on Sunday
+            firstDayOfWeek: 7, // Start week on Sunday
+            dir: "rtl", // Right-to-left support
+            weekdays: {
+                shorthand: ["أحد", "اثنين", "ثلاثاء", "أربعاء", "خميس", "جمعة", "سبت"], // Arabic week day names
+                longhand: ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"] // Full day names
+            },
+            months: {
+                shorthand: ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"], // Arabic month names
+                longhand: ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"] // Full month names
+            }
         },
-        allowInput: true // Allow user input
+        allowInput: true, // Allow user input
     });
 });
+
 
 // initialize tooltips:
 document.addEventListener('DOMContentLoaded', function () {
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
     tooltipTriggerList.forEach(function (tooltipTriggerEl) {
         new bootstrap.Tooltip(tooltipTriggerEl);
+
     });
 });
+
+
+// Function to transform date format
+function transformDateFormat() {
+    let input = document.getElementById('id_date');
+    let dateValue = input.value.trim();
+
+    // Check if the date is already in YYYY-MM-DD format
+    let isoDateRegex = /^\d{4}-\d{2}-\d{2}$/; // YYYY-MM-DD format
+    if (isoDateRegex.test(dateValue)) {
+        return; // If already in the correct format, do nothing
+    }
+
+    // Check if the date is in DD-MM-YYYY format
+    let regex = /^(\d{2})-(\d{2})-(\d{4})$/;
+    let match = dateValue.match(regex);
+
+    if (match) {
+        // Rearrange to YYYY-MM-DD format
+        let day = match[1];
+        let month = match[2];
+        let year = match[3];
+
+        // Set the input value in YYYY-MM-DD format
+        input.value = `${year}-${month}-${day}`;
+    }
+}
+
+// Add event listeners
+const dateInput = document.getElementById('id_date');
+
+// Trigger format conversion when focus is lost or user presses Tab
+dateInput.addEventListener('blur', transformDateFormat);
+
 
 
 // Print the PDF document
@@ -49,6 +103,7 @@ function printDocument() {
     }
 }
 
+
 // Handle scroll events to navigate pages
 function handleScroll(event) {
     event.preventDefault(); // Prevent default scroll behavior
@@ -65,6 +120,7 @@ function handleScroll(event) {
 }
 
 
+// Main Search Function
 function searchDocuments() {
     const input = document.getElementById('search-input');
     const filter = input.value.toLowerCase();
@@ -90,7 +146,7 @@ function searchDocuments() {
 }
 
 
-
+// Delete Function
 document.addEventListener('DOMContentLoaded', function() {
     let currentModelName;
     let currentDocumentId;
@@ -141,24 +197,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-document.querySelectorAll('td').forEach(cell => {
-    if (cell.textContent.length > 75) {
-        cell.classList.add('long-text'); // Add class for long text
-    }
-});
-
-function upFileName() {
-    const fileInput = document.getElementById('pdf_file');
-    const fileNameSpan = document.getElementById('file-name');
-
-    if (fileInput.files.length > 0) {
-        fileNameSpan.innerText = fileInput.files[0].name; // Show selected file name
-    } else {
-        fileNameSpan.innerText = 'لا يوجد ملف مختار.'; // Default message
-    }
-}
-
-
+// Document Sort Functions
 let currentSort = 'updated_at';  // Set default sort to updated_at
 let currentOrder = 'desc';        // Default order
 
@@ -208,3 +247,23 @@ document.addEventListener('DOMContentLoaded', function() {
     updateSortIndicators();
 });
 
+
+
+// Obsolete Functions
+// document.querySelectorAll('td').forEach(cell => {
+//     if (cell.textContent.length > 75) {
+//         cell.classList.add('long-text'); // Add class for long text
+//     }
+// });
+
+
+// function upFileName() {
+//     const fileInput = document.getElementById('pdf_file');
+//     const fileNameSpan = document.getElementById('file-name');
+
+//     if (fileInput.files.length > 0) {
+//         fileNameSpan.innerText = fileInput.files[0].name; // Show selected file name
+//     } else {
+//         fileNameSpan.innerText = 'لا يوجد ملف مختار.'; // Default message
+//     }
+// }

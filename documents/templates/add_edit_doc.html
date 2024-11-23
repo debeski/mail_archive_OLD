@@ -8,21 +8,98 @@
 
 {% block content %}
 
-<link rel="stylesheet" href="{% static 'css/flatpickr.css' %}">
+<form action="{% if form.instance.id %}{% url 'edit_document' model_name form.instance.id %}{% else %}{% url 'add_document' model_name %}{% endif %}"
+      method="POST" 
+      enctype="multipart/form-data" 
+      class="w-75 h-75 d-inline-block position-relative top-50 start-50 translate-middle">
+    {% csrf_token %}
 
-<div class="form-container">
-    <form action="{% if form.instance.id %}{% url 'edit_document' model_name form.instance.id %}{% else %}{% url 'add_document' model_name %}{% endif %}" method="POST" enctype="multipart/form-data" dir="rtl">
-        {% csrf_token %}
-
-        {{ form.as_p }}
-
-        <div class="button-group">
-            <button type="submit" class="btn btn-primary">حفظ</button>
-            <a href="{% url 'document_view' model_name=model_name %}" class="btn btn-secondary">إلغاء</a>
+    <div class="row mb-3">
+        <div class="{% if form.orig_number %}col-md-6{% else %}col{% endif %}">
+            <div class="form-floating">
+                {{ form.number }}
+                <label for="id_number">{{form.number.label}}</label>
+                {% if form.number.errors %}
+                    <div class="text-danger">{{ form.number.errors }}</div>
+                {% endif %}
+            </div>
         </div>
-    </form>
-    <div id="pdf-preview" class="pdf-container-add"></div>
-</div>
+        <div class="{% if form.orig_date %}col-md-6{% else %}col{% endif %}">
+            <div class="form-floating">
+                {{ form.date }}
+                <label for="id_date">{{form.date.label}}</label>
+                {% if form.date.errors %}
+                    <div class="text-danger">{{ form.date.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 
-<script src="{% static 'js/flatpickr.js' %}"></script>
+    <div class="row mb-3">
+        {% if form.orig_number %}
+        <div class="col-md-6">
+            <div class="form-floating">
+                {{ form.orig_number }}
+                <label for="id_orig_number">{{form.orig_number.label}}</label>
+                {% if form.orig_number.errors %}
+                    <div class="text-danger">{{ form.orig_number.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+        {% if form.orig_date %}
+        <div class="col-md-6">
+            <div class="form-floating">
+                {{ form.orig_date }}
+                <label for="id_orig_date">{{form.orig_date.label}}</label>
+                {% if form.orig_date.errors %}
+                    <div class="text-danger">{{ form.orig_date.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    {% for field in form %}
+        {% if field.name not in "number orig_number date orig_date pdf_file attach" %}
+        <div class="mb-4">
+            <div class="form-floating">
+                {{ field }}
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {% if field.errors %}
+                    <div class="text-danger">{{ field.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    {% endfor %}
+
+    <div class="row mb-4">
+        <div class="{% if form.attach %}col-md-6{% else %}col{% endif %}">
+            {% if form.attach %}
+            <label for="id_pdf_file">{{ form.pdf_file.label }}</label>
+            {% endif %}
+            {{ form.pdf_file }}
+            {% if form.pdf_file.errors %}
+                <div class="text-danger">{{ form.pdf_file.errors }}</div>
+            {% endif %}
+        </div>
+
+    {% if form.attach %}
+        <div class="col-md-6">
+            <label for="id_attach">{{ form.attach.label }}</label>
+            {{ form.attach }}
+            {% if form.attach.errors %}
+                <div class="text-danger">{{ form.attach.errors }}</div>
+            {% endif %}
+        </div>
+    {% endif %}
+    </div>
+
+    <div class="button-group">
+        <button type="submit" class="btn btn-primary" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: 2rem; --bs-btn-font-size: 1.25rem;">حفظ</button>
+        <a href="{% url 'document_view' model_name=model_name %}" class="btn btn-secondary">إلغاء</a>
+    </div>
+</form>
+
 {% endblock %}

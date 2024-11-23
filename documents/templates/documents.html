@@ -6,41 +6,45 @@
 
 {% block content %}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+
 <div class="header">
-    <div class="add-search-container">
-        <button class="btn btn-info" onclick="location.href='{% url 'add_document' model_name=model_name %}'">
-            <i class="bi bi-plus"></i> إضافة جديد
-        </button>        
-    <!-- Sort Dropdown -->
-    <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-            فرز <span id="sortIndicator"></span>
+        <!-- Add Button -->
+    <button class="btn btn-primary" 
+            style= "--bs-btn-font-size: 18px; --bs-btn-bg: var(--htitle); --bs-btn-color: white; --bs-btn-padding-y: .4rem; --bs-btn-padding-x: 1rem;
+            text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;" 
+            onclick="location.href='{% url 'add_document' model_name=model_name %}'">
+        <i class="bi bi-plus"></i> إضافة جديد
+    </button>        
+    <!-- Sort Dropdown Button + Menu -->
+    <div class="dropdown-center">
+        <button class="btn btn-secondary dropdown-toggle" 
+                style= "--bs-btn-font-size: 18px; --bs-btn-padding-y: .4rem; --bs-btn-padding-x: 1.5rem; text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            فــرز <span id="sortIndicator"></span>
         </button>
-        <ul class="dropdown-menu" aria-labelledby="sortDropdown">
+        <ul class="dropdown-menu" aria-labelledby="sortDropdown" style="--bs-dropdown-link-active-bg: #dadada; --bs-dropdown-link-active-color: black; --bs-dropdown-min-width: 100px;">
             <li>
-                <a class="dropdown-item" href="#" onclick="setSort('number')">الرقم <span class="sort-arrow" id="numberArrow"></span></a>
+                <a class="dropdown-item" href="#" onclick="setSort('number')">الرقم<span class="sort-arrow" id="numberArrow"></span></a>
             </li>
             <li>
-                <a class="dropdown-item" href="#" onclick="setSort('date')">التاريخ <span class="sort-arrow" id="dateArrow"></span></a>
+                <a class="dropdown-item" href="#" onclick="setSort('date')">التاريخ<span class="sort-arrow" id="dateArrow"></span></a>
             </li>
             <li>
-                <a class="dropdown-item" href="#" onclick="setSort('title')">العنوان <span class="sort-arrow" id="titleArrow"></span></a>
+                <a class="dropdown-item" href="#" onclick="setSort('title')">العنوان<span class="sort-arrow" id="titleArrow"></span></a>
             </li>
             <li>
-                <a class="dropdown-item" href="#" onclick="setSort('updated_at')">اخر تعديل <span class="sort-arrow" id="updatedAtArrow"></span></a>
+                <a class="dropdown-item" href="#" onclick="setSort('updated_at')">اخر تعديل<span class="sort-arrow" id="updatedAtArrow"></span></a>
             </li>
         </ul>
     </div>
-        
-    <form id="search-form" method="GET" action="{% url 'document_view' model_name=model_name %}" class="d-flex">
+    <!-- Search Container -->
+    <form id="search-form" method="GET" action="{% url 'document_view' model_name=model_name %}" class="d-flex flex-fill">
         <div class="input-group">
             <input type="text" name="search" class="form-control" placeholder="ابحث هنا..." id="search-input" value="{{ search_term }}" onkeyup="searchDocuments()">
-            <button class="btn btn-outline-secondary" type="submit">Search</button>
+            <button class="btn btn-outline-secondary" type="submit">بحــث</button>
         </div>
         <input type="hidden" name="sort" value="{{ sort_option }}">
         <input type="hidden" name="order" value="{{ order }}">
     </form>
-    </div>
 </div>
 
 <table class="table-container">
@@ -74,12 +78,11 @@
             <td>{{ document.date }}</td>
             <td 
                 data-bs-toggle="tooltip" 
-                data-bs-placement="left" 
+                data-bs-placement="auto" 
                 data-bs-html="true"
+                data-bs-delay='{"show":750,"hide":100}'
                 data-bs-custom-class="custom-tooltip"
-                data-bs-original-title="
-                    <span class='tooltip-title'>الكلمات المفتاحية:</span> 
-                    <br>{{ document.keywords }}">
+                data-bs-original-title="{{ document.keywords }}">
                 {{ document.title }}
             </td>
             {% if model_name == 'incoming' %}

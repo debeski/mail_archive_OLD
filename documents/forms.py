@@ -1,79 +1,138 @@
 from django import forms
+import re
 from .models import Outgoing, Incoming, Internal, Decree, Department, Affiliate, Minister, Government
-
 
 
 class DepartmentForm(forms.ModelForm):
     class Meta:
         model = Department
         fields = ['name']
+        labels = {
+            'name': 'اسم الادارة او المكتب',
+        }
+        widgets = {
+            'title': forms.TextInput(attrs={
+                'class': 'form-control',
+                'required': 'required'
+            }),
+        }
+        
 
 class AffiliateForm(forms.ModelForm):
     class Meta:
         model = Affiliate
         fields = ['name']
+        labels = {
+            'name': 'اسم الجهة',
+            "is_attached": "هل جهة تابعة للوزارة؟"
+        }
+        widgets = {
+            'title': forms.TextInput(attrs={
+                'class': 'form-control',
+                'required': 'required'
+            }),
+            'is_attached': forms.CheckboxInput(attrs={
+                'class': 'form-check-input',
+            }),
+        }
 
-class MinisterForm(forms.ModelForm):
-    class Meta:
-        model = Minister
-        fields = ['name']
 
 class GovernmentForm(forms.ModelForm):
     class Meta:
         model = Government
         fields = ['name']
+        labels = {
+            'name': 'اسم الحكومة',
+        }
+        widgets = {
+            'title': forms.TextInput(attrs={
+                'class': 'form-control',
+                'required': 'required'
+            }),
+        }
 
+
+class MinisterForm(forms.ModelForm):
+    class Meta:
+        model = Minister
+        fields = ['name', 'government']
+        labels = {
+            'name': 'اسم الوزير',
+            'government': 'الحكومة',
+        }
+        widgets = {
+            'title': forms.TextInput(attrs={
+                'class': 'form-control',
+                'required': 'required'
+            }),
+            'government': forms.Select(attrs={
+                'class': 'form-select',
+                'required': 'required'
+            }),
+        }
 
 
 class AddOutgoingForm(forms.ModelForm):
     """Form for creating or updating outgoing mail."""
-    
+
     class Meta:
         model = Outgoing
         fields = ['number', 'date', 'dept_from', 'dept_to', 'title', 'keywords', 'pdf_file']
         labels = {
-            'number': 'رقم الرسالة',
-            'date': 'تاريخ الرسالة',
-            'dept_from': 'من (إدارة)',
-            'dept_to': 'إلى (جهة)',
-            'title': 'العنوان',
-            'keywords': 'الكلمات المفتاحية',
-            'pdf_file': 'ملف PDF',    
+            'number': 'رقم الرسالة:',
+            'date': 'تاريخ الرسالة: (يوم/شهر/سنة)',
+            'dept_from': 'من (إدارة):',
+            'dept_to': 'إلى (جهة):',
+            'title': 'العنوان:',
+            'keywords': 'الكلمات المفتاحية:',
+            'pdf_file': 'ملف PDF',
         }
         widgets = {
             'number': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'ادخل رقم الرسالة',
-                'required': 'required'
+                'placeholder': '',
+                'required': 'required',
+                'autocomplete': 'off'
             }),
             'date': forms.DateInput(attrs={
-                'class': 'form-control form-control-lg',  # Keep this if you want larger input
-                'placeholder': 'YYYY-MM-DD',
-                'type': 'date',
-                'required': 'required'
+                'class': 'form-control form-control-lg',  # Larger input field
+                'placeholder': 'YYYY-MM-DD',  # Placeholder for the user
+                'type': 'text',  # Set as text input for Flatpickr
+                'required': 'required',
+                'autocomplete': 'off'
             }),
             'dept_from': forms.Select(attrs={
-                'class': 'form-select form-select-lg',  # Keep this for consistency
-                'required': 'required'
+                'class': 'form-control',
+                'placeholder': '',
+                'required': 'required',
             }),
             'dept_to': forms.Select(attrs={
-                'class': 'form-select form-select-lg',  # Keep this for consistency
-                'required': 'required'
+                'class': 'form-control',
+                'placeholder': '',
+                'required': 'required',
             }),
             'title': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'ادخل العنوان',
+                'placeholder': '',
                 'required': 'required'
             }),
-            'keywords': forms.TextInput(attrs={
+            'keywords': forms.Textarea(attrs={
                 'class': 'form-control',
-                'placeholder': 'الكلمات المفتاحية',
+                'placeholder': '',
+                'style': 'height: 150px;'
             }),
             'pdf_file': forms.ClearableFileInput(attrs={
-                'class': 'form-control',
+                'class': 'form-control form-control-lg'
             }),
         }
 
+
+    def clean_number(self):
+        number = self.cleaned_data.get('number')
+        if number and not re.match(r'^\d{1}/\d{2}/\d{4}$', number):
+            self.add_error('number', "Number must be in the format #/##/####.")
+        return number
+    
 
 class AddIncomingForm(forms.ModelForm):
     """Form for creating or updating incoming mail."""
@@ -82,58 +141,65 @@ class AddIncomingForm(forms.ModelForm):
         model = Incoming
         fields = ['number', 'orig_number', 'date', 'orig_date', 'dept_from', 'dept_to', 'title', 'keywords', 'pdf_file']
         labels = {
-            'number': 'رقم التسجيل',
-            'orig_number': 'رقم الاصل',
-            'date': 'تاريخ التسجيل',
-            'orig_date': 'تاريخ الاصل ',
-            'dept_from': 'من (جهة)',
-            'dept_to': 'إلى (إدارة)',
-            'title': 'العنوان',
-            'keywords': 'الكلمات المفتاحية',
-            'pdf_file': 'ملف PDF',    
+            'number': 'رقم التسجيل:',
+            'orig_number': 'رقم الرسالة الإشاري:',
+            'date': 'تاريخ التسجيل: (يوم/شهر/سنة)',
+            'orig_date': 'تاريخ الرسالة: (يوم/شهر/سنة)',
+            'dept_from': 'من (جهة):',
+            'dept_to': 'إلى (إدارة):',
+            'title': 'العنوان:',
+            'keywords': 'الكلمات المفتاحية:',
+            'pdf_file': 'ملف PDF',
         }
         widgets = {
             'number': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'ادخل رقم الرسالة',
-                'required': 'required'
+                'placeholder': '',
+                'required': 'required',
+                'autocomplete': 'off'
             }),
             'orig_number': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'ادخل الرقم الأصلي',
-                'required': 'required'
+                'placeholder': '',
+                'required': 'required',
+                'autocomplete': 'off'
             }),
             'date': forms.DateInput(attrs={
-                'class': 'form-control form-control-lg',
-                'placeholder': 'YYYY-MM-DD',
+                'class': 'form-control form-control-md',
+                'placeholder': '',
                 'type': 'date',
-                'required': 'required'
+                'required': 'required',
+                'autocomplete': 'off'
             }),
             'orig_date': forms.DateInput(attrs={
-                'class': 'form-control form-control-lg',
-                'placeholder': 'YYYY-MM-DD',
+                'class': 'form-control form-control-md',
+                'placeholder': '',
                 'type': 'date',
-                'required': 'required'
+                'required': 'required',
+                'autocomplete': 'off'
             }),
             'dept_from': forms.Select(attrs={
-                'class': 'form-select form-select-lg',
-                'required': 'required'
+                'class': 'form-control',
+                'placeholder': '',
+                'required': 'required',
             }),
             'dept_to': forms.Select(attrs={
-                'class': 'form-select form-select-lg',
-                'required': 'required'
+                'class': 'form-control',
+                'placeholder': '',
+                'required': 'required',
             }),
             'title': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'ادخل العنوان',
+                'placeholder': '',
                 'required': 'required'
             }),
-            'keywords': forms.TextInput(attrs={
+            'keywords': forms.Textarea(attrs={
                 'class': 'form-control',
-                'placeholder': 'الكلمات المفتاحية',
+                'placeholder': '',
+                'style': 'height: 150px;'
             }),
             'pdf_file': forms.ClearableFileInput(attrs={
-                'class': 'form-control',
+                'class': 'form-control form-control-lg'
             }),
         }
 
@@ -145,44 +211,51 @@ class AddInternalForm(forms.ModelForm):
         model = Internal
         fields = ['number', 'date', 'dept_from', 'dept_to', 'title', 'keywords', 'pdf_file']
         labels = {
-            'number': 'رقم الرسالة',
-            'date': 'تاريخ الرسالة',
-            'dept_from': 'من',
-            'dept_to': 'إلى',
-            'title': 'العنوان',
-            'keywords': 'الكلمات المفتاحية',
-            'pdf_file': 'ملف PDF',    
+            'number': 'رقم الرسالة:',
+            'date': 'تاريخ الرسالة: (يوم/شهر/سنة)',
+            'dept_from': 'من:',
+            'dept_to': 'إلى:',
+            'title': 'العنوان:',
+            'keywords': 'الكلمات المفتاحية:',
+            'pdf_file': 'ملف PDF',
         }
         widgets = {
             'number': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'ادخل رقم الرسالة',
+                'placeholder': '',
+                'autocomplete': 'off'
             }),
             'date': forms.DateInput(attrs={
                 'class': 'form-control form-control-lg',
-                'placeholder': 'YYYY-MM-DD',
+                'placeholder': '',
                 'type': 'date',
-                'required': 'required'
+                'required': 'required',
+                'autocomplete': 'off'
             }),
             'dept_from': forms.Select(attrs={
-                'class': 'form-select form-select-lg',
-                'required': 'required'
+                'class': 'form-control',
+                'placeholder': '',
+                'required': 'required',
+                'autocomplete': 'off'
             }),
             'dept_to': forms.Select(attrs={
-                'class': 'form-select form-select-lg',
-                'required': 'required'
+                'class': 'form-control',
+                'placeholder': '',
+                'required': 'required',
+                'autocomplete': 'off'
             }),
             'title': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'ادخل العنوان',
+                'placeholder': '',
                 'required': 'required'
             }),
-            'keywords': forms.TextInput(attrs={
+            'keywords': forms.Textarea(attrs={
                 'class': 'form-control',
-                'placeholder': 'الكلمات المفتاحية',
+                'placeholder': '',
+                'style': 'height: 150px;'
             }),
             'pdf_file': forms.ClearableFileInput(attrs={
-                'class': 'form-control',
+                'class': 'form-control form-control-lg'
             }),
         }
 
@@ -194,48 +267,56 @@ class AddDecreeForm(forms.ModelForm):
         model = Decree
         fields = ['number', 'date', 'minister', 'government', 'title', 'keywords', 'pdf_file', 'attach']
         labels = {
-            'number': 'رقم القرار',
-            'date': 'تاريخ القرار',
-            'dept_from': 'الوزير',
-            'dept_to': 'الحكومة',
-            'title': 'العنوان',
-            'keywords': 'الكلمات المفتاحية',
+            'number': 'رقم القرار:',
+            'date': 'تاريخ القرار: (يوم/شهر/سنة)',
+            'minister': 'الوزير:',
+            'government': 'الحكومة:',
+            'title': 'العنوان:',
+            'keywords': 'الكلمات المفتاحية:',
             'pdf_file': 'ملف PDF',
             'attach': 'ملف مرفق',
         }
         widgets = {
             'number': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'ادخل رقم القرار',
-                'required': 'required'
+                'placeholder': '',
+                'required': 'required',
+                'autocomplete': 'off'
             }),
             'date': forms.DateInput(attrs={
                 'class': 'form-control form-control-lg',
-                'placeholder': 'YYYY-MM-DD',
+                'placeholder': '',
                 'type': 'date',
-                'required': 'required'
+                'required': 'required',
+                'autocomplete': 'off'
             }),
             'minister': forms.Select(attrs={
-                'class': 'form-select form-select-lg',
-                'required': 'required'
+                'class': 'form-control',
+                'placeholder': '',
+                'required': 'required',
+                'autocomplete': 'off'
             }),
             'government': forms.Select(attrs={
-                'class': 'form-select form-select-lg',
-                'required': 'required'
+                'class': 'form-control',
+                'placeholder': '',
+                'required': 'required',
+                'autocomplete': 'off'
             }),
             'title': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'ادخل العنوان',
+                'placeholder': '',
                 'required': 'required'
             }),
-            'keywords': forms.TextInput(attrs={
+            'keywords': forms.Textarea(attrs={
                 'class': 'form-control',
-                'placeholder': 'الكلمات المفتاحية',
+                'placeholder': '',
+                'style': 'height: 150px;'
             }),
             'pdf_file': forms.ClearableFileInput(attrs={
-                'class': 'form-control',
+                'class': 'form-control'
             }),
             'attach': forms.ClearableFileInput(attrs={
-                'class': 'form-control',
+                'class': 'form-control'
             }),
         }
+

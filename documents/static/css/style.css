@@ -2,6 +2,13 @@
 * {
     box-sizing: border-box;
     font-family: 'Shabwa', sans-serif;
+    direction: rtl;
+}
+
+:root {
+    --title: #014d9a;
+    --body: #f5f5f5;
+    --htitle: #2a81d8;
 }
 
 @font-face {
@@ -41,22 +48,20 @@
 
 
 body {
-    direction: rtl;
-    height: 100vh;
-    background-color: #f5f5f5;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--body);
 }
 
 
 /* Titlebar Style */
 .titlebar {
-    background-color: #014d9a;
-    color: white;
-    text-align: right;
-    padding: 0;
-    margin: 0;
-    box-shadow: none;
+    background-color: var(--title);
     display: flex;
+    flex-direction: row;
     align-items: center;
+    justify-content: flex-start;
     height: 7vh;
     overflow: hidden;
 }
@@ -65,10 +70,11 @@ body {
 .titlebar h1 {
     flex: 1;
     text-align: right;
-    margin: 0 20px;
+    padding: 0px 10px 0px 0px;
+    color: white;
     font-size: 24px;
     transition: font-size 0.3s;
-
+    text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
 }
 
 @media (max-height: 600px) {
@@ -80,7 +86,7 @@ body {
 
 /* Titlebar Button */
 .menu-toggle {
-    background-color: #014d9a;
+    background-color: var(--title);
     color: white;
     padding: 10px 15px;
     border: none;
@@ -89,10 +95,11 @@ body {
     margin-right: 15px;
     transition: background-color 0.3s, transform 0.1s;
     width: auto;
+    text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
 }
 
 .menu-toggle:hover {
-    background-color: white;
+    background-color: var(--body);
     color: black;
 }
 
@@ -100,21 +107,20 @@ body {
     transform: scale(0.95);
 }
 
-/* Main Layout */
+/* Container Fluid Layout */
 .layout {
     display: flex;
-    flex-grow: 1;
+    flex-direction: row;
     padding-left: 0;
     padding-right: 0;
-    height: 93vh;
+    flex-grow: 1;
 }
 
 /* Main Content */
 .main-content{
     display: flex;
     flex-direction:column;
-    flex-grow: 1;
-    margin-left: 10px;
+    flex-grow: 3;
 }
 
 /* Index Container Design */
@@ -129,17 +135,14 @@ body {
 .sidebar {
     background-color: white;
     color: black;
-    width: 240px;
-    margin: 0;
-    padding: 0;
-    box-shadow: none;
-    transition: width 0.5s;
-    border-top: none;
+    width: 220px;
+    transition: width 0.5s ease-in-out;
     overflow: hidden;
+    flex-grow: 0;
 }
 
 .sidebar.collapsed {
-    width: 0;
+    width: 0 !important;
     overflow: hidden;
 }
 
@@ -174,13 +177,12 @@ body {
 }
 
 .sidebar button.active {
-    background-color: #f5f5f5;
+    background-color: var(--body);
     transition: background-color 0.2s, font-size 0.3s;
     font-weight: bold;
     font-size: 24px;
     pointer-events: none; /* Disables all mouse interactions */
 }
-
 
 @media (max-width: 1280px) {
     .sidebar button {
@@ -192,7 +194,6 @@ body {
     }
     .sidebar button.active {
         font-size: 21px; /* Reduce font size */
-        overflow: hidden;
     }
     .dbutton-icon {
         width: 24px;
@@ -208,83 +209,46 @@ body {
     }
 }
 
-
 /* Form Design */
-form {
-    flex: 1;
-    margin-right: 20px;
-    margin-left: 20px;
-}
 
 label {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: bold;
-    margin-bottom: 3px;
-    margin-top: 2px;
+}
 
+.button-group{
+    padding: 10px;
+}
+
+
+/* Tooltip Design */
+.custom-tooltip {
+    --bs-tooltip-bg: #333;
+    --bs-tooltip-max-width: 300px;
+    --bs-tooltip-font-size: 20px;
+    --bs-tooltip-opacity: .98;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+
+  }
+
+.tooltip-title {
+    font-weight: bold;
+    font-size: 16px;
+    color: #333;
+    padding: 2px 5px;
+    text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;
 }
 
 
 /* Header Container */
 .header {
     display: flex;
+    justify-content: start;
     margin-bottom: none;
-}
-
-/* Tooltip Design */
-.custom-tooltip {
-    color: #ffffff;
-    border-radius: 0.5rem;
-    font-size: 15px;
-    padding-top: 0px;
-}
-
-.tooltip-title {
-    font-weight: bold;
-    font-size: 16px;
-    color: rgb(58, 58, 58);
-    background-color: #f5f5f5;
-    padding: 2px 5px;
-    border-radius: 0.3rem;
-    border: 1px solid black;
-}
-
-/* Add Sort & Search Container */
-.add-search-container {
-    display: flex;
-    align-items: center;
-    margin-bottom: 0px;
     width: auto;
-    margin: 20px 20px;
-    flex-grow: 1;
-    justify-content: space-evenly;
-
-}
-
-/* Sort Button */
-.btn-info{
-    background-color: #236db7;
-    border-color: #ffffff;
-    color: white;
-    margin-left: 15px;
-    transition: box-shadow 0.3s, background-color 0.3s;
-}
-
-.btn-info:hover {
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.2); /* Stronger shadow */
-    background-color: #014d9a;
-    color: white;
-
-}
-
-/* Sort Button Menu */
-.dropdown-toggle:hover{
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.2); /* Stronger shadow */
-    background-color: #5a5a5a;
-}
-
-.dropdown-menu{
-    position: relative; /* Change to absolute for precise positioning */
+    margin: 2.7vh 2vw;
+    align-items: center;
+    gap: 1vw;
 }
 
 /* Search Input */
@@ -298,35 +262,46 @@ label {
 
 /* Table Container Design */
 .table-container {
-    margin: 5px 15px; /* Combined margins for simplicity */
+    margin: 10px 15px; /* Combined margins for simplicity */
     border-radius: 0px; /* Rounded corners */
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow */
     overflow: hidden; /* Ensure no overflow */
     border-collapse: collapse; /* Remove spacing between cells */
 }
 
-/* Table Header Style */
+/* Header Row Style */
 th {
-    background-color: #f9f9f9; /* Light grey background for header */
-    color: #333; /* Dark text color */
-    font-weight: 700; /* Bold header text */
-    text-align: right; /* Align header text to the right */
-    position: relative; /* For pseudo-elements if needed */
+    background-color: #f9f9f9;
+    color: #333;
+    font-weight: 700;
+    text-align: right;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-    border-bottom: 1px solid #e0e0e0; /* Add border to the bottom of the header */
+    border-bottom: 1px solid #e0e0e0;
     font-size: 20px;
 }
 
-/* Data Cell Style */
+/* All Cells Style */
 th, td {
     padding: 10px 15px; /* Increased padding for cells */
+    cursor: default;
+}
+
+/* Data Cells Text Style */
+td {
+    text-align: right;
+    color: #666;
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Show ellipsis (...) */
+    white-space: nowrap; /* Prevent wrapping */
+    font-size: 17px;
+    font-weight: 600;
 }
 
 /* Alternating row colors */
 tr:nth-child(even) {
     background-color: #f9f9f9; /* Light grey for even rows */
 }
-
 tr:nth-child(odd) {
     background-color: #ffffff; /* White for odd rows */
 }
@@ -339,36 +314,23 @@ tr:hover {
 /* Action column adjustments */
 td:last-child, th:last-child {
     width: 200px; /* Allow flexibility */
-    min-width: 110px; /* Allow flexibility */
-    padding: 4px 4px; /* Ensure no extra padding */
-}
-
-/* Cell Text Style */
-td {
-    text-align: right; /* Align text to the right for Arabic */
-    color: #666; /* Slightly lighter text for body */
-    max-width: 300px; /* Set a max width for the cells */
-    overflow: hidden; /* Hide overflow */
-    text-overflow: ellipsis; /* Show ellipsis (...) */
-    white-space: nowrap; /* Prevent wrapping */
-    border-bottom: none; /* Light border for separation */
-    font-size: 17px;
-    font-weight: 600;
+    min-width: 110px;
+    padding: 4px 4px;
 }
 
 /* Action Column Container */
 .action-container {
-    display: flex; /* Use flexbox for horizontal layout */
-    justify-content: space-evenly; /* Space icons evenly */
-    align-items: center; /* Center icons vertically */
-    margin: 0; /* Remove any default margin */
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    margin: 0;
 }
 
 /* Action Icon Styles */
 .action-icon {
-    width: auto; /* Set a fixed width for the icons */
-    height: 40px; /* Set a fixed height for the icons */
-    display: flex; /* Ensure the icon is centered */
+    width: auto;
+    height: 40px;
+    display: flex; /* Ensure the icon img is centered */
     justify-content: center; /* Center the image */
     align-items: center; /* Center the image */
     cursor: pointer; /* Change cursor on hover */
@@ -378,12 +340,8 @@ td {
     background-color: inherit; /* Inherit background color from parent */
 }
 
-.action-icon:hover {
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Stronger shadow */
-}
-
 .action-icon:active {
-    transform: scale(0.95); /* Scale down slightly to simulate a press */
+    transform: scale(0.90); /* Scale down slightly to simulate a press */
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1); /* Reduce shadow on press */
 }
 
@@ -393,17 +351,17 @@ td {
     height: 100%; /* Scale the image to the height of the  */
     object-fit: contain; /* Ensures the image maintains its aspect ratio */
     display: block; /* Prevent any inline spacing */
-    transition: opacity 0.3s ease, width 0.5s ease; /* Smooth transition */
-    opacity: 60%;
+    transition: opacity 0.3s ease-out, width 0.5s ease-out;
+    opacity: 0.6;
 }
 
 .action-icon img:hover {
     width: 85%; /* Scale the image to the width of the  */
-    opacity: 1.2; /* Increase opacity on hover */
+    opacity: 1; /* Increase opacity on hover */
 }
 
 .disabled {
-    opacity: 0.5; /* Make it appear faded */
+    opacity: 0.4; /* Make it appear faded */
     pointer-events: none; /* Disables all mouse interactions */
 }
 

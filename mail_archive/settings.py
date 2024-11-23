@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+import sys
+
+sys.stdout.reconfigure(encoding='utf-8')
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -113,6 +117,12 @@ USE_I18N = True
 
 USE_TZ = True
 
+LOCALE_PATHS = [
+    BASE_DIR / 'locale',
+]
+
+DEFAULT_CHARSET = 'utf-8'
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
@@ -158,7 +168,7 @@ LOGGING = {
             'level': 'INFO',
             'propagate': True,
         },
-        'myapp': {  # Use your app's name here
+        'documents': {
             'handlers': ['file'],
             'level': 'INFO',
             'propagate': False,
