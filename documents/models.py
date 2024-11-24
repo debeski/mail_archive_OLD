@@ -82,6 +82,8 @@ class Incoming(models.Model):
     pdf_file = models.FileField(upload_to=get_pdf_upload_path, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+
 
     def __str__(self):
         return self.title
@@ -106,6 +108,8 @@ class Outgoing(models.Model):
     pdf_file = models.FileField(upload_to=get_pdf_upload_path, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+
 
     def __str__(self):
         return self.title
@@ -125,6 +129,7 @@ class Internal(models.Model):
     pdf_file = models.FileField(upload_to=get_pdf_upload_path, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return self.title
@@ -145,6 +150,7 @@ class Decree(models.Model):
     attach = models.FileField(upload_to=get_attach_upload_path, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return self.title
@@ -153,3 +159,20 @@ class Decree(models.Model):
     def get_model_name(self):
         return "قرارات"
 
+class Report(models.Model):
+    """Ambiguous Model representing a report of some sort."""
+    number = models.CharField(max_length=20, blank=True, null=True)
+    date = models.DateField(blank=True)
+    title = models.CharField(max_length=255, blank=False)
+    keywords = models.TextField(max_length=999, blank=True)
+    pdf_file = models.FileField(upload_to=get_pdf_upload_path, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return self.title
+    
+    @property
+    def get_model_name(self):
+        return "تقارير"

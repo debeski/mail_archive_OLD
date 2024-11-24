@@ -1,13 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
-from .forms import AddOutgoingForm, AddIncomingForm, AddInternalForm, AddDecreeForm
+from .forms import AddOutgoingForm, AddIncomingForm, AddInternalForm, AddDecreeForm, AddReportForm, DepartmentForm, AffiliateForm, MinisterForm, GovernmentForm
 from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
 import mimetypes
 from django.apps import apps
-from .models import Incoming, Outgoing, Internal, Decree, Department, Affiliate, Minister, Government
+from .models import Incoming, Outgoing, Internal, Decree, Report, Department, Affiliate, Minister, Government
 import logging
 from django.utils import timezone
-from .forms import DepartmentForm, AffiliateForm, MinisterForm, GovernmentForm
 import matplotlib
 matplotlib.use('Agg')
 from matplotlib import pyplot as plt
@@ -19,9 +18,13 @@ from io import BytesIO
 import zipfile
 from django.core.paginator import Paginator
 from django.db.models import Q
+from datetime import datetime, timedelta
+
+
 
 
 logger = logging.getLogger('documents')
+
 
 
 # Logger initiation Function:
@@ -31,13 +34,15 @@ def log_action(action, model, object_id=None):
     logger.info(message)
 
 
-# Function to map mpdels, forms, and arabic names:
+
+# Function to map models, forms, and arabic names:
 def get_model_and_form(model_name):
     model_mapping = {
         'incoming': Incoming,
         'outgoing': Outgoing,
         'internal': Internal,
         'decree': Decree,
+        'report': Report,
 
         'departments': Department,
         'affiliates': Affiliate,
@@ -50,6 +55,7 @@ def get_model_and_form(model_name):
         'outgoing': AddOutgoingForm,
         'internal': AddInternalForm,
         'decree': AddDecreeForm,
+        'report': AddReportForm,
 
         'departments': DepartmentForm,
         'affiliates': AffiliateForm,
@@ -62,6 +68,7 @@ def get_model_and_form(model_name):
         'outgoing': "بريد صادر",
         'internal': "مذكرة داخلية",
         'decree': "قرار",
+        'report': "تقرير",
 
         'departments': "الاقسام",
         'affiliates': "الجهات",
@@ -79,65 +86,77 @@ def get_model_and_form(model_name):
     return model, form_class, arabic_name, arabic_names
 
 
+
 # Chart Creation Function:
 def create_charts():
     # Set font properties
-    rcParams['font.family'] = 'Arial'  # Ensure you have the font installed
+    rcParams['font.family'] = 'Arial'
     rcParams['font.size'] = 12
 
-    # Define the years you want to analyze
-    years = range(2018, 2024)  # Adjust the range as necessary
-    counts = {model: [] for model in ['Incoming', 'Outgoing', 'Internal', 'Decree']}
+    # Define the models to analyze
+    model_names = ['incoming', 'outgoing', 'internal', 'decree', 'report']
+    years = range(2018, 2025)
+    counts = {model: [] for model in model_names}
 
-    for year in years:
-        counts['Incoming'].append(Incoming.objects.filter(date__year=year).count() or 0)
-        counts['Outgoing'].append(Outgoing.objects.filter(date__year=year).count() or 0)
-        counts['Internal'].append(Internal.objects.filter(date__year=year).count() or 0)
-        counts['Decree'].append(Decree.objects.filter(date__year=year).count() or 0)
+    # Fetch counts using get_model_and_form
+    for model_name in model_names:
+        model, _, _, _ = get_model_and_form(model_name)
+        for year in years:
+            counts[model_name].append(model.objects.filter(date__year=year).count() or 0)
 
-    print("Counts per model per year:", counts)
+    # Paths for chart files
+    bar_chart_path = os.path.join(settings.BASE_DIR, 'documents/static/chart', 'grouped_bar_chart.png')
+    pie_chart_path = os.path.join(settings.BASE_DIR, 'documents/static/chart', 'pie_chart.png')
+
+    # Check if charts exist and if they are older than 1 hour
+    should_create_charts = True
+    if os.path.exists(bar_chart_path):
+        bar_chart_mtime = datetime.fromtimestamp(os.path.getmtime(bar_chart_path))
+        if datetime.now() - bar_chart_mtime < timedelta(hours=1):
+            should_create_charts = False
+
+    if not should_create_charts:
+        print("Charts have been generated within the last hour. Skipping chart generation.")
+        return
 
     # Create a grouped bar chart
     fig, ax = plt.subplots()
     bar_width = 0.2
     index = np.arange(len(years))
 
-    for i, model in enumerate(counts.keys()):
-        ax.bar(index + i * bar_width, counts[model], bar_width, label=model)
+    for i, model_name in enumerate(model_names):
+        ax.bar(index + i * bar_width, counts[model_name], bar_width, label=model_name.capitalize())
 
-    ax.set_ylabel('count', labelpad=10, fontsize=14, ha='right')  # Align right
-    ax.set_xticks(index + bar_width * 1.5)
-    ax.set_xticklabels(years, ha='right')  # Align right
+    ax.set_ylabel('Count', labelpad=10, fontsize=14, ha='right')
+    ax.set_xticks(index + bar_width * (len(model_names) - 1) / 2)
+    ax.set_xticklabels(years, ha='right')
     ax.legend()
 
     # Save the grouped bar chart
-    bar_chart_path = os.path.join(settings.BASE_DIR, 'documents/static/chart', 'grouped_bar_chart.png')
     plt.savefig(bar_chart_path, bbox_inches='tight')
     plt.close(fig)
 
     # Prepare data for the pie chart
-    total_counts = [sum(counts[model]) for model in counts.keys()]
+    total_counts = [sum(counts[model_name]) for model_name in model_names]
     print("Total counts for pie chart before plotting:", total_counts)
 
-    # Check if all counts are zero
     if all(count == 0 for count in total_counts):
         print("No data available for pie chart.")
-        return  # Skip pie chart creation
+        return
 
-    # Handle NaN values
-    total_counts = [0 if np.isnan(count) else count for count in total_counts]  # Ensure no NaNs
+    total_counts = [0 if np.isnan(count) else count for count in total_counts]
 
     # Create the pie chart
     fig, ax = plt.subplots()
-    ax.pie(total_counts, labels=counts.keys(), autopct='%1.1f%%', startangle=90)
+    ax.pie(total_counts, labels=[model.capitalize() for model in model_names], autopct='%1.1f%%', startangle=90)
     ax.axis('equal')  # Equal aspect ratio ensures the pie is drawn as a circle.
 
-    # Set title for the pie chart
-
     # Save the pie chart
-    pie_chart_path = os.path.join(settings.BASE_DIR, 'documents/static/chart', 'pie_chart.png')
     plt.savefig(pie_chart_path)
     plt.close(fig)
+
+    print("Charts generated successfully.")
+
 
 
 # Html & Chart Rendering Functions:
@@ -149,11 +168,12 @@ def index(request):
         list(Outgoing.objects.order_by('-created_at')[:5]) +
         list(Internal.objects.order_by('-created_at')[:5]) +
         list(Decree.objects.order_by('-created_at')[:5])
-    )[:5]  # Combine and limit to the latest 7 documents
+    )[:5]  # Combine and limit to the latest # documents
 
     return render(request, 'index.html', {
         'latest_documents': latest_documents,
     })
+
 
 
 # Sections Management:
@@ -200,27 +220,31 @@ def manage_sections(request, model_name):
     })
 
 
+
 # Check for File Existence:
 def has_files(instance):
-    if isinstance(instance, Incoming):
+    model_name = instance.__class__.__name__.lower()  # Get the model name in lowercase
+    model, _, _, _ = get_model_and_form(model_name)  # Use get_model_and_form to get the model
+
+    if model is None:
+        print(f"Model not found for instance: {instance}")
+        return False
+
+    # Check for files based on model type
+    if model_name == 'incoming' or model_name == 'outgoing' or model_name == 'internal' or model_name == 'report':
         has_file = hasattr(instance, 'pdf_file') and bool(instance.pdf_file)
-        print(f"Checking Incoming: {has_file} (pdf: {instance.pdf_file if has_file else 'N/A'})")
+        print(f"Checking {model_name.capitalize()}: {has_file} (pdf: {instance.pdf_file if has_file else 'N/A'})")
         return has_file
-    elif isinstance(instance, Outgoing):
-        has_file = hasattr(instance, 'pdf_file') and bool(instance.pdf_file)
-        print(f"Checking Outgoing: {has_file} (pdf: {instance.pdf_file if has_file else 'N/A'})")
-        return has_file
-    elif isinstance(instance, Internal):
-        has_file = hasattr(instance, 'pdf_file') and bool(instance.pdf_file)
-        print(f"Checking Internal: {has_file} (pdf: {instance.pdf_file if has_file else 'N/A'})")
-        return has_file
-    elif isinstance(instance, Decree):
+    elif model_name == 'decree':
         pdf_file_exists = hasattr(instance, 'pdf_file') and bool(instance.pdf_file)
         attach_exists = hasattr(instance, 'attach') and bool(instance.attach)
         has_file = pdf_file_exists or attach_exists
         print(f"Checking Decree: {has_file} (pdf: {pdf_file_exists}, attach: {attach_exists})")
         return has_file
+
     return False
+
+
 
 # General Html Mail Rendering Function:
 def document_view(request, model_name):
@@ -229,8 +253,8 @@ def document_view(request, model_name):
     if model is None:
         return HttpResponseNotFound('Invalid model name')
 
-    # Get all instances of the specified model
-    documents = model.objects.all()
+    # Get all instances of the specified model that are not soft deleted
+    documents = model.objects.filter(deleted_at__isnull=True)  # Filter out soft deleted documents
 
     # Handle search query
     search_term = request.GET.get('search', '').strip()
@@ -274,6 +298,7 @@ def document_view(request, model_name):
     })
 
 
+
 def add_document(request, model_name, document_id=None):
     model, form_class, arabic_name, _ = get_model_and_form(model_name)
     
@@ -302,91 +327,20 @@ def add_document(request, model_name, document_id=None):
 
 
 
-
-# def add_document(request, model_name, document_id=None):
-#     model, form_class, arabic_name = get_model_and_form(model_name)
-    
-#     if model is None or form_class is None:
-#         return HttpResponseNotFound('Invalid model name')
-    
-#     # Fetch all sections for datalists
-#     departments = Department.objects.all()
-#     affiliates = Affiliate.objects.all()
-#     governments = Government.objects.all()
-#     ministers = Minister.objects.all()
-
-#     if document_id:
-#         instance = get_object_or_404(model, id=document_id)
-#     else:
-#         instance = None
-
-#     form = form_class(request.POST or None, request.FILES or None, instance=instance)
-
-#     if request.method == 'POST':
-#         if form.is_valid():
-#             form.save()
-#             return redirect(reverse('document_view', kwargs={'model_name': model_name}))  # Use reverse to construct URL
-#         else:
-#             logger.error(f"Form errors: {form.errors}")
-
-#     return render(request, f'add_edit_doc.html', {
-#         'form': form, 
-#         'model_name': model_name, 
-#         'arabic_name': arabic_name,
-#         'departments': departments,
-#         'affiliates': affiliates,
-#         'governments': governments,
-#         'ministers': ministers,
-#         })
-
-
-# def edit_document(request, model_name, document_id):
-#     model, form_class, arabic_name = get_model_and_form(model_name)
-    
-#     if model is None or form_class is None:
-#         return HttpResponseNotFound('Invalid model name')
-
-#     # Fetch all sections for datalists
-#     departments = Department.objects.all
-#     affiliates = Affiliate.objects.all
-#     governments = Government.objects.all
-#     ministers = Minister.objects.all
-
-#     document = get_object_or_404(model, id=document_id)
-#     form = form_class(request.POST or None, request.FILES or None, instance=document)
-
-#     if request.method == 'POST':
-#         if form.is_valid():
-#             form.save()
-#             logger.info(f"Document {document_id} updated successfully.")
-#             return redirect(f'{model_name}_mail')  # Redirect based on model
-#         else:
-#             logger.error(f"Form errors: {form.errors}")
-
-#     # Pass the arabic_name to the template context
-#     return render(request, f'edit_{model_name}.html', {
-#         'form': form, 
-#         'model_name': model_name, 
-#         'arabic_name': arabic_name,
-#         'departments': departments,
-#         'affiliates': affiliates,
-#         'governments': governments,
-#         'ministers': ministers,
-#         })
-
-
 def delete_document(request, model_name, document_id):
     model, _, _, _ = get_model_and_form(model_name)
-    
+
     if model is None:
         return HttpResponseNotFound('Invalid model name')
 
     if request.method == 'DELETE':
         document = get_object_or_404(model, id=document_id)
-        document.delete()
+        document.deleted_at = timezone.now()  # Set the deletion timestamp
+        document.save()
         return JsonResponse({'success': True})
 
     return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=400)
+
 
 
 def download_document(request, model_name, object_id):
@@ -464,9 +418,10 @@ def download_document(request, model_name, object_id):
     return HttpResponseNotFound('No document or attachment available for download.')
 
 
+
 # Gather information for Details Pane Function:
 # def get_document_details(request, model_type, document_id):
-#     model, _ = get_model_and_form(model_type)
+#     model, _, _ = get_model_and_form(model_type)
     
 #     if model is None:
 #         return JsonResponse({'error': 'Invalid model type'}, status=400)

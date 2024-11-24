@@ -51,6 +51,12 @@
                     القرارات
                 </button>
             </a>
+            <a href="{% url 'document_view' model_name='report' %}">
+                <button class="{% if request.path == '/report_mail/' or request.path == '/add/report/' or '/edit/report/' in request.path  %}active{% endif %}">
+                    <img src="{% static 'img/decrees.png' %}" alt="Report Mail" class="dbutton-icon"> 
+                    التقارير
+                </button>
+            </a>
             <a href="{% url 'manage_sections' model_name='departments' %}">
                 <button class="{% if '/manage-sections/' in request.path %}active{% endif %}">
                     <img src="{% static 'img/settings.png' %}" alt="Settings" class="dbutton-icon"> 

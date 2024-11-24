@@ -139,6 +139,7 @@ body {
     transition: width 0.5s ease-in-out;
     overflow: hidden;
     flex-grow: 0;
+    box-shadow: -10px 0 5px -12px rgba(81, 81, 81, 0.5); /* Left-pointing shadow */
 }
 
 .sidebar.collapsed {
@@ -147,9 +148,9 @@ body {
 }
 
 .sidebar button {
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 600;
-    padding: 30px 10px;
+    padding: 10px 10px;
     text-align: right;
     background-color: white;
     color: black;
@@ -162,7 +163,7 @@ body {
 
 /* Sidebar Icons */
 .dbutton-icon {
-    width: 27px;
+    width: 23px;
     height: auto;
     margin-right: 0px;
     margin-left: 4px;
@@ -171,7 +172,7 @@ body {
 }
 
 .sidebar button:hover {
-    font-size: 24px;
+    font-size: 22px;
     transition: font-size 0.3s;
     background-color: #e8e8e8;
 }
@@ -180,29 +181,29 @@ body {
     background-color: var(--body);
     transition: background-color 0.2s, font-size 0.3s;
     font-weight: bold;
-    font-size: 24px;
+    font-size: 22px;
     pointer-events: none; /* Disables all mouse interactions */
 }
 
 @media (max-width: 1280px) {
     .sidebar button {
-        font-size: 20px; /* Reduce font size */
+        font-size: 18px; /* Reduce font size */
         overflow: hidden;
     }
     .sidebar button:hover {
-        font-size: 21px; /* Reduce font size */
+        font-size: 20px; /* Reduce font size */
     }
     .sidebar button.active {
-        font-size: 21px; /* Reduce font size */
+        font-size: 20px; /* Reduce font size */
     }
     .dbutton-icon {
-        width: 24px;
+        width: 20px;
         height: auto;
         margin-left: 0px;
     }
 }    
 
-@media (max-width: 1110px) {
+@media (max-width: 1000px) {
     .sidebar {
         width: 0; /* Start collapsed on small screens */
         overflow: hidden;
@@ -368,6 +369,6 @@ td:last-child, th:last-child {
 /* Pagination styles */
 .pagination {
     display: flex;
-    justify-content:center;
-    margin: 20px 0;
+    margin: 10px 0;
+    --bs-pagination-active-bg: var(--htitle)
 }

@@ -1,6 +1,6 @@
 from django import forms
 import re
-from .models import Outgoing, Incoming, Internal, Decree, Department, Affiliate, Minister, Government
+from .models import Outgoing, Incoming, Internal, Decree, Department, Affiliate, Minister, Government, Report
 
 
 class DepartmentForm(forms.ModelForm):
@@ -80,7 +80,7 @@ class AddOutgoingForm(forms.ModelForm):
         fields = ['number', 'date', 'dept_from', 'dept_to', 'title', 'keywords', 'pdf_file']
         labels = {
             'number': 'رقم الرسالة:',
-            'date': 'تاريخ الرسالة: (يوم/شهر/سنة)',
+            'date': 'تاريخ الرسالة: (يوم-شهر-سنة)',
             'dept_from': 'من (إدارة):',
             'dept_to': 'إلى (جهة):',
             'title': 'العنوان:',
@@ -127,13 +127,6 @@ class AddOutgoingForm(forms.ModelForm):
         }
 
 
-    def clean_number(self):
-        number = self.cleaned_data.get('number')
-        if number and not re.match(r'^\d{1}/\d{2}/\d{4}$', number):
-            self.add_error('number', "Number must be in the format #/##/####.")
-        return number
-    
-
 class AddIncomingForm(forms.ModelForm):
     """Form for creating or updating incoming mail."""
     
@@ -143,8 +136,8 @@ class AddIncomingForm(forms.ModelForm):
         labels = {
             'number': 'رقم التسجيل:',
             'orig_number': 'رقم الرسالة الإشاري:',
-            'date': 'تاريخ التسجيل: (يوم/شهر/سنة)',
-            'orig_date': 'تاريخ الرسالة: (يوم/شهر/سنة)',
+            'date': 'تاريخ التسجيل: (يوم-شهر-سنة)',
+            'orig_date': 'تاريخ الرسالة: (يوم-شهر-سنة)',
             'dept_from': 'من (جهة):',
             'dept_to': 'إلى (إدارة):',
             'title': 'العنوان:',
@@ -165,14 +158,14 @@ class AddIncomingForm(forms.ModelForm):
                 'autocomplete': 'off'
             }),
             'date': forms.DateInput(attrs={
-                'class': 'form-control form-control-md',
+                'class': 'form-control form-control-md dateclass',
                 'placeholder': '',
                 'type': 'date',
                 'required': 'required',
                 'autocomplete': 'off'
             }),
             'orig_date': forms.DateInput(attrs={
-                'class': 'form-control form-control-md',
+                'class': 'form-control form-control-md dateclass',
                 'placeholder': '',
                 'type': 'date',
                 'required': 'required',
@@ -212,7 +205,7 @@ class AddInternalForm(forms.ModelForm):
         fields = ['number', 'date', 'dept_from', 'dept_to', 'title', 'keywords', 'pdf_file']
         labels = {
             'number': 'رقم الرسالة:',
-            'date': 'تاريخ الرسالة: (يوم/شهر/سنة)',
+            'date': 'تاريخ الرسالة: (يوم-شهر-سنة)',
             'dept_from': 'من:',
             'dept_to': 'إلى:',
             'title': 'العنوان:',
@@ -268,7 +261,7 @@ class AddDecreeForm(forms.ModelForm):
         fields = ['number', 'date', 'minister', 'government', 'title', 'keywords', 'pdf_file', 'attach']
         labels = {
             'number': 'رقم القرار:',
-            'date': 'تاريخ القرار: (يوم/شهر/سنة)',
+            'date': 'تاريخ القرار: (يوم-شهر-سنة)',
             'minister': 'الوزير:',
             'government': 'الحكومة:',
             'title': 'العنوان:',
@@ -316,6 +309,48 @@ class AddDecreeForm(forms.ModelForm):
                 'class': 'form-control'
             }),
             'attach': forms.ClearableFileInput(attrs={
+                'class': 'form-control'
+            }),
+        }
+
+
+class AddReportForm(forms.ModelForm):
+    """Form for creating or updating a decree."""
+    
+    class Meta:
+        model = Report
+        fields = ['number', 'date', 'title', 'keywords', 'pdf_file']
+        labels = {
+            'number': 'رقم الوثيقة:',
+            'date': 'تاريخ الوثيقة: (يوم-شهر-سنة)',
+            'title': 'العنوان:',
+            'keywords': 'الكلمات المفتاحية:',
+            'pdf_file': 'ملف PDF',
+        }
+        widgets = {
+            'number': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': '',
+                'autocomplete': 'off'
+            }),
+            'date': forms.DateInput(attrs={
+                'class': 'form-control form-control-lg',
+                'placeholder': '',
+                'type': 'date',
+                'required': 'required',
+                'autocomplete': 'off'
+            }),
+            'title': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': '',
+                'required': 'required'
+            }),
+            'keywords': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': '',
+                'style': 'height: 150px;'
+            }),
+            'pdf_file': forms.ClearableFileInput(attrs={
                 'class': 'form-control'
             }),
         }

@@ -42,25 +42,16 @@
                         <td>{{ item.id }}</td>
                         <td>{{ item.name }}</td>
                         <td>
-                            <a href="?tab={{ model.name }}&id={{ item.id }}" class="btn btn-sm btn-warning">Edit</a>
+                            <a href="?tab={{ model.name }}&id={{ item.id }}" class="btn btn-outline-primary">تعديل</a>
                         </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
-    
+
             <!-- Pagination Controls -->
             <nav aria-label="Page navigation">
-                <ul class="pagination">
-                    {% if page_obj.has_previous %}
-                        <li class="page-item">
-                            <a href="?{{ current_tab }}_page=1&tab={{ current_tab }}" class="page-link" aria-label="First">الاولى</a>
-                        </li>
-                        <li class="page-item">
-                            <a href="?{{ current_tab }}_page={{ page_obj.previous_page_number }}&tab={{ current_tab }}" class="page-link" aria-label="Previous">السابق</a>
-                        </li>
-                    {% endif %}
-
+                <ul class="pagination pagination-sm">
                     {% for num in page_obj.paginator.page_range %}
                         {% if page_obj.number == num %}
                             <li class="page-item active" aria-current="page">
@@ -72,15 +63,6 @@
                             </li>
                         {% endif %}
                     {% endfor %}
-
-                    {% if page_obj.has_next %}
-                        <li class="page-item">
-                            <a href="?{{ current_tab }}_page={{ page_obj.next_page_number }}&tab={{ current_tab }}" class="page-link" aria-label="Next">التالي</a>
-                        </li>
-                        <li class="page-item">
-                            <a href="?{{ current_tab }}_page={{ page_obj.paginator.num_pages }}&tab={{ current_tab }}" class="page-link" aria-label="Last">الاخير</a>
-                        </li>
-                    {% endif %}
                 </ul>
             </nav>
         </div>  <!-- Close the tab-pane div -->

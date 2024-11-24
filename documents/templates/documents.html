@@ -54,8 +54,8 @@
             <th>التاريخ</th>
             <th>العنوان</th>
             {% if model_name == 'incoming' %}
-                <th>رقم الاصل</th>
-                <th>تاريخ الاصل</th>
+                <th>رقم الرسالة</th>
+                <th>تاريخ الرسالة</th>
                 <th>من</th>
                 <th>الى</th>
             {% elif model_name == 'outgoing' %}
@@ -134,10 +134,14 @@
 <!-- Pagination Controls -->
 <nav aria-label="Page navigation">
     <div class="pagination-container">
-        <div class="pagination">
+        <div class="pagination pagination-sm justify-content-center">
             {% if page_obj.has_previous %}
-                <a href="?page=1&sort={{ sort_option }}" class="page-link" aria-label="First">الاولى</a>
-                <a href="?page={{ page_obj.previous_page_number }}&sort={{ sort_option }}" class="page-link" aria-label="Previous">السابق</a>
+                <a href="?page=1&sort={{ sort_option }}" class="page-link" aria-label="First">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+                <a href="?page={{ page_obj.previous_page_number }}&sort={{ sort_option }}" class="page-link" aria-label="Previous">
+                    <span aria-hidden="true">&lt;</span>
+                </a>
             {% endif %}
             
             {% for num in page_obj.paginator.page_range %}
@@ -151,8 +155,12 @@
             {% endfor %}
 
             {% if page_obj.has_next %}
-                <a href="?page={{ page_obj.next_page_number }}&sort={{ sort_option }}" class="page-link" aria-label="Next">التالي</a>
-                <a href="?page={{ page_obj.paginator.num_pages }}&sort={{ sort_option }}" class="page-link" aria-label="Last">الاخير</a>
+                <a href="?page={{ page_obj.next_page_number }}&sort={{ sort_option }}" class="page-link" aria-label="Next">
+                    <span aria-hidden="true">&gt;</span>
+                </a>
+                <a href="?page={{ page_obj.paginator.num_pages }}&sort={{ sort_option }}" class="page-link" aria-label="Last">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
             {% endif %}
         </div>
     </div>
