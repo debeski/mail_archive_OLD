@@ -185,7 +185,7 @@ body {
     pointer-events: none; /* Disables all mouse interactions */
 }
 
-@media (max-width: 1280px) {
+@media (max-width: 1200px) {
     .sidebar button {
         font-size: 18px; /* Reduce font size */
         overflow: hidden;
@@ -273,17 +273,16 @@ label {
 /* Header Row Style */
 th {
     background-color: #f9f9f9;
-    color: #333;
-    font-weight: 700;
+    color: #222;
+    font-weight: 600;
     text-align: right;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
     border-bottom: 1px solid #e0e0e0;
     font-size: 20px;
 }
 
 /* All Cells Style */
 th, td {
-    padding: 10px 15px; /* Increased padding for cells */
+    padding: 7px 10px; /* Increased padding for cells */
     cursor: default;
 }
 
@@ -291,11 +290,12 @@ th, td {
 td {
     text-align: right;
     color: #666;
-    max-width: 300px;
+    max-width: 250px;
+    min-width: 60px;
     overflow: hidden;
     text-overflow: ellipsis; /* Show ellipsis (...) */
     white-space: nowrap; /* Prevent wrapping */
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 600;
 }
 
@@ -309,14 +309,14 @@ tr:nth-child(odd) {
 
 /* Hover effect for rows */
 tr:hover {
-    background-color: #f1f1f1; /* Slightly darker grey on hover */
+    background-color: #eeeeee; /* Slightly darker grey on hover */
 }
 
 /* Action column adjustments */
 td:last-child, th:last-child {
-    width: 200px; /* Allow flexibility */
-    min-width: 110px;
-    padding: 4px 4px;
+    width: 150px; /* Allow flexibility */
+    min-width: 100px;
+    padding: 4px 0px;
 }
 
 /* Action Column Container */
@@ -330,7 +330,7 @@ td:last-child, th:last-child {
 /* Action Icon Styles */
 .action-icon {
     width: auto;
-    height: 40px;
+    height: 32px;
     display: flex; /* Ensure the icon img is centered */
     justify-content: center; /* Center the image */
     align-items: center; /* Center the image */
@@ -371,4 +371,26 @@ td:last-child, th:last-child {
     display: flex;
     margin: 10px 0;
     --bs-pagination-active-bg: var(--htitle)
+}
+
+
+#documentModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#modalContent {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 800px;
+    display: flex;
 }

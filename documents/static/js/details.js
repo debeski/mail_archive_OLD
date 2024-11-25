@@ -1,8 +1,5 @@
 // (( Document Sorting Functions ))
 
-let currentSort = 'updated_at';  // Set default sort to updated_at
-let currentOrder = 'desc';        // Default order
-
 function setSort(sortOption) {
     // Check if the option clicked is the current sort option
     if (currentSort === sortOption) {
@@ -23,13 +20,20 @@ function setSort(sortOption) {
 
 function updateSortIndicators() {
     // Reset all arrows
-    document.getElementById('dateArrow').innerHTML = '';
-    document.getElementById('numberArrow').innerHTML = '';
-    document.getElementById('titleArrow').innerHTML = '';
-    document.getElementById('updatedAtArrow').innerHTML = '';
+    const dateArrow = document.getElementById('dateArrow');
+    const numberArrow = document.getElementById('numberArrow');
+    const titleArrow = document.getElementById('titleArrow');
+    const updatedAtArrow = document.getElementById('updatedAtArrow');
+
+
+    if (dateArrow) dateArrow.innerHTML = '';
+    if (numberArrow) numberArrow.innerHTML = '';
+    if (titleArrow) titleArrow.innerHTML = '';
+    if (updatedAtArrow) updatedAtArrow.innerHTML = '';
 
     // Set arrow direction based on current sort
     const arrow = currentOrder === 'desc' ? '▼' : '▲';
+
     if (currentSort === 'date') {
         document.getElementById('dateArrow').innerHTML = arrow;
     } else if (currentSort === 'number') {
@@ -61,177 +65,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
-// Initialize flatpickr for the date fields
-document.addEventListener('DOMContentLoaded', function() {
-    flatpickr("#id_date", {
-        dateFormat: "Y-m-d", // Day-Month-Year format
-        locale: {
-            firstDayOfWeek: 7, // Start week on Sunday
-            dir: "rtl", // Right-to-left support
-            weekdays: {
-                shorthand: ["أحد", "اثنين", "ثلاثاء", "أربعاء", "خميس", "جمعة", "سبت"], // Arabic week day names
-                longhand: ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"] // Full day names
-            },
-            months: {
-                shorthand: ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"], // Arabic month names
-                longhand: ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"] // Full month names
-            }
-        },
-        allowInput: true, // Allow user input
-    });
-
-    // Initialize flatpickr for the orig_date field
-    flatpickr("#id_orig_date", {
-        dateFormat: "Y-m-d", // Day-Month-Year format
-        locale: {
-            firstDayOfWeek: 7, // Start week on Sunday
-            dir: "rtl", // Right-to-left support
-            weekdays: {
-                shorthand: ["أحد", "اثنين", "ثلاثاء", "أربعاء", "خميس", "جمعة", "سبت"], // Arabic week day names
-                longhand: ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"] // Full day names
-            },
-            months: {
-                shorthand: ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"], // Arabic month names
-                longhand: ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"] // Full month names
-            }
-        },
-        allowInput: true, // Allow user input
-    });
-});
-
-
-
-// (( DateField Input Correction Functions ))
-// Function to transform date from YYYY-MM-DD to DD-MM-YYYY format
-function transformDateToDDMMYYYY(ids) {
-    ids.forEach(id => {
-        let input = document.getElementById(id);  // Reference to the date field by ID
-        if (!input) return; // Skip if the input is not found
-        
-        let dateValue = input.value.trim();
-
-        // If input is empty, do nothing
-        if (dateValue === '') {
-            return;
-        }
-
-        // Check if the date is in YYYY-MM-DD format
-        let isoDateRegex = /^\d{4}-\d{2}-\d{2}$/; // YYYY-MM-DD format
-        if (isoDateRegex.test(dateValue)) {
-            // If in correct format, convert to DD-MM-YYYY
-            let parts = dateValue.split('-');
-            let day = parts[2].padStart(2, '0');  // Ensure two digits for day
-            let month = parts[1].padStart(2, '0');  // Ensure two digits for month
-            input.value = `${day}-${month}-${parts[0]}`;
-        }
-    });
-}
-
-// Function to transform date from DD-MM-YYYY to YYYY-MM-DD format
-function transformDateToYYYYMMDD(ids) {
-    ids.forEach(id => {
-        let input = document.getElementById(id);  // Reference to the date field by ID
-        if (!input) return; // Skip if the input is not found
-        
-        let dateValue = input.value.trim();
-
-        // Check if the date is in DD-MM-YYYY format
-        let dateRegex = /^(\d{1,2})-(\d{1,2})-(\d{4})$/; // DD-MM-YYYY format
-        let match = dateValue.match(dateRegex);
-
-        if (match) {
-            // Ensure two digits for day and month, and four digits for year
-            let day = match[1].padStart(2, '0');   // Ensure two digits for day
-            let month = match[2].padStart(2, '0'); // Ensure two digits for month
-            let year = match[3];                   // Year is already in the correct format
-
-            // Set the input value to YYYY-MM-DD format
-            input.value = `${year}-${month}-${day}`;
-        }
-    });
-}
-
-// Function to automatically add dashes to date field only if they are not already present
-function autoAddDashes(ids) {
-    ids.forEach(id => {
-        let input = document.getElementById(id);  // Reference to the date field by ID
-        if (!input) return; // Skip if the input is not found
-        
-        let dateValue = input.value.trim();
-
-        // Check if the value already contains more than 1 dash (indicating proper formatting already exists)
-        let dashCount = (dateValue.match(/-/g) || []).length;
-        if (dashCount >= 2) {
-            return;  // Skip adding dashes if they are already present
-        }
-
-        // Remove any non-digit characters
-        dateValue = dateValue.replace(/\D/g, ''); 
-
-        // Automatically add dashes as the user types (DD-MM-YYYY)
-        if (dateValue.length <= 2) {
-            input.value = dateValue; // Only day
-        } else if (dateValue.length <= 4) {
-            input.value = dateValue.slice(0, 2) + '-' + dateValue.slice(2); // DD-MM
-        } else if (dateValue.length <= 6) {
-            input.value = dateValue.slice(0, 2) + '-' + dateValue.slice(2, 4) + '-' + dateValue.slice(4); // DD-MM-YYYY
-        } else {
-            input.value = dateValue.slice(0, 2) + '-' + dateValue.slice(2, 4) + '-' + dateValue.slice(4, 8); // Limit to 8 digits
-        }
-    });
-}
-
-// Function to validate date value
-function isValidDate(day, month, year) {
-    const currentYear = new Date().getFullYear();
-    if (year < 1900 || year > currentYear) return false;
-    if (month < 1 || month > 12) return false;
-    const daysInMonth = new Date(year, month, 0).getDate();
-    return day >= 1 && day <= daysInMonth;
-}
-
-// Function to validate the date input
-function validateDateInput(input) {
-    const dateValue = input.value.trim();
-    const dateRegex = /^(\d{1,2})-(\d{1,2})-(\d{4})$/; // DD-MM-YYYY format
-    const match = dateValue.match(dateRegex);
-
-    if (match) {
-        const day = parseInt(match[1], 10);
-        const month = parseInt(match[2], 10);
-        const year = parseInt(match[3], 10);
-
-        // Validate the date
-        if (!isValidDate(day, month, year)) {
-            alert("Please enter a valid date.");
-            input.value = ""; // Optionally clear the input
-        }
-    }
-}
-
-// event listeners to the date field
-document.addEventListener('DOMContentLoaded', function () {
-    const dateIds = ['id_date', 'id_orig_date']; // IDs
-    const dateInputs = dateIds.map(id => document.getElementById(id));
-
-    dateInputs.forEach(input => {
-    // Trigger conversion to DD-MM-YYYY when the field is focused
-        input.addEventListener('focus', () => transformDateToDDMMYYYY(dateIds));
-
-        // Trigger conversion to YYYY-MM-DD when the field loses focus (blur event)
-        input.addEventListener('blur', () => transformDateToYYYYMMDD(dateIds));
-
-        // Add listener for input change to automatically add dashes only if necessary
-        input.addEventListener('input', () => autoAddDashes(dateIds));
-
-        input.addEventListener('input', function () {
-            validateDateInput(input);
-        });
-    });
-});
-
-
-
 // Main Search Function
 function searchDocuments() {
     const input = document.getElementById('search-input');
@@ -256,6 +89,7 @@ function searchDocuments() {
         rows[i].style.display = rowContainsSearchTerm ? '' : 'none';
     }
 }
+
 
 
 // Delete Function
@@ -311,6 +145,63 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     };
 });
+
+
+
+function viewDocumentDetails(button) {
+    // Get the row of the clicked button
+    const row = button.closest('tr');
+    const Number = row.cells[0].innerText;
+    const Date = row.cells[1].innerText;
+    const documentTitle = row.cells[2].innerText;
+    const pdfFile = row.dataset.pdfFile; // Assuming you have a data attribute for the PDF file
+    const objectId = row.dataset.objectId; // Assuming you have a data attribute for the object ID
+
+    // Populate modal fields
+    document.getElementById('modal-title').innerText = documentTitle;
+    document.getElementById('modal-number').innerText = `رقم الرسالة: ${Number}`;
+    document.getElementById('modal-date').innerText = `التاريخ: ${Date}`;
+    
+    // Set the download link
+    const modelName = 'your_model_name'; // Replace with your actual model name
+    const downloadLink = document.getElementById('download-link');
+    downloadLink.href = `{% url 'download_document' model_name=modelName object_id='${objectId}' %}`; // Set the href dynamically
+
+    // Check if a PDF file is available
+    const pdfContainer = document.getElementById('pdfPreviewContainer');
+    pdfContainer.innerHTML = ''; // Clear previous content
+
+    if (pdfFile) {
+        const loadingTask = pdfjsLib.getDocument(pdfFile);
+        loadingTask.promise.then(pdf => {
+            return pdf.getPage(1);
+        }).then(page => {
+            const scale = 1.5;
+            const viewport = page.getViewport({ scale });
+            const canvas = document.createElement('canvas');
+            pdfContainer.appendChild(canvas);
+            const context = canvas.getContext('2d');
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+
+            const renderContext = {
+                canvasContext: context,
+                viewport: viewport
+            };
+            return page.render(renderContext).promise;
+        }).catch(err => {
+            console.error('Error loading PDF:', err);
+        });
+    } else {
+        pdfContainer.innerHTML = '<p>لا يوجد ملف PDF متاح.</p>';
+    }
+
+    // Show the modal
+    const modal = document.getElementById('documentModal');
+    modal.style.display = 'block';
+}
+
+
 
 
 

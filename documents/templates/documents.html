@@ -102,9 +102,14 @@
             {% endif %}
             <td>
                 <div class="action-container">
-                    <a href="#" onclick="openDocumentDetails('{{ document.model_type }}', {{ document.id }})" class="action-icon" title="عرض">
+                    <a href="#" 
+                        data-model-type="{{ document.model_type }}" 
+                        data-document-id="{{ document.id }}" 
+                        class="action-icon" 
+                        title="عرض" 
+                        onclick="viewDocumentDetails(this); return false;">
                         <img src="{% static 'img/view.png' %}" alt="View" class="icon">
-                    </a>
+                     </a>
                     {% if has_file %}
                         <a href="{% url 'download_document' model_name=model_name object_id=document.id %}" class="action-icon" title="تحميل">
                             <img src="{% static 'img/pdf.png' %}" alt="Download" class="icon">
@@ -166,6 +171,20 @@
     </div>
 </nav>
 
+<!-- Popup Modal for Document Details -->
+<div id="documentModal" style="display:none;">
+    <div id="modalContent">
+        <div id="pdfPreviewContainer" style="width: 50%; float: left;"></div>
+        <div id="documentDetails" style="width: 45%; float: right;">
+            <h3 id="modal-title"></h3>
+            <p id="modal-number"></p>
+            <p id="modal-date"></p>
+            <p id="modal-keywords"></p> <!-- Keywords will be shown here -->
+            <a id="download-link" href="#" class="btn btn-primary" target="_blank">تحميل PDF</a> <!-- Download link -->
+        </div>
+    </div>
+</div>
+
 <!-- Delete Confirmation Modal -->
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -183,4 +202,7 @@
         </div>
     </div>
 </div>
+
+<script src="{% static 'js/details.js' %}" defer></script>
 {% endblock %}
+

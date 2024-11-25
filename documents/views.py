@@ -263,12 +263,12 @@ def document_view(request, model_name):
             Q(title__icontains=search_term) | 
             Q(date__icontains=search_term) | 
             Q(number__icontains=search_term) | 
-            Q(updated_at__icontains=search_term)  # Adjust fields as necessary
+            Q(updated_at__icontains=search_term)
         )
 
     # Determine sort option and order
-    sort_option = request.GET.get('sort', 'updated_at')  # Default sort by updated_at
-    order = request.GET.get('order', 'desc')  # Default order is descending
+    sort_option = request.GET.get('sort', 'updated_at')  # Default sort
+    order = request.GET.get('order', 'desc')  # Default order
 
     if sort_option == 'date':
         documents = documents.order_by('-date' if order == 'desc' else 'date')
@@ -280,7 +280,7 @@ def document_view(request, model_name):
         documents = documents.order_by('-updated_at' if order == 'desc' else 'updated_at')
 
     # Pagination setup
-    paginator = Paginator(documents, 10)  # Show 10 documents per page
+    paginator = Paginator(documents, 15)
     page_number = request.GET.get('page', 1)  # Default to first page
     page_obj = paginator.get_page(page_number)
 

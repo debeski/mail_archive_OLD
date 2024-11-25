@@ -53,7 +53,7 @@
             </a>
             <a href="{% url 'document_view' model_name='report' %}">
                 <button class="{% if request.path == '/report_mail/' or request.path == '/add/report/' or '/edit/report/' in request.path  %}active{% endif %}">
-                    <img src="{% static 'img/decrees.png' %}" alt="Report Mail" class="dbutton-icon"> 
+                    <img src="{% static 'img/report.png' %}" alt="Report Mail" class="dbutton-icon"> 
                     التقارير
                 </button>
             </a>
@@ -81,7 +81,6 @@
     <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.js"></script>
     <script src="{% static 'js/flatpickr.js' %}"></script>
     <script src="{% static 'js/bootstrap.bundle.js' %}"></script>
-    <script src="{% static 'js/details.js' %}"></script>
-    <script src="{% static 'js/pdf.js' %}"></script>
+    <script src="{% static 'pdfjs\build\pdf.mjs' %}"></script>
 </body>
 </html>
