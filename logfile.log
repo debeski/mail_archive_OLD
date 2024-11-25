@@ -42,3 +42,24 @@ INFO 2024-11-25 15:34:24,780 basehttp "GET /report_mail/ HTTP/1.1" 200 11555
 INFO 2024-11-25 15:34:34,356 basehttp "GET /decree_mail/ HTTP/1.1" 200 8350
 INFO 2024-11-25 15:34:36,013 basehttp "GET /add/decree/ HTTP/1.1" 200 6784
 INFO 2024-11-25 15:34:57,271 basehttp "GET /decree_mail/ HTTP/1.1" 200 8350
+INFO 2024-11-25 16:10:26,880 autoreload Watching for file changes with StatReloader
+INFO 2024-11-25 16:10:34,776 basehttp "GET /decree_mail/ HTTP/1.1" 200 8350
+INFO 2024-11-25 16:10:34,828 basehttp "GET /static/css/flatpickr.css HTTP/1.1" 200 20981
+INFO 2024-11-25 16:10:34,838 basehttp "GET /static/css/style.css HTTP/1.1" 200 8899
+INFO 2024-11-25 16:10:34,857 basehttp "GET /static/css/bootstrap.rtl.css HTTP/1.1" 200 280259
+INFO 2024-11-25 16:10:34,905 basehttp "GET /static/img/outgoing-mail.png HTTP/1.1" 200 27599
+INFO 2024-11-25 16:10:34,924 basehttp "GET /static/fonts/Shabwa.ttf HTTP/1.1" 200 51148
+INFO 2024-11-25 16:10:34,943 basehttp "GET /static/fonts/Shabwa-Medium.ttf HTTP/1.1" 200 51776
+INFO 2024-11-25 16:10:34,949 basehttp "GET /static/pdfjs/build/pdf.mjs HTTP/1.1" 200 628531
+INFO 2024-11-25 16:10:34,960 basehttp "GET /static/fonts/Shabwa-Bold.ttf HTTP/1.1" 200 49452
+INFO 2024-11-25 16:10:34,964 basehttp "GET /static/img/settings.png HTTP/1.1" 200 21053
+INFO 2024-11-25 16:10:34,970 basehttp "GET /static/img/incoming-mail.png HTTP/1.1" 200 27510
+INFO 2024-11-25 16:10:34,983 basehttp "GET /static/img/internal-mail.png HTTP/1.1" 200 12268
+INFO 2024-11-25 16:10:35,000 basehttp "GET /static/img/decrees.png HTTP/1.1" 200 15258
+INFO 2024-11-25 16:10:35,020 basehttp "GET /static/img/report.png HTTP/1.1" 200 15471
+INFO 2024-11-25 16:10:35,034 basehttp "GET /static/js/flatpickr.js HTTP/1.1" 200 89905
+INFO 2024-11-25 16:10:35,049 basehttp "GET /static/js/details.js HTTP/1.1" 200 9331
+INFO 2024-11-25 16:10:35,050 basehttp "GET /static/js/bootstrap.bundle.js HTTP/1.1" 200 207819
+INFO 2024-11-25 16:10:35,132 basehttp "GET /static/pdfjs/build/pdf.mjs HTTP/1.1" 200 628531
+WARNING 2024-11-25 16:10:35,745 log Not Found: /favicon.ico
+WARNING 2024-11-25 16:10:35,746 basehttp "GET /favicon.ico HTTP/1.1" 404 4430

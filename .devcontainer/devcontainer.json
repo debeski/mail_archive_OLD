@@ -3,11 +3,8 @@
   "dockerFile": "Dockerfile",  // Path to the Dockerfile
   "context": "..",  // Path to the context (root of the project)
   "appPort": [8000],  // Expose port 8000 for Django
-  "runArgs": [
-    "--user", "root"  // Run as vscode user to avoid permission issues
-  ],
   "forwardPorts": [8000],  // Forward port 8000 for Django
-  "remoteUser": "root",  // Set the user to vscode to avoid permission issues
+  "remoteUser": "",  // Set the user to vscode to avoid permission issues
   "mounts": [
     "source=${localWorkspaceFolder}/.devcontainer/data,target=/workspace/.devcontainer/data,type=bind"  // Optional: bind mount any data
   ],
