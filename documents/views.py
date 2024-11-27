@@ -19,6 +19,9 @@ import zipfile
 from django.core.paginator import Paginator
 from django.db.models import Q
 from datetime import datetime, timedelta
+import plotly.graph_objects as go
+import plotly.express as px
+import pandas as pd
 
 
 
@@ -87,91 +90,161 @@ def get_model_and_form(model_name):
 
 
 
-# Chart Creation Function:
-def create_charts():
-    # Set font properties
-    rcParams['font.family'] = 'Arial'
-    rcParams['font.size'] = 12
+# def create_chart():
+#     # Define model names
+#     model_names = ['incoming', 'outgoing', 'internal', 'decree', 'report']
+#     years = range(2018, 2025)
+#     counts = {model: [] for model in model_names}
 
-    # Define the models to analyze
-    model_names = ['incoming', 'outgoing', 'internal', 'decree', 'report']
+#     # Create a Plotly figure
+#     fig = go.Figure()
+
+#     # Fetch counts and Arabic names using get_model_and_form
+#     for model_name in model_names:
+#         model, _, arabic_name, _ = get_model_and_form(model_name)  # Get the Arabic name directly
+        
+#         # Count documents for each year
+#         for year in years:
+#             count = model.objects.filter(date__year=year).count() or 0
+#             counts[model_name].append(count)
+
+#         # Add a bar for each model using the returned Arabic name directly
+#         fig.add_trace(go.Bar(
+#             name=arabic_name,  # Use the Arabic name directly here
+#             x=list(years),
+#             y=counts[model_name],
+#             width=0.1,
+#             offsetgroup=model_names.index(model_name)  # Offset by group
+#         ))
+
+#     # Update layout for RTL
+#     fig.update_layout(
+#         title=dict(text="عدد الوثائق حسب السنة", font=dict(size=30), automargin=True, yref='container'),
+#         title_x=0.55,  # Center the title
+#         xaxis_title='السنة',  # X-axis title in Arabic
+#         yaxis_title='عدد الوثائق',  # Y-axis title in Arabic
+#         barmode='group',
+#         xaxis=dict(tickvals=list(years), title_standoff=15),  # Set x-axis ticks to match years
+#         legend=dict(
+#             orientation='h',  # Horizontal legend
+#             x=0.5,  # Center horizontally
+#             xanchor='center',  # Anchor center
+#             y=-0.2,  # Position below the chart
+#             yanchor='top',
+#             indentation=100,
+#             itemtext=1
+#         ),
+#         autosize=True,  # Enable autosizing
+#         margin=dict(l=50, r=50, t=40, b=0),  # Set margins
+#         font=dict(family='Shabwa, sans-serif', size=16, color='black'),  # Font settings
+#     )
+
+#     # Convert the figure to HTML and return it
+#     return fig.to_html(full_html=False)
+
+def create_chart():
+    # Define model names
+    model_classes = [Incoming, Outgoing, Internal, Decree, Report]
     years = range(2018, 2025)
-    counts = {model: [] for model in model_names}
+    data = []
 
-    # Fetch counts using get_model_and_form
-    for model_name in model_names:
-        model, _, _, _ = get_model_and_form(model_name)
+    # Fetch counts and Arabic names using get_model_and_form
+    for model in model_classes:
+        arabic_name = model().get_model_name
+
+        # Count documents for each year
         for year in years:
-            counts[model_name].append(model.objects.filter(date__year=year).count() or 0)
+            count = model.objects.filter(date__year=year).count() or 0
+            data.append({'Year': year, 'Count': count, 'Model': arabic_name})
 
-    # Paths for chart files
-    bar_chart_path = os.path.join(settings.BASE_DIR, 'documents/static/chart', 'grouped_bar_chart.png')
-    pie_chart_path = os.path.join(settings.BASE_DIR, 'documents/static/chart', 'pie_chart.png')
+    # Create a DataFrame from the data
+    df = pd.DataFrame(data)
 
-    # Check if charts exist and if they are older than 1 hour
-    should_create_charts = True
-    if os.path.exists(bar_chart_path):
-        bar_chart_mtime = datetime.fromtimestamp(os.path.getmtime(bar_chart_path))
-        if datetime.now() - bar_chart_mtime < timedelta(hours=1):
-            should_create_charts = False
+    # Create a Plotly Express bar chart
+    fig = px.bar(
+        df,
+        x='Year',
+        y='Count',
+        color='Model',
+        barmode='group',
+        title='عدد الوثائق حسب السنة',
+        labels={'Year': 'السنة', 'Count': 'عدد الوثائق'},
+        text='Count',
+        hover_name='Model',
+        hover_data={'Model':False}
+    )
 
-    if not should_create_charts:
-        print("Charts have been generated within the last hour. Skipping chart generation.")
-        return
+    # Update layout for RTL
+    # Update layout for RTL
+    fig.update_layout(
+        selectdirection='h',
+        height=420,
+        title=dict(font=dict(size=30), automargin=True),
+        title_x=0.55,  # Center the title
+        xaxis_title='السنة',
+        yaxis_title='عدد الوثائق',
 
-    # Create a grouped bar chart
-    fig, ax = plt.subplots()
-    bar_width = 0.2
-    index = np.arange(len(years))
+        legend=dict(
+            orientation='h',
+            x=0.5,
+            xanchor='center',
+            y=-0.2,
+            yanchor='top'
+        ),
+        hoverlabel=dict(
+            align='auto',  # Align hover text to the right
+            bgcolor='rgba(255, 255, 255, 0.8)',  # Background color
+            bordercolor='black',  # Border color
+            font=dict(size=14, color='black')  # Font settings
+        ),
+        autosize=True,  # Enable autosizing
+        margin=dict(l=50, r=50, t=40, b=0),  # Set margins
+        font=dict(family='Shabwa, sans-serif', size=16, color='black'),  # Font settings
+    )
 
-    for i, model_name in enumerate(model_names):
-        ax.bar(index + i * bar_width, counts[model_name], bar_width, label=model_name.capitalize())
+    # Convert the figure to HTML and include the dynamic hover label script
+    chart_html = fig.to_html(full_html=False)
+    # JavaScript for dynamic hover label positioning
+    dynamic_hover_script = """
+    <script>
+        const myDiv = document.getElementById('myDiv');
+        myDiv.on('plotly_hover', function(eventData) {
+            const hoverLabel = document.querySelector('.hovertext'); // Select the hover label
+            if (hoverLabel) {
+                const mouseX = eventData.event.clientX; // Get mouse X position
+                const mouseY = eventData.event.clientY; // Get mouse Y position
 
-    ax.set_ylabel('Count', labelpad=10, fontsize=14, ha='right')
-    ax.set_xticks(index + bar_width * (len(model_names) - 1) / 2)
-    ax.set_xticklabels(years, ha='right')
-    ax.legend()
+                // Adjust hover label position
+                hoverLabel.style.left = `${mouseX + 30}px`; // Add small offset
+                hoverLabel.style.top = `${mouseY + 40}px`;  // Add small offset
+            }
+        });
+    </script>
+    """
 
-    # Save the grouped bar chart
-    plt.savefig(bar_chart_path, bbox_inches='tight')
-    plt.close(fig)
-
-    # Prepare data for the pie chart
-    total_counts = [sum(counts[model_name]) for model_name in model_names]
-    print("Total counts for pie chart before plotting:", total_counts)
-
-    if all(count == 0 for count in total_counts):
-        print("No data available for pie chart.")
-        return
-
-    total_counts = [0 if np.isnan(count) else count for count in total_counts]
-
-    # Create the pie chart
-    fig, ax = plt.subplots()
-    ax.pie(total_counts, labels=[model.capitalize() for model in model_names], autopct='%1.1f%%', startangle=90)
-    ax.axis('equal')  # Equal aspect ratio ensures the pie is drawn as a circle.
-
-    # Save the pie chart
-    plt.savefig(pie_chart_path)
-    plt.close(fig)
-
-    print("Charts generated successfully.")
-
+    return chart_html + dynamic_hover_script
 
 
 # Html & Chart Rendering Functions:
 def index(request):
-    create_charts()  # Generate charts before rendering the template
+    # Generate the chart HTML
+    chart_html = create_chart()  # Get the chart HTML
 
-    latest_documents = (
-        list(Incoming.objects.order_by('-created_at')[:5]) +
-        list(Outgoing.objects.order_by('-created_at')[:5]) +
-        list(Internal.objects.order_by('-created_at')[:5]) +
-        list(Decree.objects.order_by('-created_at')[:5])
-    )[:5]  # Combine and limit to the latest # documents
+    # Define model names based on the mapping in get_model_and_form
+    model_names = ['incoming', 'outgoing', 'internal', 'decree', 'report']
+    
+    latest_documents = []
+
+    for model_name in model_names:
+        model, _, _, _ = get_model_and_form(model_name)
+        latest_documents += list(model.objects.order_by('-created_at')[:5])
+
+    # Limit to the latest 5 documents across all models
+    latest_documents = sorted(latest_documents, key=lambda x: x.created_at, reverse=True)[:5]
 
     return render(request, 'index.html', {
         'latest_documents': latest_documents,
+        'chart_html': chart_html,  # Include the chart HTML in the context
     })
 
 

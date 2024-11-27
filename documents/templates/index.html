@@ -32,17 +32,12 @@
             {% endfor %}
         </tbody>
     </table>
-
-    <div class="row">
-        <div class="col-sm-5">
-            <h3>مخطط الأعمدة حسب السنوات</h3>
-            <img src="{% static 'chart/grouped_bar_chart.png' %}" alt="مخطط الأعمدة" class="img-fluid">
-        </div>
-        <div class="col-sm-5">
-            <h3>مخطط دائري حسب السنوات</h3>
-            <img src="{% static 'chart/pie_chart.png' %}" alt="مخطط دائري" class="img-fluid">
-        </div>
+  
+    <div class="container-fluid chart" id="myDiv" style="width: 100%; height: 100%;">
+        {{ chart_html|safe }}  <!-- Render the Plotly chart here -->
     </div>
 </div>
-
+<script src="{% static 'js/plotly-3.0.0-rc.0.js' %}" charset="utf-8"></script>
+<script src="{% static 'js/plotly-locale-ar.js' %}"></script>
+<script>Plotly.setPlotConfig({locale: 'ar'})</script>
 {% endblock %}

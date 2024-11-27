@@ -121,6 +121,7 @@ body {
     display: flex;
     flex-direction:column;
     flex-grow: 3;
+    margin: 15px; /* Combined margins for simplicity */
 }
 
 /* Index Container Design */
@@ -128,7 +129,13 @@ body {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    padding: 15px;
+}
+
+/* Chart Container Design */
+.chart{
+    flex-grow: 1;
+    margin-top: 20px;
+    margin-right: 7px;
 }
 
 /* Sidebar Design */
@@ -152,6 +159,7 @@ body {
     font-weight: 600;
     padding: 10px 10px;
     text-align: right;
+    text-shadow: -1px -1px 0 rgb(87, 87, 87);
     background-color: white;
     color: black;
     border: none;
@@ -159,6 +167,8 @@ body {
     transition: background-color 0.3s, font-size 0.3s;
     width: 100%;
     white-space: nowrap; /* Prevent text wrapping */
+    position: relative;
+
 }
 
 /* Sidebar Icons */
@@ -175,6 +185,10 @@ body {
     font-size: 22px;
     transition: font-size 0.3s;
     background-color: #e8e8e8;
+}
+
+.sidebar button:active{
+    transform: scale(0.95);
 }
 
 .sidebar button.active {
@@ -263,7 +277,6 @@ label {
 
 /* Table Container Design */
 .table-container {
-    margin: 10px 15px; /* Combined margins for simplicity */
     border-radius: 0px; /* Rounded corners */
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow */
     overflow: hidden; /* Ensure no overflow */
@@ -393,4 +406,14 @@ td:last-child, th:last-child {
     width: 80%;
     max-width: 800px;
     display: flex;
+}
+
+
+.hover {
+    direction: rtl;  /* Set direction to right-to-left */
+    text-anchor: end !important;
+}
+
+.legendtext{
+    text-anchor: end !important;
 }
