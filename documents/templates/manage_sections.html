@@ -33,6 +33,9 @@
                     <tr>
                         <th>ر.ت</th>
                         <th>اسم {{ arabic_names|get_item:model.name }}</th>  <!-- Use get_item filter -->
+                        {% if page_obj.0.government %}  <!-- Check if the first item has a government field -->
+                            <th>الحكومة</th>
+                        {% endif %}
                         <th>الاجراءات</th>
                     </tr>
                 </thead>
@@ -41,6 +44,15 @@
                     <tr>
                         <td>{{ item.id }}</td>
                         <td>{{ item.name }}</td>
+                        <td>
+                            {% if item.government.all %}
+                                {% for gov in item.government.all %}
+                                    {{ gov.name }}{% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
                         <td>
                             <a href="?tab={{ model.name }}&id={{ item.id }}" class="btn btn-outline-primary">تعديل</a>
                         </td>

@@ -7,7 +7,7 @@ urlpatterns = [
     # Setting Url
     path('manage-sections/<str:model_name>/', views.manage_sections, name='manage_sections'),
     # Unified Urls:
-    path('<str:model_name>_mail/', views.document_view, name='document_view'),
+    path('<str:model_name>/', views.document_view, name='document_view'),
 
     path('add/<str:model_name>/', views.add_document, name='add_document'),
     path('edit/<str:model_name>/<int:document_id>/', views.add_document, name='edit_document'),

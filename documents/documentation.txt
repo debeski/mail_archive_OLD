@@ -1,0 +1,14 @@
+(Views.py)
+
+Model Data Retrieval (get_model_data): This function provides all the necessary model data (documents, forms, related entities like ministers and governments) 
+for both the view rendering and filtering. It gives you access to everything you need for rendering the page and serializing data for AJAX responses.
+
+Document Filtering (filter_documents): This function applies the filtering logic to the documents based on the user's query parameters, allowing the view 
+to present the filtered documents based on the search criteria. It's a utility function to clean up and centralize filtering logic.
+
+Data Fetching (data_fetcher): data_fetcher takes over when an AJAX request is made, fetching documents and related data (like ministers and governments) 
+from the database. It applies optimizations, serializes the documents, and returns the data in JSON format. It's ideal for dynamic pages 
+that need to update without reloading the entire page (e.g., using JavaScript for filtering).
+
+File Checking (has_files): This function is used to determine if a document has files (such as PDFs or attachments). 
+It ensures that the correct file-related data is serialized in the data_fetcher response and provides logic to conditionally display file download links in templates.

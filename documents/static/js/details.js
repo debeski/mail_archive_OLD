@@ -1,58 +1,15 @@
-// (( Document Sorting Functions ))
 
-function setSort(sortOption) {
-    // Check if the option clicked is the current sort option
-    if (currentSort === sortOption) {
-        // Toggle order
-        currentOrder = currentOrder === 'desc' ? 'asc' : 'desc';
-    } else {
-        // Set new sort option and default to descending
-        currentSort = sortOption;
-        currentOrder = 'desc';
-    }
-
-    // Update the indicator for the dropdown
-    updateSortIndicators();
-
-    // Redirect to the sorted page
-    window.location.href = `?sort=${currentSort}&order=${currentOrder}`;
+function debounce(func, delay) {
+    let timeoutId;
+    return function(...args) {
+        if (timeoutId) {
+            clearTimeout(timeoutId); // Clear the previous timeout
+        }
+        timeoutId = setTimeout(() => {
+            func.apply(this, args); // Call the original function
+        }, delay);
+    };
 }
-
-function updateSortIndicators() {
-    // Reset all arrows
-    const dateArrow = document.getElementById('dateArrow');
-    const numberArrow = document.getElementById('numberArrow');
-    const titleArrow = document.getElementById('titleArrow');
-    const updatedAtArrow = document.getElementById('updatedAtArrow');
-
-
-    if (dateArrow) dateArrow.innerHTML = '';
-    if (numberArrow) numberArrow.innerHTML = '';
-    if (titleArrow) titleArrow.innerHTML = '';
-    if (updatedAtArrow) updatedAtArrow.innerHTML = '';
-
-    // Set arrow direction based on current sort
-    const arrow = currentOrder === 'desc' ? '▼' : '▲';
-
-    if (currentSort === 'date') {
-        document.getElementById('dateArrow').innerHTML = arrow;
-    } else if (currentSort === 'number') {
-        document.getElementById('numberArrow').innerHTML = arrow;
-    } else if (currentSort === 'title') {
-        document.getElementById('titleArrow').innerHTML = arrow;
-    } else if (currentSort === 'updated_at') {
-        document.getElementById('updatedAtArrow').innerHTML = arrow;
-    }
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    currentSort = urlParams.get('sort') || 'updated_at'; // Default to updated_at
-    currentOrder = urlParams.get('order') || 'desc';
-    updateSortIndicators();
-});
-
-
 
 // initialize tooltips for main document view:
 document.addEventListener('DOMContentLoaded', function () {
@@ -64,35 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
-
-// Main Search Function
-function searchDocuments() {
-    const input = document.getElementById('search-input');
-    const filter = input.value.toLowerCase();
-    const tableBody = document.getElementById('document-table-body');
-    const rows = tableBody.getElementsByTagName('tr');
-
-    for (let i = 0; i < rows.length; i++) {
-        const cells = rows[i].getElementsByTagName('td');
-        let rowContainsSearchTerm = false;
-
-        for (let j = 0; j < cells.length; j++) {
-            if (cells[j]) {
-                const cellValue = cells[j].textContent || cells[j].innerText;
-                if (cellValue.toLowerCase().indexOf(filter) > -1) {
-                    rowContainsSearchTerm = true;
-                    break;
-                }
-            }
-        }
-
-        rows[i].style.display = rowContainsSearchTerm ? '' : 'none';
-    }
-}
-
-
-
-// Delete Function
+// Delete Function:
 document.addEventListener('DOMContentLoaded', function() {
     let currentModelName;
     let currentDocumentId;
@@ -146,8 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 });
 
-
-
+// Details Pane:
 function viewDocumentDetails(button) {
     // Get the row of the clicked button
     const row = button.closest('tr');
@@ -163,7 +91,6 @@ function viewDocumentDetails(button) {
     document.getElementById('modal-date').innerText = `التاريخ: ${Date}`;
     
     // Set the download link
-    const modelName = 'your_model_name'; // Replace with your actual model name
     const downloadLink = document.getElementById('download-link');
     downloadLink.href = `{% url 'download_document' model_name=modelName object_id='${objectId}' %}`; // Set the href dynamically
 
@@ -200,65 +127,3 @@ function viewDocumentDetails(button) {
     const modal = document.getElementById('documentModal');
     modal.style.display = 'block';
 }
-
-
-
-
-
-// Obsolete Functions
-// document.querySelectorAll('td').forEach(cell => {
-//     if (cell.textContent.length > 75) {
-//         cell.classList.add('long-text'); // Add class for long text
-//     }
-// });
-
-
-// function upFileName() {
-//     const fileInput = document.getElementById('pdf_file');
-//     const fileNameSpan = document.getElementById('file-name');
-
-//     if (fileInput.files.length > 0) {
-//         fileNameSpan.innerText = fileInput.files[0].name; // Show selected file name
-//     } else {
-//         fileNameSpan.innerText = 'لا يوجد ملف مختار.'; // Default message
-//     }
-// }
-
-// Print the PDF document
-// function printDocument() {
-//     if (pdfDoc && pdfDoc.numPages > 0) {
-//         // Create a new window for printing
-//         const printWindow = window.open('', '_blank');
-//         const pdfUrl = pdfDoc.loadingTask.url; // Use the URL for the PDF file
-
-//         printWindow.document.write(`
-//             <iframe src="${pdfUrl}" style="width:100%; height:100%;" frameborder="0"></iframe>
-//         `);
-//         printWindow.document.close();
-//         printWindow.onload = function () {
-//             printWindow.print();
-//             printWindow.onafterprint = function () {
-//                 printWindow.close();
-//             };
-//         };
-//     } else {
-//         alert('No PDF available for printing.');
-//     }
-// }
-
-
-// // Handle scroll events to navigate pages
-// function handleScroll(event) {
-//     event.preventDefault(); // Prevent default scroll behavior
-
-//     if (event.deltaY < 0 && currentPage > 1) {
-//         // Scrolling up
-//         currentPage--;
-//         drawPage(currentPage);
-//     } else if (event.deltaY > 0 && pdfDoc && currentPage < pdfDoc.numPages) {
-//         // Scrolling down
-//         currentPage++;
-//         drawPage(currentPage);
-//     }
-// }
-

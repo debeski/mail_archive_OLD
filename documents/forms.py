@@ -53,20 +53,22 @@ class GovernmentForm(forms.ModelForm):
 
 
 class MinisterForm(forms.ModelForm):
+    government = forms.ModelMultipleChoiceField(
+        queryset=Government.objects.all(),
+        widget=forms.CheckboxSelectMultiple,  # Change to SelectMultiple if you prefer dropdown
+        required=True,
+        label='الحكومات'
+    )
+
     class Meta:
         model = Minister
-        fields = ['name', 'government']
+        fields = ['name', 'government']  # Use 'governments' instead of 'government'
         labels = {
             'name': 'اسم الوزير',
-            'government': 'الحكومة',
         }
         widgets = {
-            'title': forms.TextInput(attrs={
+            'name': forms.TextInput(attrs={
                 'class': 'form-control',
-                'required': 'required'
-            }),
-            'government': forms.Select(attrs={
-                'class': 'form-select',
                 'required': 'required'
             }),
         }

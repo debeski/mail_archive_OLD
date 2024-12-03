@@ -134,8 +134,7 @@ body {
 /* Chart Container Design */
 .chart{
     flex-grow: 1;
-    margin-top: 20px;
-    margin-right: 7px;
+    margin-top: 10px;
 }
 
 /* Sidebar Design */
@@ -266,17 +265,17 @@ label {
     gap: 1vw;
 }
 
-/* Search Input */
-#search-form{
-    transition: box-shadow 0.3s; /* Smooth transition */
-}
-
-#search-form:hover {
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.2); /* Stronger shadow */
-}
 
 /* Table Container Design */
+.results-container {
+    display: flex; /* Ensure it is a flex container */
+    flex-direction: column; /* Stack children vertically */
+    flex-grow: 1; /* Allow it to grow */
+    width: 100%; /* Set width to 100% to fill parent */
+}
+
 .table-container {
+    width: 100%; /* Make the table take up the full width of its container */
     border-radius: 0px; /* Rounded corners */
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow */
     overflow: hidden; /* Ensure no overflow */
@@ -408,11 +407,6 @@ td:last-child, th:last-child {
     display: flex;
 }
 
-
-.hover {
-    direction: rtl;  /* Set direction to right-to-left */
-    text-anchor: end !important;
-}
 
 .legendtext{
     text-anchor: end !important;

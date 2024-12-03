@@ -7,21 +7,14 @@ from django.apps import apps
 from .models import Incoming, Outgoing, Internal, Decree, Report, Department, Affiliate, Minister, Government
 import logging
 from django.utils import timezone
-import matplotlib
-matplotlib.use('Agg')
-from matplotlib import pyplot as plt
-from matplotlib import rcParams
-import numpy as np
-import os
-from django.conf import settings
 from io import BytesIO
 import zipfile
 from django.core.paginator import Paginator
 from django.db.models import Q
-from datetime import datetime, timedelta
-import plotly.graph_objects as go
 import plotly.express as px
 import pandas as pd
+from django.utils.http import urlencode
+
 
 
 
@@ -38,8 +31,8 @@ def log_action(action, model, object_id=None):
 
 
 
-# Function to map models, forms, and arabic names:
-def get_model_and_form(model_name):
+# Function to map models, forms, arabic names and data:
+def get_model_data(model_name):
     model_mapping = {
         'incoming': Incoming,
         'outgoing': Outgoing,
@@ -79,82 +72,58 @@ def get_model_and_form(model_name):
         'ministers': "الوزير",
     }
 
+    # Get model, form, and arabic names
     model = model_mapping.get(model_name.lower())
     form_class = form_mapping.get(model_name.lower())
     arabic_name = arabic_name_mapping.get(model_name.lower())
+    arabic_names = arabic_name_mapping
 
-    arabic_names = arabic_name_mapping  # Add this to pass the full dictionary for pluralization
+    # Initialize data
+    model_data = {
+        'documents': None,
+        'distinct_years': [],
+        'ministers': None,
+        'governments': None,
+    }
+    # Fill in the data
+    if model:
+        # Check if the model supports soft deletion
+        if hasattr(model, 'deleted_at'):
+            documents = model.objects.filter(deleted_at__isnull=True)
+        else:
+            documents = model.objects.all()  # No soft deletion
+        model_data['documents'] = documents
+
+        # Gather distinct years if the model has a date field
+        model_data['distinct_years'] = documents.dates('date', 'year') if hasattr(model, 'date') else []
+
+        # Gather ministers for the Decree model
+        if model.__name__.lower() == 'decree':
+            model_data['ministers'] = Minister.objects.all()
+
+        if model.__name__.lower() == 'decree':
+            model_data['governments'] = Government.objects.all()
 
 
-    return model, form_class, arabic_name, arabic_names
+
+    return model, form_class, arabic_name, arabic_names, model_data
 
 
 
-# def create_chart():
-#     # Define model names
-#     model_names = ['incoming', 'outgoing', 'internal', 'decree', 'report']
-#     years = range(2018, 2025)
-#     counts = {model: [] for model in model_names}
-
-#     # Create a Plotly figure
-#     fig = go.Figure()
-
-#     # Fetch counts and Arabic names using get_model_and_form
-#     for model_name in model_names:
-#         model, _, arabic_name, _ = get_model_and_form(model_name)  # Get the Arabic name directly
-        
-#         # Count documents for each year
-#         for year in years:
-#             count = model.objects.filter(date__year=year).count() or 0
-#             counts[model_name].append(count)
-
-#         # Add a bar for each model using the returned Arabic name directly
-#         fig.add_trace(go.Bar(
-#             name=arabic_name,  # Use the Arabic name directly here
-#             x=list(years),
-#             y=counts[model_name],
-#             width=0.1,
-#             offsetgroup=model_names.index(model_name)  # Offset by group
-#         ))
-
-#     # Update layout for RTL
-#     fig.update_layout(
-#         title=dict(text="عدد الوثائق حسب السنة", font=dict(size=30), automargin=True, yref='container'),
-#         title_x=0.55,  # Center the title
-#         xaxis_title='السنة',  # X-axis title in Arabic
-#         yaxis_title='عدد الوثائق',  # Y-axis title in Arabic
-#         barmode='group',
-#         xaxis=dict(tickvals=list(years), title_standoff=15),  # Set x-axis ticks to match years
-#         legend=dict(
-#             orientation='h',  # Horizontal legend
-#             x=0.5,  # Center horizontally
-#             xanchor='center',  # Anchor center
-#             y=-0.2,  # Position below the chart
-#             yanchor='top',
-#             indentation=100,
-#             itemtext=1
-#         ),
-#         autosize=True,  # Enable autosizing
-#         margin=dict(l=50, r=50, t=40, b=0),  # Set margins
-#         font=dict(family='Shabwa, sans-serif', size=16, color='black'),  # Font settings
-#     )
-
-#     # Convert the figure to HTML and return it
-#     return fig.to_html(full_html=False)
-
+# Function to create Chart for index:
 def create_chart():
     # Define model names
-    model_classes = [Incoming, Outgoing, Internal, Decree, Report]
-    years = range(2018, 2025)
+    model_classes = [Outgoing, Incoming, Internal, Decree, Report]
+    years = range(2008, 2025)
     data = []
 
-    # Fetch counts and Arabic names using get_model_and_form
+    # Fetch counts and Arabic names using get_model_name
     for model in model_classes:
         arabic_name = model().get_model_name
 
         # Count documents for each year
         for year in years:
-            count = model.objects.filter(date__year=year).count() or 0
+            count = model.objects.filter(date__year=year, deleted_at__isnull=True).count() or 0
             data.append({'Year': year, 'Count': count, 'Model': arabic_name})
 
     # Create a DataFrame from the data
@@ -175,24 +144,23 @@ def create_chart():
     )
 
     # Update layout for RTL
-    # Update layout for RTL
     fig.update_layout(
         selectdirection='h',
-        height=420,
+        height=370,
         title=dict(font=dict(size=30), automargin=True),
         title_x=0.55,  # Center the title
-        xaxis_title='السنة',
+        xaxis_title='',
         yaxis_title='عدد الوثائق',
 
         legend=dict(
             orientation='h',
             x=0.5,
             xanchor='center',
-            y=-0.2,
-            yanchor='top'
+            y=-0,
+            yanchor='bottom'
         ),
         hoverlabel=dict(
-            align='auto',  # Align hover text to the right
+            align='right',  # Align hover text to the right
             bgcolor='rgba(255, 255, 255, 0.8)',  # Background color
             bordercolor='black',  # Border color
             font=dict(size=14, color='black')  # Font settings
@@ -225,18 +193,19 @@ def create_chart():
     return chart_html + dynamic_hover_script
 
 
-# Html & Chart Rendering Functions:
+
+# Html & Chart Rendering Functions on main page only:
 def index(request):
     # Generate the chart HTML
     chart_html = create_chart()  # Get the chart HTML
 
-    # Define model names based on the mapping in get_model_and_form
+    # Define model names based on the mapping in get_model_data
     model_names = ['incoming', 'outgoing', 'internal', 'decree', 'report']
     
     latest_documents = []
 
     for model_name in model_names:
-        model, _, _, _ = get_model_and_form(model_name)
+        model, _, _, _, _ = get_model_data(model_name)
         latest_documents += list(model.objects.order_by('-created_at')[:5])
 
     # Limit to the latest 5 documents across all models
@@ -249,12 +218,12 @@ def index(request):
 
 
 
-# Sections Management:
+# Function for Sections Management:
 def manage_sections(request, model_name):
     current_tab = request.GET.get('tab', model_name)
 
     # Fetch model, form class, arabic name, and arabic names
-    model, form_class, arabic_name, arabic_names = get_model_and_form(current_tab)
+    model, form_class, arabic_name, arabic_names, _ = get_model_data(current_tab)
 
     # Wrap arabic_name in a dictionary if it’s a string
     if isinstance(arabic_name, str):
@@ -266,7 +235,7 @@ def manage_sections(request, model_name):
 
     # Handle form submission
     if request.method == 'POST' and form.is_valid():
-        form.save()
+        form.save()  # This will handle saving the many-to-many relationships
         return redirect('manage_sections', model_name=current_tab)
 
     # Fetch items for the current tab's model with pagination
@@ -294,86 +263,128 @@ def manage_sections(request, model_name):
 
 
 
-# Check for File Existence:
-def has_files(instance):
-    model_name = instance.__class__.__name__.lower()  # Get the model name in lowercase
-    model, _, _, _ = get_model_and_form(model_name)  # Use get_model_and_form to get the model
-
-    if model is None:
-        print(f"Model not found for instance: {instance}")
-        return False
-
-    # Check for files based on model type
-    if model_name == 'incoming' or model_name == 'outgoing' or model_name == 'internal' or model_name == 'report':
-        has_file = hasattr(instance, 'pdf_file') and bool(instance.pdf_file)
-        print(f"Checking {model_name.capitalize()}: {has_file} (pdf: {instance.pdf_file if has_file else 'N/A'})")
-        return has_file
-    elif model_name == 'decree':
-        pdf_file_exists = hasattr(instance, 'pdf_file') and bool(instance.pdf_file)
-        attach_exists = hasattr(instance, 'attach') and bool(instance.attach)
-        has_file = pdf_file_exists or attach_exists
-        print(f"Checking Decree: {has_file} (pdf: {pdf_file_exists}, attach: {attach_exists})")
-        return has_file
-
-    return False
-
-
-
-# General Html Mail Rendering Function:
 def document_view(request, model_name):
-    model, _, arabic_name, _ = get_model_and_form(model_name)
+    # Get model data
+    model, form_class, arabic_name, arabic_names, model_data = get_model_data(model_name)
 
-    if model is None:
-        return HttpResponseNotFound('Invalid model name')
-
-    # Get all instances of the specified model that are not soft deleted
-    documents = model.objects.filter(deleted_at__isnull=True)  # Filter out soft deleted documents
-
-    # Handle search query
-    search_term = request.GET.get('search', '').strip()
-    if search_term:
-        documents = documents.filter(
-            Q(title__icontains=search_term) | 
-            Q(date__icontains=search_term) | 
-            Q(number__icontains=search_term) | 
-            Q(updated_at__icontains=search_term)
-        )
-
-    # Determine sort option and order
-    sort_option = request.GET.get('sort', 'updated_at')  # Default sort
+    # Default values for sorting, filtering, and pagination
+    sort_option = request.GET.get('sort', 'updated_at')  # Default sort by
     order = request.GET.get('order', 'desc')  # Default order
+    keyword_search = request.GET.get('keyword_search', '')
+    year_filter = request.GET.get('year', '')
+    minister_filter = request.GET.get('minister', '')
+    government_filter = request.GET.get('government', '')
+    start_date = request.GET.get('start_date', '')
+    end_date = request.GET.get('end_date', '')
 
-    if sort_option == 'date':
-        documents = documents.order_by('-date' if order == 'desc' else 'date')
-    elif sort_option == 'number':
-        documents = documents.order_by('-number' if order == 'desc' else 'number')
-    elif sort_option == 'title':
-        documents = documents.order_by('-title' if order == 'desc' else 'title')
-    elif sort_option == 'updated_at':
-        documents = documents.order_by('-updated_at' if order == 'desc' else 'updated_at')
 
-    # Pagination setup
-    paginator = Paginator(documents, 15)
-    page_number = request.GET.get('page', 1)  # Default to first page
+    # Filter documents based on search term and soft delete logic
+    documents = model.objects.filter(deleted_at__isnull=True) if hasattr(model, 'deleted_at') else model.objects.all()
+
+    # Apply filters
+    if keyword_search:
+        # Start with the base query
+        query = Q(title__icontains=keyword_search) | Q(keywords__icontains=keyword_search) | Q(number__icontains=keyword_search)
+        # Check if the model has the 'special_field' attribute
+        if hasattr(model, 'orig_number'):
+            query |= Q(orig_number__icontains=keyword_search)
+        # Apply the combined query to filter documents
+        documents = documents.filter(query)
+
+    use_alternate = request.GET.get('use_alternate') == 'on'
+
+    # Determine which date field to use
+    if use_alternate and hasattr(model, 'orig_date'):
+        date_field = 'orig_date'
+    elif hasattr(model, 'date'):
+        date_field = 'date'
+    else:
+        date_field = None
+
+    # Apply year filter if the model has the selected date field
+    if year_filter and date_field:
+        documents = documents.filter(**{f'{date_field}__year': year_filter})
+
+    # Apply date range filter if the model has the selected date field
+    if start_date and end_date and date_field:
+        documents = documents.filter(**{f'{date_field}__range': [start_date, end_date]})
+
+    if minister_filter:
+        documents = documents.filter(minister__id=minister_filter)
+
+    if government_filter:
+        documents = documents.filter(government__id=government_filter)
+
+
+    # Calculate new_order based on sort_option and order dynamically
+    new_order = 'asc' if order == 'desc' else 'desc'
+
+    # Apply sorting
+    documents = documents.order_by(f'-{sort_option}' if order == 'desc' else sort_option)
+
+    # Pagination logic
+    paginator = Paginator(documents, 10)  # 10 documents per page
+    page_number = request.GET.get('page', 1)
+    try:
+        page_number = int(page_number)  # Convert to integer
+    except ValueError:
+        page_number = 1  # Default to the first page if conversion fails
     page_obj = paginator.get_page(page_number)
 
-    # Generate a list of tuples (document, has_files)
-    documents_with_files = [(doc, has_files(doc)) for doc in page_obj]
+    for doc in page_obj.object_list:
+        pdf_file_exists = getattr(doc, 'pdf_file', None) is not None
+        attach_exists = getattr(doc, 'attach', None) is not None
+        doc.has_file = bool(pdf_file_exists and doc.pdf_file.name) or bool(attach_exists and doc.attach.name)
+
+    # Fetch the distinct years for the dropdown and ministers if applicable
+    distinct_years = model_data['distinct_years']
+    ministers = model_data['ministers']
+    governments = model_data['governments']
+
+    # Prepare query parameters
+    query_params = {
+        'keyword_search': request.GET.get('keyword_search', ''),
+        'year': request.GET.get('year', ''),
+        'minister': request.GET.get('minister', ''),
+        'government': request.GET.get('government', ''),
+        'start_date': request.GET.get('start_date', ''),
+        'end_date': request.GET.get('end_date', ''),
+        'sort': sort_option,  # Use the value from the request or default
+        'order': order,
+        'use_alternate': use_alternate,
+    }
+
+
+    # Encode the parameters using urlencode
+    query_string = urlencode({k: v for k, v in query_params.items() if v})
+
+    print("Query String:", query_string)
 
     return render(request, 'documents.html', {
-        'documents_with_files': documents_with_files,
+        'documents': page_obj.object_list,
+        'page_obj': page_obj,
+        'keyword_search': keyword_search,
+        'year_filter': year_filter,
+        'minister_filter': minister_filter,
+        'government_filter': government_filter,
+        'start_date': start_date,
+        'end_date': end_date,
+        'distinct_years': distinct_years,
+        'ministers': ministers,
+        'governments': governments,
         'model_name': model_name,
-        'arabic_name': arabic_name,  # Pass the Arabic name to the template
-        'page_obj': page_obj,         # Pass the page object for pagination controls
-        'sort_option': sort_option,    # Pass the current sort option to the template
-        'order': order,                # Pass the current order to the template
-        'search_term': search_term      # Pass the search term to the template
+        'arabic_name': arabic_name,
+        'arabic_names': arabic_names,
+        'query_string': query_string,
+        'sort_option': sort_option,
+        'order': order,
+        'new_order': new_order,
     })
 
 
-
+# Function to add a new entry or edit an existing one:
 def add_document(request, model_name, document_id=None):
-    model, form_class, arabic_name, _ = get_model_and_form(model_name)
+    model, form_class, arabic_name, _, _ = get_model_data(model_name)
     
     if model is None or form_class is None:
         return HttpResponseNotFound('Invalid model name')
@@ -399,25 +410,25 @@ def add_document(request, model_name, document_id=None):
     })
 
 
-
+# Function to delete an entry:
 def delete_document(request, model_name, document_id):
-    model, _, _, _ = get_model_and_form(model_name)
+    model, _, _, _, _ = get_model_data(model_name)
 
     if model is None:
         return HttpResponseNotFound('Invalid model name')
 
     if request.method == 'DELETE':
-        document = get_object_or_404(model, id=document_id)
-        document.deleted_at = timezone.now()  # Set the deletion timestamp
-        document.save()
+        doc = get_object_or_404(model, id=document_id)
+        doc.deleted_at = timezone.now()  # Set the deletion timestamp
+        doc.save()
         return JsonResponse({'success': True})
 
     return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=400)
 
 
-
+# Function to download pdf or zip file:
 def download_document(request, model_name, object_id):
-    model, _, _, _ = get_model_and_form(model_name)
+    model, _, _, _, _ = get_model_data(model_name)
     
     if model is None:
         return HttpResponseNotFound('Invalid model name')

@@ -9,6 +9,7 @@
     <!-- Include Bootstrap CSS -->
     <link href="{% static 'css/bootstrap.rtl.css' %}" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/flatpickr.css' %}">
+    <link rel="shortcut icon" href="{% static 'favicon.png' %}" type="image/x-icon">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <meta name="csrf-token" content="{{ csrf_token }}">
     <!-- Include PDF.js Library -->
@@ -28,31 +29,31 @@
     <div class="container-fluid layout">
         <div class="sidebar" id="sidebar">
             <a href="{% url 'document_view' model_name='outgoing' %}">
-                <button class="{% if request.path == '/outgoing_mail/' or request.path == '/add/outgoing/' or '/edit/outgoing/' in request.path  %}active{% endif %}">
+                <button class="{% if request.path == '/outgoing/' or request.path == '/add/outgoing/' or '/edit/outgoing/' in request.path  %}active{% endif %}">
                     <img src="{% static 'img/outgoing-mail.png' %}" alt="Outgoing Mail" class="dbutton-icon"> 
                     البريد الصادر
                 </button>
             </a>
             <a href="{% url 'document_view' model_name='incoming' %}">
-                <button class="{% if request.path == '/incoming_mail/' or request.path == '/add/incoming/' or '/edit/incoming/' in request.path %}active{% endif %}">
+                <button class="{% if request.path == '/incoming/' or request.path == '/add/incoming/' or '/edit/incoming/' in request.path %}active{% endif %}">
                     <img src="{% static 'img/incoming-mail.png' %}" alt="Incoming Mail" class="dbutton-icon"> 
                     البريد الوارد
                 </button>
             </a>
             <a href="{% url 'document_view' model_name='internal' %}">
-                <button class="{% if request.path == '/internal_mail/' or request.path == '/add/internal/' or '/edit/internal/' in request.path  %}active{% endif %}">
+                <button class="{% if request.path == '/internal/' or request.path == '/add/internal/' or '/edit/internal/' in request.path  %}active{% endif %}">
                     <img src="{% static 'img/internal-mail.png' %}" alt="Internal Mail" class="dbutton-icon"> 
                     المذكرات الداخلية
                 </button>
             </a>
             <a href="{% url 'document_view' model_name='decree' %}">
-                <button class="{% if request.path == '/decree_mail/' or request.path == '/add/decree/' or '/edit/decree/' in request.path  %}active{% endif %}">
+                <button class="{% if request.path == '/decree/' or request.path == '/add/decree/' or '/edit/decree/' in request.path  %}active{% endif %}">
                     <img src="{% static 'img/decrees.png' %}" alt="Decree Mail" class="dbutton-icon"> 
                     القرارات
                 </button>
             </a>
             <a href="{% url 'document_view' model_name='report' %}">
-                <button class="{% if request.path == '/report_mail/' or request.path == '/add/report/' or '/edit/report/' in request.path  %}active{% endif %}">
+                <button class="{% if request.path == '/report/' or request.path == '/add/report/' or '/edit/report/' in request.path  %}active{% endif %}">
                     <img src="{% static 'img/report.png' %}" alt="Report Mail" class="dbutton-icon"> 
                     التقارير
                 </button>
@@ -81,6 +82,7 @@
     <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.js"></script>
     <script src="{% static 'js/flatpickr.js' %}"></script>
     <script src="{% static 'js/bootstrap.bundle.js' %}"></script>
-    <script src="{% static 'pdfjs\build\pdf.mjs' %}"></script>
+    <script type="module" src="{% static 'pdfjs\build\pdf.mjs' %}"></script>
+    <script src="{% static 'js/details.js' %}"></script>
 </body>
 </html>

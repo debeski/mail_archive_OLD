@@ -52,7 +52,7 @@ class Government(models.Model):
 class Minister(models.Model):
     """Model representing a minister."""
     name = models.CharField(max_length=255, unique=True)
-    government = models.ForeignKey(Government, on_delete=models.PROTECT, related_name='minister_on_duty')
+    government = models.ManyToManyField(Government, related_name='minister_on_duty')
 
     def __str__(self):
         return self.name
