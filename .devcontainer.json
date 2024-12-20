@@ -1,0 +1,12 @@
+{
+  "name": "Django Development Environment",
+  "dockerFile": "Dockerfile",
+  "context": ".",
+  "appPort": [8000],
+  "forwardPorts": [8000],
+  "remoteUser": "vscode", // Set the user to vscode to avoid permission issues
+  "mounts": [
+    "source=D:\\newP\\mail\\mail_archive,target=/workspace/mail_archive,type=bind"
+  ],
+  "postCreateCommand": "redis-server --daemonize yes --bind 0.0.0.0 --protected-mode no"
+  }

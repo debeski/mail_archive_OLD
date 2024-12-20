@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load static %}
+{% load custom_filters %}
+{% block title %}{{ arabic_name | title }}{% endblock %}
+{% block content %}
+
+<h1>Error</h1>
+<p>{{ error_message }}</p>
+<a href="{% url 'index' %}">Go back to home</a>  <!-- Adjust this link as necessary -->
+
+{% endblock %}

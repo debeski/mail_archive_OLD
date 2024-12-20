@@ -1,0 +1,4 @@
+Copy
+__pycache__
+*.pyc
+.env

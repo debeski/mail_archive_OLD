@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الأرشيف - {% block title %}{% endblock %}</title>
+    {% load static %}
+    {% load custom_filters %}
+    <!-- Include Bootstrap CSS -->
+    <link href="{% static 'css/bootstrap.rtl.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/flatpickr.css' %}">
+    <link rel="shortcut icon" href="{% static 'favicon.png' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <!-- Include PDF.js Library -->
+    <script type="module">
+        import * as pdfjsLib from "{% static 'pdfjs/build/pdf.mjs' %}";
+        pdfjsLib.GlobalWorkerOptions.workerSrc = "{% static 'pdfjs/build/pdf.worker.mjs' %}";
+    </script>
+</head>
+<body>
+    <!-- Title Bar -->
+    <div class="titlebar d-flex justify-content-between align-items-center">
+        {% if user.is_authenticated %}
+            <div class="d-flex justify-content-right align-items-center w-100">
+                <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+        {% endif %}
+                <a href="{% url 'index' %}" style="text-decoration: none; color: inherit;">
+                    <h1>منظومة الأرشيف الإلكتروني{% block header %}{% endblock %}</h1>
+                </a>
+            </div>
+        <!-- The Login Button -->
+        {% if user.is_authenticated %}
+            <!-- Dropdown Button and Menu for Authenticated User -->
+            <div class="dropdown me-2" style="z-index: 1050;">
+                <button class="btn btn-light dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-person-circle">&nbsp;</i> {{ user.username }}
+                </button>
+                <ul class="dropdown-menu dropdown-menu-start" aria-labelledby="userDropdown" style="min-width: 130px;">
+                    <!-- Logout option -->
+                    <li>
+                        <form method="POST" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="dropdown-item">
+                                تسجيل الخروج  &nbsp; <i class="bi bi-box-arrow-left"></i>
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        {% else %}
+        <!-- Regular Login Button -->
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">
+                <i class="bi bi-person-circle"></i> تسجيل الدخول
+            </button>
+        {% endif %}
+    </div>
+    <!-- SideBar Buttons -->
+    <div class="container-fluid layout">
+        {% if request.user.is_authenticated %}
+            <div class="sidebar" id="sidebar">
+                <a href="{% url 'document_view' model_name='outgoing' %}">
+                    <button class="{% if request.path == '/documents/outgoing/' or request.path == '/documents/outgoing/add/' or '/documents/outgoing/edit/' in request.path  %}active{% endif %}">
+                        <img src="{% static 'img/outgoing-mail.png' %}" alt="Outgoing Mail" class="dbutton-icon"> 
+                        البريد الصادر
+                    </button>
+                </a>
+                <a href="{% url 'document_view' model_name='incoming' %}">
+                    <button class="{% if request.path == '/documents/incoming/' or request.path == '/documents/incoming/add/' or '/documents/incoming/edit/' in request.path %}active{% endif %}">
+                        <img src="{% static 'img/incoming-mail.png' %}" alt="Incoming Mail" class="dbutton-icon"> 
+                        البريد الوارد
+                    </button>
+                </a>
+                <a href="{% url 'document_view' model_name='internal' %}">
+                    <button class="{% if request.path == '/documents/internal/' or request.path == '/documents/internal/add/' or '/documents/internal/edit/' in request.path  %}active{% endif %}">
+                        <img src="{% static 'img/internal-mail.png' %}" alt="Internal Mail" class="dbutton-icon"> 
+                        المذكرات الداخلية
+                    </button>
+                </a>
+                <a href="{% url 'document_view' model_name='decree' %}">
+                    <button class="{% if request.path == '/documents/decree/' or request.path == '/documents/decree/add/' or '/documents/decree/edit/' in request.path  %}active{% endif %}">
+                        <img src="{% static 'img/decrees.png' %}" alt="Decree Mail" class="dbutton-icon"> 
+                        القرارات
+                    </button>
+                </a>
+                <a href="{% url 'document_view' model_name='report' %}">
+                    <button class="{% if request.path == '/documents/report/' or request.path == '/documents/report/add/' or '/documents/report/edit/' in request.path  %}active{% endif %}">
+                        <img src="{% static 'img/report.png' %}" alt="Report Mail" class="dbutton-icon"> 
+                        التقارير
+                    </button>
+                </a>
+                <a href="{% url 'manage_sections' model_name='departments' %}">
+                    {% if request.user|is_in_group:"admins" %}
+                        <button class="{% if '/manage/' in request.path %}active{% endif %}">
+                            <img src="{% static 'img/settings.png' %}" alt="Settings" class="dbutton-icon"> 
+                            الإعدادات
+                        </button>
+                    {% endif %}
+                </a>
+            </div>
+        {% endif %}
+        <!-- Content from other Htmls -->
+        <div class="main-content">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+    
+    <!-- ToggleMenu Functionality -->
+    <script>
+        function toggleMenu() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+        }
+    </script>
+
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">Login</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="{% url 'login' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.GET.next|default:'index' }}">  <!-- Capture the model name -->
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username:</label>
+                            <input type="text" class="form-control" name="username" id="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password:</label>
+                            <input type="password" class="form-control" name="password" id="password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        {% if request.session.show_login_modal %}
+            // Show the modal if the session flag is set
+            var loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+            loginModal.show();
+        
+            // Clear the session flag by sending a POST request to the server
+            fetch('/clear_login_modal_flag/', {
+                method: 'POST',  // Use POST for modifying session data
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,  // Ensure CSRF token is sent
+                },
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to clear the session flag');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data.message);  // Log success message (optional)
+            })
+            .catch(error => {
+                console.error('Error:', error);  // Log any error that occurs
+            });
+        {% endif %}
+    </script>
+    
+    <!-- Include Pdf.js, Bootstrap JS and dependencies -->
+    <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.js"></script>
+    <script src="{% static 'js/flatpickr.js' %}"></script>
+    <script src="{% static 'js/bootstrap.bundle.js' %}"></script>
+    <script type="module" src="{% static 'pdfjs\build\pdf.mjs' %}"></script>
+    <script src="{% static 'js/details.js' %}"></script>
+</body>
+</html>
