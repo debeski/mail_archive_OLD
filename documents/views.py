@@ -18,6 +18,7 @@ import pandas as pd
 # from django.utils.http import urlencode
 from .llm_service import llm_service_instance
 import speech_recognition as sr
+from django.core.cache import cache
 
 
 
@@ -141,66 +142,74 @@ def get_model_data(model_name=None):
 
 # Function to create Chart for index:
 def create_chart():
+    cache_key = 'chart_data'
 
-    # Define model names
-    years = range(2008, 2025)
-    data = []
+    # Check if the chart data is cached
+    chart_html = cache.get(cache_key)
+    
+    if chart_html is None:
+        # Your existing code to create the chart
+        years = range(2008, 2025)
+        data = []
 
-    model_names = ['incoming', 'outgoing', 'internal', 'decree', 'report']
-    for model_name in model_names:
-        model_class, _, arabic_name, _ = get_model_data(model_name)
+        model_names = ['incoming', 'outgoing', 'internal', 'decree', 'report']
+        for model_name in model_names:
+            model_class, _, arabic_name, _ = get_model_data(model_name)
 
-        # Count documents for each year
-        for year in years:
-            count = model_class.objects.filter(date__year=year, deleted_at__isnull=True).count() or 0
-            data.append({'Year': year, 'Count': count, 'Model': arabic_name})
+            # Count documents for each year
+            for year in years:
+                count = model_class.objects.filter(date__year=year, deleted_at__isnull=True).count() or 0
+                data.append({'Year': year, 'Count': count, 'Model': arabic_name})
 
-    # Create a DataFrame from the data
-    df = pd.DataFrame(data)
+        # Create a DataFrame from the data
+        df = pd.DataFrame(data)
 
-    # Create a Plotly Express bar chart
-    fig = px.bar(
-        df,
-        x='Year',
-        y='Count',
-        color='Model',
-        barmode='group',
-        title='عدد الوثائق حسب السنة',
-        labels={'Year': 'السنة', 'Count': 'عدد الوثائق'},
-        text='Count',
-        hover_name='Model',
-        hover_data={'Model':False}
-    )
+        # Create a Plotly Express bar chart
+        fig = px.bar(
+            df,
+            x='Year',
+            y='Count',
+            color='Model',
+            barmode='group',
+            title='عدد الوثائق حسب السنة',
+            labels={'Year': 'السنة', 'Count': 'عدد الوثائق'},
+            text='Count',
+            hover_name='Model',
+            hover_data={'Model': False}
+        )
 
-    # Update the layout for RTL
-    fig.update_layout(
-        selectdirection='h',
-        height=370,
-        title=dict(font=dict(size=30), automargin=True),
-        title_x=0.55,  # Center the title
-        xaxis_title='',
-        yaxis_title='عدد الوثائق',
+        # Update layout for RTL and other settings
+        fig.update_layout(
+            selectdirection='h',
+            height=370,
+            title=dict(font=dict(size=30), automargin=True),
+            title_x=0.55,  # Center the title
+            xaxis_title='',
+            yaxis_title='عدد الوثائق',
+            legend=dict(
+                orientation='h',
+                x=0.5,
+                xanchor='center',
+                y=-0,
+                yanchor='bottom'
+            ),
+            hoverlabel=dict(
+                align='right',
+                bgcolor='rgba(255, 255, 255, 0.8)',
+                bordercolor='black',
+                font=dict(size=14, color='black')
+            ),
+            autosize=True,
+            margin=dict(l=50, r=50, t=40, b=0),
+            font=dict(family='Shabwa, sans-serif', size=16, color='black'),
+        )
 
-        legend=dict(
-            orientation='h',
-            x=0.5,
-            xanchor='center',
-            y=-0,
-            yanchor='bottom'
-        ),
-        hoverlabel=dict(
-            align='right',
-            bgcolor='rgba(255, 255, 255, 0.8)',
-            bordercolor='black',
-            font=dict(size=14, color='black')
-        ),
-        autosize=True,
-        margin=dict(l=50, r=50, t=40, b=0),
-        font=dict(family='Shabwa, sans-serif', size=16, color='black'),
-    )
+        # Convert the figure to HTML
+        chart_html = fig.to_html(full_html=False)
 
-    # Convert the figure to HTML and include the dynamic hover label script
-    chart_html = fig.to_html(full_html=False)
+        # Store the generated chart HTML in the cache
+        cache.set(cache_key, chart_html, timeout=3600)  # Cache for 1 hour
+
     # JavaScript for dynamic hover label positioning
     dynamic_hover_script = """
     <script>
@@ -220,7 +229,6 @@ def create_chart():
     """
 
     return chart_html + dynamic_hover_script
-
 
 # Html & Chart Rendering Functions on main page only:
 def index(request):
@@ -295,7 +303,7 @@ def document_view(request, model_name):
     if not request.user.is_authenticated:
         return redirect('login')  # Redirect to login if not authenticated
     
-    llm_service = llm_service_instance
+    # llm_service = llm_service_instance
 
     # Initialize model_class and related variables
     model_class, _, arabic_name, arabic_names = None, None, None, None

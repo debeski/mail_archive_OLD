@@ -30,10 +30,13 @@ def get_attach_upload_path(instance, filename):
 class Department(models.Model):
     """Model representing a department."""
     name = models.CharField(max_length=255, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name = "الادارة او المكتب"
         verbose_name_plural = "الادارات و المكاتب"
+        ordering = ['-created_at']  # Sort by created_at in descending order
 
     def __str__(self):
         return self.name
@@ -42,10 +45,14 @@ class Affiliate(models.Model):
     """Model representing an affiliate."""
     name = models.CharField(max_length=255, unique=True)
     is_attached = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
 
     class Meta:
         verbose_name = "الجهة"
         verbose_name_plural = "الجهات"
+        ordering = ['-created_at']  # Sort by created_at in descending order
 
     def __str__(self):
         return self.name
@@ -53,10 +60,13 @@ class Affiliate(models.Model):
 class Government(models.Model):
     """Model representing a government entity."""
     name = models.CharField(max_length=255, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name = "الحكومة"
         verbose_name_plural = "الحكومات"
+        ordering = ['-created_at']  # Sort by created_at in descending order
 
     def __str__(self):
         return self.name
@@ -65,10 +75,13 @@ class Minister(models.Model):
     """Model representing a minister."""
     name = models.CharField(max_length=255, unique=True)
     government = models.ManyToManyField(Government, related_name='minister_on_duty')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name = "الوزير"
         verbose_name_plural = "الوزراء"
+        ordering = ['-created_at']  # Sort by created_at in descending order
 
     def __str__(self):
         return self.name

@@ -9,7 +9,6 @@ USER root
 # Install required packages
 RUN apt-get update && \
     apt-get install -y \
-    redis-server \
     git \
     git-lfs \
     sudo \
@@ -32,6 +31,10 @@ RUN apt-get update && \
     libbz2-1.0 \
     tzdata \
     pkg-config \
+    postgresql \
+    postgresql-client \
+    postgresql-contrib \
+    redis-server \
     netbase && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
@@ -49,7 +52,7 @@ USER vscode
 
 # Copy requirements and install Python packages
 COPY requirement.txt .
-RUN pip install -r requirement.txt
+RUN pip install --no-cache-dir -r requirement.txt
 
 # Expose the application port
 EXPOSE 8000

@@ -1,0 +1,9 @@
+transformers==4.47.0
+torch==2.5.1
+huggingface-hub==0.26.3
+arabert==1.0.1
+PyArabic==0.6.15
+jsonpatch==1.33
+scikit-learn==1.6.0
+
+accelerate==0.26.0

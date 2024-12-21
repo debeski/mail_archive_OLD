@@ -55,7 +55,7 @@ class GovernmentForm(forms.ModelForm):
 class MinisterForm(forms.ModelForm):
     government = forms.ModelMultipleChoiceField(
         queryset=Government.objects.all(),
-        widget=forms.CheckboxSelectMultiple,  # Change to SelectMultiple if you prefer dropdown
+        widget=forms.CheckboxSelectMultiple(attrs={'class': 'checkbox-inline'}),  # Add a custom class here
         required=True,
         label='الحكومات'
     )

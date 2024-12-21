@@ -23,14 +23,16 @@
     <!-- Title Bar -->
     <div class="titlebar d-flex justify-content-between align-items-center">
         {% if user.is_authenticated %}
-            <div class="d-flex justify-content-right align-items-center w-100">
+            <div>
                 <button class="menu-toggle" onclick="toggleMenu()">☰</button>
-        {% endif %}
-                <a href="{% url 'index' %}" style="text-decoration: none; color: inherit;">
-                    <h1>منظومة الأرشيف الإلكتروني{% block header %}{% endblock %}</h1>
-                </a>
             </div>
-        <!-- The Login Button -->
+        {% endif %}
+        <div>
+            <a href="{% url 'index' %}" style="text-decoration: none; color: inherit;">
+                <h1>منظومة الأرشيف الإلكتروني{% block header %}{% endblock %}</h1>
+            </a>
+        </div>
+            <!-- The Login Button -->
         {% if user.is_authenticated %}
             <!-- Dropdown Button and Menu for Authenticated User -->
             <div class="dropdown me-2" style="z-index: 1050;">
@@ -94,7 +96,7 @@
                     {% if request.user|is_in_group:"admins" %}
                         <button class="{% if '/manage/' in request.path %}active{% endif %}">
                             <img src="{% static 'img/settings.png' %}" alt="Settings" class="dbutton-icon"> 
-                            الإعدادات
+                            إدارة الأقسام
                         </button>
                     {% endif %}
                 </a>
