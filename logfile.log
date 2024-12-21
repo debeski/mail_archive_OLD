@@ -1093,3 +1093,870 @@ INFO 2024-12-20 22:20:09,620 views Submitted Query:
 INFO 2024-12-20 22:20:09,623 views Returned 0 documents for model 'outgoing'.
 INFO 2024-12-20 22:20:09,639 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3385
 INFO 2024-12-20 22:20:09,703 basehttp "GET /static/css/style.css HTTP/1.1" 304 0
+INFO 2024-12-21 13:16:45,125 llm Model and tokenizer initialized.
+INFO 2024-12-21 13:17:04,937 llm Model and tokenizer initialized.
+INFO 2024-12-21 13:30:20,507 llm Model and tokenizer initialized.
+INFO 2024-12-21 13:30:32,514 llm Model and tokenizer initialized.
+INFO 2024-12-21 13:30:47,672 autoreload Watching for file changes with StatReloader
+INFO 2024-12-21 13:30:53,542 llm Model and tokenizer initialized.
+ERROR 2024-12-21 13:30:58,584 log Internal Server Error: /
+Traceback (most recent call last):
+  File "/home/vscode/.local/lib/python3.13/site-packages/django_redis/cache.py", line 29, in _decorator
+    return method(self, *args, **kwargs)
+  File "/home/vscode/.local/lib/python3.13/site-packages/django_redis/cache.py", line 99, in _get
+    return self.client.get(key, default=default, version=version, client=client)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vscode/.local/lib/python3.13/site-packages/django_redis/client/default.py", line 260, in get
+    raise ConnectionInterrupted(connection=client) from e
+django_redis.exceptions.ConnectionInterrupted: Redis ConnectionError: Error 111 connecting to 127.0.0.1:6379. Connection refused.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/vscode/.local/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/vscode/.local/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/workspaces/mail_archive/documents/views.py", line 235, in index
+    chart_html = create_chart()
+  File "/workspaces/mail_archive/documents/views.py", line 147, in create_chart
+    chart_html = cache.get(cache_key)
+  File "/home/vscode/.local/lib/python3.13/site-packages/django_redis/cache.py", line 92, in get
+    value = self._get(key, default, version, client)
+  File "/home/vscode/.local/lib/python3.13/site-packages/django_redis/cache.py", line 36, in _decorator
+    raise e.__cause__
+  File "/home/vscode/.local/lib/python3.13/site-packages/django_redis/client/default.py", line 258, in get
+    value = client.get(key)
+  File "/home/vscode/.local/lib/python3.13/site-packages/redis/commands/core.py", line 1822, in get
+    return self.execute_command("GET", name, keys=[name])
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vscode/.local/lib/python3.13/site-packages/redis/client.py", line 559, in execute_command
+    return self._execute_command(*args, **options)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/home/vscode/.local/lib/python3.13/site-packages/redis/client.py", line 565, in _execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+                              ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vscode/.local/lib/python3.13/site-packages/redis/connection.py", line 1422, in get_connection
+    connection.connect()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "/home/vscode/.local/lib/python3.13/site-packages/redis/connection.py", line 363, in connect
+    raise ConnectionError(self._error_message(e))
+redis.exceptions.ConnectionError: Error 111 connecting to 127.0.0.1:6379. Connection refused.
+ERROR 2024-12-21 13:30:58,597 basehttp "GET / HTTP/1.1" 500 14770
+INFO 2024-12-21 13:30:58,930 basehttp "GET /favicon.ico/ HTTP/1.1" 302 0
+ERROR 2024-12-21 13:30:59,005 log Internal Server Error: /
+Traceback (most recent call last):
+  File "/home/vscode/.local/lib/python3.13/site-packages/django_redis/cache.py", line 29, in _decorator
+    return method(self, *args, **kwargs)
+  File "/home/vscode/.local/lib/python3.13/site-packages/django_redis/cache.py", line 99, in _get
+    return self.client.get(key, default=default, version=version, client=client)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vscode/.local/lib/python3.13/site-packages/django_redis/client/default.py", line 260, in get
+    raise ConnectionInterrupted(connection=client) from e
+django_redis.exceptions.ConnectionInterrupted: Redis ConnectionError: Error 111 connecting to 127.0.0.1:6379. Connection refused.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/vscode/.local/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/vscode/.local/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/workspaces/mail_archive/documents/views.py", line 235, in index
+    chart_html = create_chart()
+  File "/workspaces/mail_archive/documents/views.py", line 147, in create_chart
+    chart_html = cache.get(cache_key)
+  File "/home/vscode/.local/lib/python3.13/site-packages/django_redis/cache.py", line 92, in get
+    value = self._get(key, default, version, client)
+  File "/home/vscode/.local/lib/python3.13/site-packages/django_redis/cache.py", line 36, in _decorator
+    raise e.__cause__
+  File "/home/vscode/.local/lib/python3.13/site-packages/django_redis/client/default.py", line 258, in get
+    value = client.get(key)
+  File "/home/vscode/.local/lib/python3.13/site-packages/redis/commands/core.py", line 1822, in get
+    return self.execute_command("GET", name, keys=[name])
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vscode/.local/lib/python3.13/site-packages/redis/client.py", line 559, in execute_command
+    return self._execute_command(*args, **options)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/home/vscode/.local/lib/python3.13/site-packages/redis/client.py", line 565, in _execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+                              ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vscode/.local/lib/python3.13/site-packages/redis/connection.py", line 1422, in get_connection
+    connection.connect()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "/home/vscode/.local/lib/python3.13/site-packages/redis/connection.py", line 363, in connect
+    raise ConnectionError(self._error_message(e))
+redis.exceptions.ConnectionError: Error 111 connecting to 127.0.0.1:6379. Connection refused.
+ERROR 2024-12-21 13:30:59,024 basehttp "GET / HTTP/1.1" 500 14742
+INFO 2024-12-21 13:32:08,294 autoreload /workspaces/mail_archive/documents/views.py changed, reloading.
+INFO 2024-12-21 13:32:10,546 autoreload Watching for file changes with StatReloader
+INFO 2024-12-21 13:32:16,298 llm Model and tokenizer initialized.
+ERROR 2024-12-21 13:32:20,746 log Internal Server Error: /
+Traceback (most recent call last):
+  File "/home/vscode/.local/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/vscode/.local/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/workspaces/mail_archive/documents/views.py", line 232, in index
+    chart_html = create_chart()
+  File "/workspaces/mail_archive/documents/views.py", line 146, in create_chart
+    if chart_html is None:
+       ^^^^^^^^^^
+UnboundLocalError: cannot access local variable 'chart_html' where it is not associated with a value
+ERROR 2024-12-21 13:32:20,754 basehttp "GET / HTTP/1.1" 500 11097
+INFO 2024-12-21 13:32:20,917 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+ERROR 2024-12-21 13:32:20,976 log Internal Server Error: /
+Traceback (most recent call last):
+  File "/home/vscode/.local/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/vscode/.local/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/workspaces/mail_archive/documents/views.py", line 232, in index
+    chart_html = create_chart()
+  File "/workspaces/mail_archive/documents/views.py", line 146, in create_chart
+    if chart_html is None:
+       ^^^^^^^^^^
+UnboundLocalError: cannot access local variable 'chart_html' where it is not associated with a value
+ERROR 2024-12-21 13:32:20,981 basehttp "GET / HTTP/1.1" 500 11018
+INFO 2024-12-21 13:32:49,787 autoreload /workspaces/mail_archive/documents/views.py changed, reloading.
+INFO 2024-12-21 13:32:52,122 autoreload Watching for file changes with StatReloader
+INFO 2024-12-21 13:32:59,015 llm Model and tokenizer initialized.
+INFO 2024-12-21 13:33:14,330 autoreload /workspaces/mail_archive/documents/views.py changed, reloading.
+INFO 2024-12-21 13:33:16,402 autoreload Watching for file changes with StatReloader
+INFO 2024-12-21 13:33:22,185 llm Model and tokenizer initialized.
+ERROR 2024-12-21 13:33:27,613 log Internal Server Error: /
+Traceback (most recent call last):
+  File "/home/vscode/.local/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/vscode/.local/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/workspaces/mail_archive/documents/views.py", line 235, in index
+    chart_html = create_chart()
+  File "/workspaces/mail_archive/documents/views.py", line 210, in create_chart
+    cache.set(cache_key, chart_html, timeout=3600)  # Cache for 1 hour
+              ^^^^^^^^^
+NameError: name 'cache_key' is not defined
+ERROR 2024-12-21 13:33:27,621 basehttp "GET / HTTP/1.1" 500 13917
+INFO 2024-12-21 13:33:27,772 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+ERROR 2024-12-21 13:33:28,301 log Internal Server Error: /
+Traceback (most recent call last):
+  File "/home/vscode/.local/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/vscode/.local/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/workspaces/mail_archive/documents/views.py", line 235, in index
+    chart_html = create_chart()
+  File "/workspaces/mail_archive/documents/views.py", line 210, in create_chart
+    cache.set(cache_key, chart_html, timeout=3600)  # Cache for 1 hour
+              ^^^^^^^^^
+NameError: name 'cache_key' is not defined
+ERROR 2024-12-21 13:33:28,307 basehttp "GET / HTTP/1.1" 500 13837
+ERROR 2024-12-21 13:33:30,394 log Internal Server Error: /
+Traceback (most recent call last):
+  File "/home/vscode/.local/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/vscode/.local/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/workspaces/mail_archive/documents/views.py", line 235, in index
+    chart_html = create_chart()
+  File "/workspaces/mail_archive/documents/views.py", line 210, in create_chart
+    cache.set(cache_key, chart_html, timeout=3600)  # Cache for 1 hour
+              ^^^^^^^^^
+NameError: name 'cache_key' is not defined
+ERROR 2024-12-21 13:33:30,399 basehttp "GET / HTTP/1.1" 500 13970
+INFO 2024-12-21 13:33:30,529 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+ERROR 2024-12-21 13:33:31,091 log Internal Server Error: /
+Traceback (most recent call last):
+  File "/home/vscode/.local/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/vscode/.local/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/workspaces/mail_archive/documents/views.py", line 235, in index
+    chart_html = create_chart()
+  File "/workspaces/mail_archive/documents/views.py", line 210, in create_chart
+    cache.set(cache_key, chart_html, timeout=3600)  # Cache for 1 hour
+              ^^^^^^^^^
+NameError: name 'cache_key' is not defined
+ERROR 2024-12-21 13:33:31,096 basehttp "GET / HTTP/1.1" 500 13918
+INFO 2024-12-21 13:34:00,241 autoreload /workspaces/mail_archive/documents/views.py changed, reloading.
+INFO 2024-12-21 13:34:02,468 autoreload Watching for file changes with StatReloader
+INFO 2024-12-21 13:34:08,477 llm Model and tokenizer initialized.
+ERROR 2024-12-21 13:34:19,860 log Internal Server Error: /
+Traceback (most recent call last):
+  File "/home/vscode/.local/lib/python3.13/site-packages/django_redis/cache.py", line 29, in _decorator
+    return method(self, *args, **kwargs)
+  File "/home/vscode/.local/lib/python3.13/site-packages/django_redis/cache.py", line 99, in _get
+    return self.client.get(key, default=default, version=version, client=client)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vscode/.local/lib/python3.13/site-packages/django_redis/client/default.py", line 260, in get
+    raise ConnectionInterrupted(connection=client) from e
+django_redis.exceptions.ConnectionInterrupted: Redis ConnectionError: Error 111 connecting to 127.0.0.1:6379. Connection refused.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/vscode/.local/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/vscode/.local/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/workspaces/mail_archive/documents/views.py", line 235, in index
+    chart_html = create_chart()
+  File "/workspaces/mail_archive/documents/views.py", line 147, in create_chart
+    chart_html = cache.get(cache_key)
+  File "/home/vscode/.local/lib/python3.13/site-packages/django_redis/cache.py", line 92, in get
+    value = self._get(key, default, version, client)
+  File "/home/vscode/.local/lib/python3.13/site-packages/django_redis/cache.py", line 36, in _decorator
+    raise e.__cause__
+  File "/home/vscode/.local/lib/python3.13/site-packages/django_redis/client/default.py", line 258, in get
+    value = client.get(key)
+  File "/home/vscode/.local/lib/python3.13/site-packages/redis/commands/core.py", line 1822, in get
+    return self.execute_command("GET", name, keys=[name])
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vscode/.local/lib/python3.13/site-packages/redis/client.py", line 559, in execute_command
+    return self._execute_command(*args, **options)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/home/vscode/.local/lib/python3.13/site-packages/redis/client.py", line 565, in _execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+                              ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vscode/.local/lib/python3.13/site-packages/redis/connection.py", line 1422, in get_connection
+    connection.connect()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "/home/vscode/.local/lib/python3.13/site-packages/redis/connection.py", line 363, in connect
+    raise ConnectionError(self._error_message(e))
+redis.exceptions.ConnectionError: Error 111 connecting to 127.0.0.1:6379. Connection refused.
+ERROR 2024-12-21 13:34:19,881 basehttp "GET / HTTP/1.1" 500 14794
+INFO 2024-12-21 13:34:20,029 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+ERROR 2024-12-21 13:34:20,097 log Internal Server Error: /
+Traceback (most recent call last):
+  File "/home/vscode/.local/lib/python3.13/site-packages/django_redis/cache.py", line 29, in _decorator
+    return method(self, *args, **kwargs)
+  File "/home/vscode/.local/lib/python3.13/site-packages/django_redis/cache.py", line 99, in _get
+    return self.client.get(key, default=default, version=version, client=client)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vscode/.local/lib/python3.13/site-packages/django_redis/client/default.py", line 260, in get
+    raise ConnectionInterrupted(connection=client) from e
+django_redis.exceptions.ConnectionInterrupted: Redis ConnectionError: Error 111 connecting to 127.0.0.1:6379. Connection refused.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/vscode/.local/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/vscode/.local/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/workspaces/mail_archive/documents/views.py", line 235, in index
+    chart_html = create_chart()
+  File "/workspaces/mail_archive/documents/views.py", line 147, in create_chart
+    chart_html = cache.get(cache_key)
+  File "/home/vscode/.local/lib/python3.13/site-packages/django_redis/cache.py", line 92, in get
+    value = self._get(key, default, version, client)
+  File "/home/vscode/.local/lib/python3.13/site-packages/django_redis/cache.py", line 36, in _decorator
+    raise e.__cause__
+  File "/home/vscode/.local/lib/python3.13/site-packages/django_redis/client/default.py", line 258, in get
+    value = client.get(key)
+  File "/home/vscode/.local/lib/python3.13/site-packages/redis/commands/core.py", line 1822, in get
+    return self.execute_command("GET", name, keys=[name])
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vscode/.local/lib/python3.13/site-packages/redis/client.py", line 559, in execute_command
+    return self._execute_command(*args, **options)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/home/vscode/.local/lib/python3.13/site-packages/redis/client.py", line 565, in _execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+                              ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vscode/.local/lib/python3.13/site-packages/redis/connection.py", line 1422, in get_connection
+    connection.connect()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "/home/vscode/.local/lib/python3.13/site-packages/redis/connection.py", line 363, in connect
+    raise ConnectionError(self._error_message(e))
+redis.exceptions.ConnectionError: Error 111 connecting to 127.0.0.1:6379. Connection refused.
+ERROR 2024-12-21 13:34:20,107 basehttp "GET / HTTP/1.1" 500 14780
+INFO 2024-12-21 13:37:23,086 basehttp "GET / HTTP/1.1" 200 1338394
+INFO 2024-12-21 13:37:23,166 basehttp "GET /static/css/flatpickr.css HTTP/1.1" 200 20981
+INFO 2024-12-21 13:37:23,166 basehttp "GET /static/css/style.css HTTP/1.1" 200 9218
+INFO 2024-12-21 13:37:23,213 basehttp "GET /static/js/plotly-locale-ar.js HTTP/1.1" 200 1386
+INFO 2024-12-21 13:37:23,255 basehttp "GET /static/js/details.js HTTP/1.1" 200 6445
+INFO 2024-12-21 13:37:23,264 basehttp "GET /static/js/flatpickr.js HTTP/1.1" 200 87832
+INFO 2024-12-21 13:37:23,288 basehttp "GET /static/css/bootstrap.rtl.css HTTP/1.1" 200 280259
+INFO 2024-12-21 13:37:23,320 basehttp "GET /static/js/bootstrap.bundle.js HTTP/1.1" 200 207819
+INFO 2024-12-21 13:37:23,392 basehttp "GET /static/pdfjs/build/pdf.mjs HTTP/1.1" 200 628531
+INFO 2024-12-21 13:37:23,523 basehttp "GET /static/fonts/Shabwa.ttf HTTP/1.1" 200 51148
+INFO 2024-12-21 13:37:23,552 basehttp "GET /static/fonts/Shabwa-Medium.ttf HTTP/1.1" 200 51776
+INFO 2024-12-21 13:37:24,447 basehttp "GET /static/js/plotly-3.0.0-rc.0.js HTTP/1.1" 200 10779558
+INFO 2024-12-21 13:37:25,062 basehttp "GET /static/favicon.png HTTP/1.1" 200 6093
+INFO 2024-12-21 13:39:06,713 basehttp "GET /static/fonts/Shabwa-Bold.ttf HTTP/1.1" 200 49452
+WARNING 2024-12-21 13:39:17,417 views Failed login attempt for user: user
+INFO 2024-12-21 13:39:17,421 basehttp "POST /login/ HTTP/1.1" 200 2179
+INFO 2024-12-21 13:46:32,301 autoreload /workspaces/mail_archive/documents/models.py changed, reloading.
+INFO 2024-12-21 13:46:34,687 autoreload Watching for file changes with StatReloader
+INFO 2024-12-21 13:46:41,134 llm Model and tokenizer initialized.
+INFO 2024-12-21 13:58:47,881 autoreload /workspaces/mail_archive/documents/views.py changed, reloading.
+INFO 2024-12-21 13:58:49,885 autoreload Watching for file changes with StatReloader
+INFO 2024-12-21 13:58:56,004 llm Model and tokenizer initialized.
+INFO 2024-12-21 14:10:14,467 autoreload /workspaces/mail_archive/documents/views.py changed, reloading.
+INFO 2024-12-21 14:10:16,676 autoreload Watching for file changes with StatReloader
+INFO 2024-12-21 14:10:23,316 llm Model and tokenizer initialized.
+INFO 2024-12-21 14:12:29,334 basehttp "GET / HTTP/1.1" 200 1338389
+INFO 2024-12-21 14:12:29,422 basehttp "GET /static/css/style.css HTTP/1.1" 200 9218
+INFO 2024-12-21 14:12:29,425 basehttp "GET /static/css/flatpickr.css HTTP/1.1" 200 20981
+INFO 2024-12-21 14:12:29,459 basehttp "GET /static/js/plotly-locale-ar.js HTTP/1.1" 200 1386
+INFO 2024-12-21 14:12:29,480 basehttp "GET /static/css/bootstrap.rtl.css HTTP/1.1" 200 280259
+INFO 2024-12-21 14:12:29,490 basehttp "GET /static/js/flatpickr.js HTTP/1.1" 200 87832
+INFO 2024-12-21 14:12:29,496 basehttp "GET /static/js/details.js HTTP/1.1" 200 6445
+INFO 2024-12-21 14:12:29,519 basehttp "GET /static/js/bootstrap.bundle.js HTTP/1.1" 200 207819
+INFO 2024-12-21 14:12:29,572 basehttp "GET /static/pdfjs/build/pdf.mjs HTTP/1.1" 200 628531
+INFO 2024-12-21 14:12:30,680 basehttp "GET /static/js/plotly-3.0.0-rc.0.js HTTP/1.1" 200 10779558
+INFO 2024-12-21 14:12:38,151 basehttp "GET /static/fonts/Shabwa-Medium.ttf HTTP/1.1" 200 51776
+INFO 2024-12-21 14:12:38,153 basehttp "GET /static/fonts/Shabwa.ttf HTTP/1.1" 200 51148
+INFO 2024-12-21 14:12:38,821 basehttp "GET /static/favicon.png HTTP/1.1" 200 6093
+INFO 2024-12-21 14:12:41,633 basehttp "GET /static/fonts/Shabwa-Bold.ttf HTTP/1.1" 200 49452
+WARNING 2024-12-21 14:12:48,042 views Failed login attempt for user: usre
+INFO 2024-12-21 14:12:48,045 basehttp "POST /login/ HTTP/1.1" 200 2198
+INFO 2024-12-21 14:14:09,848 autoreload /workspaces/mail_archive/documents/views.py changed, reloading.
+INFO 2024-12-21 14:14:12,117 autoreload Watching for file changes with StatReloader
+INFO 2024-12-21 14:14:18,203 llm Model and tokenizer initialized.
+INFO 2024-12-21 14:14:25,810 basehttp "GET / HTTP/1.1" 200 1338327
+WARNING 2024-12-21 14:14:33,083 views Failed login attempt for user: dfs
+ERROR 2024-12-21 14:14:33,121 log Internal Server Error: /login/
+Traceback (most recent call last):
+  File "/home/vscode/.local/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/vscode/.local/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/workspaces/mail_archive/documents/views.py", line 64, in user_login
+    return render(request, '/', {'user_name': user_name})
+  File "/home/vscode/.local/lib/python3.13/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/vscode/.local/lib/python3.13/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/home/vscode/.local/lib/python3.13/site-packages/django/template/loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: /
+ERROR 2024-12-21 14:14:33,128 basehttp "POST /login/ HTTP/1.1" 500 12305
+INFO 2024-12-21 14:14:33,323 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2024-12-21 14:14:33,577 basehttp "GET / HTTP/1.1" 200 1338356
+INFO 2024-12-21 14:17:53,434 basehttp "GET / HTTP/1.1" 200 1338485
+INFO 2024-12-21 14:17:53,526 basehttp "GET /static/css/flatpickr.css HTTP/1.1" 200 20981
+INFO 2024-12-21 14:17:53,526 basehttp "GET /static/css/style.css HTTP/1.1" 200 9218
+INFO 2024-12-21 14:17:53,551 basehttp "GET /static/js/plotly-locale-ar.js HTTP/1.1" 200 1386
+INFO 2024-12-21 14:17:53,577 basehttp "GET /static/js/flatpickr.js HTTP/1.1" 200 87832
+INFO 2024-12-21 14:17:53,602 basehttp "GET /static/css/bootstrap.rtl.css HTTP/1.1" 200 280259
+INFO 2024-12-21 14:17:53,604 basehttp "GET /static/js/details.js HTTP/1.1" 200 6445
+INFO 2024-12-21 14:17:53,636 basehttp "GET /static/js/bootstrap.bundle.js HTTP/1.1" 200 207819
+INFO 2024-12-21 14:17:53,676 basehttp "GET /static/pdfjs/build/pdf.mjs HTTP/1.1" 200 628531
+INFO 2024-12-21 14:17:54,464 basehttp "GET /static/js/plotly-3.0.0-rc.0.js HTTP/1.1" 200 10779558
+INFO 2024-12-21 14:17:54,488 basehttp "GET /static/fonts/Shabwa.ttf HTTP/1.1" 200 51148
+INFO 2024-12-21 14:17:54,489 basehttp "GET /static/fonts/Shabwa-Medium.ttf HTTP/1.1" 200 51776
+INFO 2024-12-21 14:18:16,127 basehttp "GET / HTTP/1.1" 200 1338413
+INFO 2024-12-21 14:18:20,774 basehttp "GET /static/fonts/Shabwa-Bold.ttf HTTP/1.1" 200 49452
+INFO 2024-12-21 14:18:26,018 basehttp "GET /static/favicon.png HTTP/1.1" 200 6093
+INFO 2024-12-21 14:18:27,264 basehttp "GET / HTTP/1.1" 200 1338414
+INFO 2024-12-21 14:18:27,313 basehttp "GET /static/css/flatpickr.css HTTP/1.1" 200 20981
+INFO 2024-12-21 14:18:27,323 basehttp "GET /static/css/style.css HTTP/1.1" 200 9218
+INFO 2024-12-21 14:18:27,344 basehttp "GET /static/css/bootstrap.rtl.css HTTP/1.1" 200 280259
+INFO 2024-12-21 14:18:27,396 basehttp "GET /static/js/details.js HTTP/1.1" 200 6445
+INFO 2024-12-21 14:18:27,398 basehttp "GET /static/js/plotly-locale-ar.js HTTP/1.1" 200 1386
+INFO 2024-12-21 14:18:27,429 basehttp "GET /static/js/flatpickr.js HTTP/1.1" 200 87832
+INFO 2024-12-21 14:18:27,458 basehttp "GET /static/js/bootstrap.bundle.js HTTP/1.1" 200 207819
+INFO 2024-12-21 14:18:27,519 basehttp "GET /static/pdfjs/build/pdf.mjs HTTP/1.1" 200 628531
+INFO 2024-12-21 14:18:28,297 basehttp "GET /static/js/plotly-3.0.0-rc.0.js HTTP/1.1" 200 10779558
+INFO 2024-12-21 14:18:31,595 basehttp "GET /static/fonts/Shabwa.ttf HTTP/1.1" 200 51148
+INFO 2024-12-21 14:18:31,597 basehttp "GET /static/fonts/Shabwa-Medium.ttf HTTP/1.1" 200 51776
+INFO 2024-12-21 14:18:32,776 basehttp "GET /static/favicon.png HTTP/1.1" 200 6093
+INFO 2024-12-21 14:18:35,081 basehttp "GET /static/fonts/Shabwa-Bold.ttf HTTP/1.1" 200 49452
+INFO 2024-12-21 14:19:38,134 autoreload /workspaces/mail_archive/documents/views.py changed, reloading.
+INFO 2024-12-21 14:19:40,271 autoreload Watching for file changes with StatReloader
+INFO 2024-12-21 14:19:45,901 llm Model and tokenizer initialized.
+INFO 2024-12-21 14:20:16,566 basehttp "GET / HTTP/1.1" 200 1338443
+INFO 2024-12-21 14:20:16,653 basehttp "GET /static/css/style.css HTTP/1.1" 200 9218
+INFO 2024-12-21 14:20:16,656 basehttp "GET /static/css/flatpickr.css HTTP/1.1" 200 20981
+INFO 2024-12-21 14:20:16,681 basehttp "GET /static/js/plotly-locale-ar.js HTTP/1.1" 200 1386
+INFO 2024-12-21 14:20:16,725 basehttp "GET /static/js/flatpickr.js HTTP/1.1" 200 87832
+INFO 2024-12-21 14:20:16,728 basehttp "GET /static/js/details.js HTTP/1.1" 200 6445
+INFO 2024-12-21 14:20:16,732 basehttp "GET /static/css/bootstrap.rtl.css HTTP/1.1" 200 280259
+INFO 2024-12-21 14:20:16,761 basehttp "GET /static/js/bootstrap.bundle.js HTTP/1.1" 200 207819
+INFO 2024-12-21 14:20:16,831 basehttp "GET /static/pdfjs/build/pdf.mjs HTTP/1.1" 200 628531
+INFO 2024-12-21 14:20:16,886 basehttp "GET /static/fonts/Shabwa.ttf HTTP/1.1" 200 51148
+INFO 2024-12-21 14:20:16,916 basehttp "GET /static/fonts/Shabwa-Medium.ttf HTTP/1.1" 200 51776
+INFO 2024-12-21 14:20:18,014 basehttp "GET /static/js/plotly-3.0.0-rc.0.js HTTP/1.1" 200 10779558
+INFO 2024-12-21 14:20:18,203 basehttp "GET /static/favicon.png HTTP/1.1" 200 6093
+INFO 2024-12-21 14:20:20,061 basehttp "GET /static/fonts/Shabwa-Bold.ttf HTTP/1.1" 200 49452
+INFO 2024-12-21 14:21:49,577 llm Model and tokenizer initialized.
+INFO 2024-12-21 14:22:29,575 views User admin logged in successfully.
+INFO 2024-12-21 14:22:29,580 basehttp "POST /login/ HTTP/1.1" 302 0
+INFO 2024-12-21 14:22:29,616 basehttp "GET / HTTP/1.1" 302 0
+INFO 2024-12-21 14:22:29,727 basehttp "GET /admin/ HTTP/1.1" 200 2214
+INFO 2024-12-21 14:22:29,939 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2024-12-21 14:22:29,971 basehttp "GET /admin/ HTTP/1.1" 200 2226
+INFO 2024-12-21 14:22:35,936 basehttp "GET /admin/auth/user/ HTTP/1.1" 200 3644
+INFO 2024-12-21 14:22:36,039 basehttp "GET /admin/jsi18n/ HTTP/1.1" 200 2922
+INFO 2024-12-21 14:22:36,159 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2024-12-21 14:22:36,189 basehttp "GET /admin/ HTTP/1.1" 200 2247
+INFO 2024-12-21 14:22:41,470 basehttp "GET /admin/auth/group/add/ HTTP/1.1" 200 3809
+INFO 2024-12-21 14:22:41,553 basehttp "GET /admin/jsi18n/ HTTP/1.1" 200 2951
+INFO 2024-12-21 14:22:41,687 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2024-12-21 14:22:41,721 basehttp "GET /admin/ HTTP/1.1" 200 2247
+INFO 2024-12-21 14:23:06,207 basehttp "POST /admin/auth/group/add/ HTTP/1.1" 302 0
+INFO 2024-12-21 14:23:06,273 basehttp "GET /admin/auth/group/ HTTP/1.1" 200 3188
+INFO 2024-12-21 14:23:06,346 basehttp "GET /admin/jsi18n/ HTTP/1.1" 200 2901
+INFO 2024-12-21 14:23:06,429 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2024-12-21 14:23:06,459 basehttp "GET /admin/ HTTP/1.1" 200 2305
+INFO 2024-12-21 14:23:09,335 basehttp "GET /admin/auth/user/add/ HTTP/1.1" 200 3587
+INFO 2024-12-21 14:23:09,413 basehttp "GET /admin/jsi18n/ HTTP/1.1" 200 2877
+INFO 2024-12-21 14:23:09,508 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2024-12-21 14:23:09,537 basehttp "GET /admin/ HTTP/1.1" 200 2281
+INFO 2024-12-21 14:23:24,265 basehttp "POST /admin/auth/user/add/ HTTP/1.1" 200 3637
+INFO 2024-12-21 14:23:24,333 basehttp "GET /admin/jsi18n/ HTTP/1.1" 200 2917
+INFO 2024-12-21 14:23:24,428 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2024-12-21 14:23:24,461 basehttp "GET /admin/ HTTP/1.1" 200 2328
+INFO 2024-12-21 14:23:35,976 basehttp "POST /admin/auth/user/add/ HTTP/1.1" 302 0
+INFO 2024-12-21 14:23:36,082 basehttp "GET /admin/auth/user/2/change/ HTTP/1.1" 200 5350
+INFO 2024-12-21 14:23:36,157 basehttp "GET /admin/jsi18n/ HTTP/1.1" 200 2905
+INFO 2024-12-21 14:23:36,285 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2024-12-21 14:23:36,314 basehttp "GET /admin/ HTTP/1.1" 200 2342
+INFO 2024-12-21 14:23:41,921 basehttp "POST /admin/auth/user/2/change/ HTTP/1.1" 302 0
+INFO 2024-12-21 14:23:41,963 basehttp "GET /admin/auth/user/ HTTP/1.1" 200 3773
+INFO 2024-12-21 14:23:42,046 basehttp "GET /admin/jsi18n/ HTTP/1.1" 200 2922
+INFO 2024-12-21 14:23:42,128 basehttp "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2024-12-21 14:23:42,158 basehttp "GET /admin/ HTTP/1.1" 200 2309
+INFO 2024-12-21 14:23:45,108 basehttp "POST /admin/logout/ HTTP/1.1" 302 0
+INFO 2024-12-21 14:23:45,382 basehttp "GET / HTTP/1.1" 200 1337979
+INFO 2024-12-21 14:23:54,037 views User test logged in successfully.
+INFO 2024-12-21 14:23:54,042 basehttp "POST /login/ HTTP/1.1" 302 0
+INFO 2024-12-21 14:23:54,342 basehttp "GET / HTTP/1.1" 200 1338602
+INFO 2024-12-21 14:23:54,430 basehttp "GET /static/img/internal-mail.png HTTP/1.1" 200 12268
+INFO 2024-12-21 14:23:54,432 basehttp "GET /static/img/decrees.png HTTP/1.1" 200 15258
+INFO 2024-12-21 14:23:54,435 basehttp "GET /static/img/report.png HTTP/1.1" 200 15471
+INFO 2024-12-21 14:23:54,436 basehttp "GET /static/img/settings.png HTTP/1.1" 200 21053
+INFO 2024-12-21 14:23:54,437 basehttp "GET /static/img/outgoing-mail.png HTTP/1.1" 200 27599
+INFO 2024-12-21 14:23:54,439 basehttp "GET /static/img/incoming-mail.png HTTP/1.1" 200 27510
+INFO 2024-12-21 14:23:57,571 basehttp "GET /manage/departments/ HTTP/1.1" 200 2691
+INFO 2024-12-21 14:23:58,331 views Submitted Query: 
+INFO 2024-12-21 14:23:58,334 views Returned 0 documents for model 'report'.
+INFO 2024-12-21 14:23:58,351 basehttp "GET /documents/report/ HTTP/1.1" 200 3353
+INFO 2024-12-21 14:23:59,019 views Submitted Query: 
+INFO 2024-12-21 14:23:59,021 views Returned 0 documents for model 'decree'.
+INFO 2024-12-21 14:23:59,027 basehttp "GET /documents/decree/ HTTP/1.1" 200 3372
+INFO 2024-12-21 14:23:59,752 views Submitted Query: 
+INFO 2024-12-21 14:23:59,755 views Returned 0 documents for model 'internal'.
+INFO 2024-12-21 14:23:59,762 basehttp "GET /documents/internal/ HTTP/1.1" 200 3380
+INFO 2024-12-21 14:24:00,416 views Submitted Query: 
+INFO 2024-12-21 14:24:00,418 views Returned 0 documents for model 'incoming'.
+INFO 2024-12-21 14:24:00,423 basehttp "GET /documents/incoming/ HTTP/1.1" 200 3461
+INFO 2024-12-21 14:24:01,090 views Submitted Query: 
+INFO 2024-12-21 14:24:01,093 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:24:01,098 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3372
+INFO 2024-12-21 14:24:02,431 basehttp "GET /manage/departments/ HTTP/1.1" 200 2617
+INFO 2024-12-21 14:24:05,491 views Submitted Query: 
+INFO 2024-12-21 14:24:05,493 views Returned 0 documents for model 'report'.
+INFO 2024-12-21 14:24:05,499 basehttp "GET /documents/report/ HTTP/1.1" 200 3399
+INFO 2024-12-21 14:24:06,715 views Submitted Query: 
+INFO 2024-12-21 14:24:06,718 views Returned 0 documents for model 'decree'.
+INFO 2024-12-21 14:24:06,725 basehttp "GET /documents/decree/ HTTP/1.1" 200 3394
+INFO 2024-12-21 14:24:07,852 views Submitted Query: 
+INFO 2024-12-21 14:24:07,855 views Returned 0 documents for model 'internal'.
+INFO 2024-12-21 14:24:07,861 basehttp "GET /documents/internal/ HTTP/1.1" 200 3388
+INFO 2024-12-21 14:24:08,606 views Submitted Query: 
+INFO 2024-12-21 14:24:08,609 views Returned 0 documents for model 'incoming'.
+INFO 2024-12-21 14:24:08,614 basehttp "GET /documents/incoming/ HTTP/1.1" 200 3379
+INFO 2024-12-21 14:24:29,861 views Submitted Query: 
+INFO 2024-12-21 14:24:29,864 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:24:29,870 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3356
+INFO 2024-12-21 14:25:23,677 views Submitted Query: 
+INFO 2024-12-21 14:25:23,679 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:25:23,701 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3378
+INFO 2024-12-21 14:25:23,783 basehttp "GET /static/css/style.css HTTP/1.1" 200 9218
+INFO 2024-12-21 14:25:23,786 basehttp "GET /static/css/flatpickr.css HTTP/1.1" 200 20981
+INFO 2024-12-21 14:25:23,816 basehttp "GET /static/css/bootstrap.rtl.css HTTP/1.1" 200 280259
+INFO 2024-12-21 14:25:23,861 basehttp "GET /static/pdfjs/build/pdf.mjs HTTP/1.1" 200 628531
+INFO 2024-12-21 14:25:23,878 basehttp "GET /static/img/incoming-mail.png HTTP/1.1" 200 27510
+INFO 2024-12-21 14:25:23,878 basehttp "GET /static/img/outgoing-mail.png HTTP/1.1" 200 27599
+INFO 2024-12-21 14:25:23,893 basehttp "GET /static/img/internal-mail.png HTTP/1.1" 200 12268
+INFO 2024-12-21 14:25:23,893 basehttp "GET /static/img/decrees.png HTTP/1.1" 200 15258
+INFO 2024-12-21 14:25:23,911 basehttp "GET /static/img/report.png HTTP/1.1" 200 15471
+INFO 2024-12-21 14:25:23,935 basehttp "GET /static/js/flatpickr.js HTTP/1.1" 200 87832
+INFO 2024-12-21 14:25:23,966 basehttp "GET /static/js/bootstrap.bundle.js HTTP/1.1" 200 207819
+INFO 2024-12-21 14:25:23,982 basehttp "GET /static/js/details.js HTTP/1.1" 200 6445
+INFO 2024-12-21 14:25:23,998 basehttp "GET /static/img/settings.png HTTP/1.1" 200 21053
+INFO 2024-12-21 14:25:27,713 basehttp "GET /static/fonts/Shabwa.ttf HTTP/1.1" 200 51148
+INFO 2024-12-21 14:25:27,746 basehttp "GET /static/fonts/Shabwa-Bold.ttf HTTP/1.1" 200 49452
+INFO 2024-12-21 14:25:27,823 basehttp "GET /static/fonts/Shabwa-Medium.ttf HTTP/1.1" 200 51776
+INFO 2024-12-21 14:25:33,241 views Submitted Query: 
+INFO 2024-12-21 14:25:33,244 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:25:33,253 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3421
+INFO 2024-12-21 14:25:37,173 basehttp "GET /static/favicon.png HTTP/1.1" 200 6093
+INFO 2024-12-21 14:25:39,437 views Submitted Query: 
+INFO 2024-12-21 14:25:39,440 views Returned 0 documents for model 'incoming'.
+INFO 2024-12-21 14:25:39,449 basehttp "GET /documents/incoming/ HTTP/1.1" 200 3433
+INFO 2024-12-21 14:25:41,814 views Submitted Query: 
+INFO 2024-12-21 14:25:41,818 views Returned 0 documents for model 'decree'.
+INFO 2024-12-21 14:25:41,826 basehttp "GET /documents/decree/ HTTP/1.1" 200 3363
+INFO 2024-12-21 14:25:42,557 views Submitted Query: 
+INFO 2024-12-21 14:25:42,560 views Returned 0 documents for model 'internal'.
+INFO 2024-12-21 14:25:42,566 basehttp "GET /documents/internal/ HTTP/1.1" 200 3352
+INFO 2024-12-21 14:25:43,800 views Submitted Query: 
+INFO 2024-12-21 14:25:43,802 views Returned 0 documents for model 'report'.
+INFO 2024-12-21 14:25:43,809 basehttp "GET /documents/report/ HTTP/1.1" 200 3378
+INFO 2024-12-21 14:25:44,564 views Submitted Query: 
+INFO 2024-12-21 14:25:44,566 views Returned 0 documents for model 'decree'.
+INFO 2024-12-21 14:25:44,571 basehttp "GET /documents/decree/ HTTP/1.1" 200 3397
+INFO 2024-12-21 14:25:46,967 views Submitted Query: 
+INFO 2024-12-21 14:25:46,969 views Returned 0 documents for model 'report'.
+INFO 2024-12-21 14:25:46,976 basehttp "GET /documents/report/ HTTP/1.1" 200 3396
+INFO 2024-12-21 14:25:48,002 views Submitted Query: 
+INFO 2024-12-21 14:25:48,006 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:25:48,014 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3434
+INFO 2024-12-21 14:27:57,482 views Submitted Query: 
+INFO 2024-12-21 14:27:57,485 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:27:57,505 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3380
+INFO 2024-12-21 14:27:57,589 basehttp "GET /static/css/style.css HTTP/1.1" 200 9218
+INFO 2024-12-21 14:27:57,590 basehttp "GET /static/css/flatpickr.css HTTP/1.1" 200 20981
+INFO 2024-12-21 14:27:57,620 basehttp "GET /static/css/bootstrap.rtl.css HTTP/1.1" 200 280259
+INFO 2024-12-21 14:27:57,665 basehttp "GET /static/pdfjs/build/pdf.mjs HTTP/1.1" 200 628531
+INFO 2024-12-21 14:27:57,679 basehttp "GET /static/img/incoming-mail.png HTTP/1.1" 200 27510
+INFO 2024-12-21 14:27:57,680 basehttp "GET /static/img/outgoing-mail.png HTTP/1.1" 200 27599
+INFO 2024-12-21 14:27:57,694 basehttp "GET /static/img/decrees.png HTTP/1.1" 200 15258
+INFO 2024-12-21 14:27:57,694 basehttp "GET /static/img/internal-mail.png HTTP/1.1" 200 12268
+INFO 2024-12-21 14:27:57,710 basehttp "GET /static/img/report.png HTTP/1.1" 200 15471
+INFO 2024-12-21 14:27:57,733 basehttp "GET /static/js/flatpickr.js HTTP/1.1" 200 87832
+INFO 2024-12-21 14:27:57,763 basehttp "GET /static/js/bootstrap.bundle.js HTTP/1.1" 200 207819
+INFO 2024-12-21 14:27:57,777 basehttp "GET /static/js/details.js HTTP/1.1" 200 6445
+INFO 2024-12-21 14:27:57,792 basehttp "GET /static/img/settings.png HTTP/1.1" 200 21053
+INFO 2024-12-21 14:27:59,900 basehttp "GET /static/fonts/Shabwa.ttf HTTP/1.1" 200 51148
+INFO 2024-12-21 14:27:59,901 basehttp "GET /static/fonts/Shabwa-Bold.ttf HTTP/1.1" 200 49452
+INFO 2024-12-21 14:27:59,902 basehttp "GET /static/fonts/Shabwa-Medium.ttf HTTP/1.1" 200 51776
+INFO 2024-12-21 14:28:00,712 basehttp "GET /static/favicon.png HTTP/1.1" 200 6093
+INFO 2024-12-21 14:28:04,478 views Submitted Query: 
+INFO 2024-12-21 14:28:04,481 views Returned 0 documents for model 'incoming'.
+INFO 2024-12-21 14:28:04,488 basehttp "GET /documents/incoming/ HTTP/1.1" 200 3432
+INFO 2024-12-21 14:28:23,132 views Submitted Query: 
+INFO 2024-12-21 14:28:23,134 views Returned 0 documents for model 'incoming'.
+INFO 2024-12-21 14:28:23,158 basehttp "GET /documents/incoming/ HTTP/1.1" 200 3369
+INFO 2024-12-21 14:28:23,245 basehttp "GET /static/css/style.css HTTP/1.1" 200 9218
+INFO 2024-12-21 14:28:23,247 basehttp "GET /static/css/flatpickr.css HTTP/1.1" 200 20981
+INFO 2024-12-21 14:28:23,275 basehttp "GET /static/css/bootstrap.rtl.css HTTP/1.1" 200 280259
+INFO 2024-12-21 14:28:23,318 basehttp "GET /static/pdfjs/build/pdf.mjs HTTP/1.1" 200 628531
+INFO 2024-12-21 14:28:23,333 basehttp "GET /static/img/incoming-mail.png HTTP/1.1" 200 27510
+INFO 2024-12-21 14:28:23,333 basehttp "GET /static/img/outgoing-mail.png HTTP/1.1" 200 27599
+INFO 2024-12-21 14:28:23,347 basehttp "GET /static/img/internal-mail.png HTTP/1.1" 200 12268
+INFO 2024-12-21 14:28:23,348 basehttp "GET /static/img/decrees.png HTTP/1.1" 200 15258
+INFO 2024-12-21 14:28:23,364 basehttp "GET /static/img/report.png HTTP/1.1" 200 15471
+INFO 2024-12-21 14:28:23,385 basehttp "GET /static/js/flatpickr.js HTTP/1.1" 200 87832
+INFO 2024-12-21 14:28:23,415 basehttp "GET /static/js/bootstrap.bundle.js HTTP/1.1" 200 207819
+INFO 2024-12-21 14:28:23,429 basehttp "GET /static/js/details.js HTTP/1.1" 200 6445
+INFO 2024-12-21 14:28:23,445 basehttp "GET /static/img/settings.png HTTP/1.1" 200 21053
+INFO 2024-12-21 14:28:25,980 views Submitted Query: 
+INFO 2024-12-21 14:28:25,983 views Returned 0 documents for model 'incoming'.
+INFO 2024-12-21 14:28:25,988 basehttp "GET /documents/incoming/ HTTP/1.1" 200 3375
+INFO 2024-12-21 14:28:30,449 basehttp "GET /static/favicon.png HTTP/1.1" 200 6093
+INFO 2024-12-21 14:28:32,087 views Submitted Query: 
+INFO 2024-12-21 14:28:32,090 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:28:32,097 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3432
+INFO 2024-12-21 14:30:29,741 views Submitted Query: 
+INFO 2024-12-21 14:30:29,744 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:30:29,771 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3371
+INFO 2024-12-21 14:30:29,854 basehttp "GET /static/css/style.css HTTP/1.1" 200 9218
+INFO 2024-12-21 14:30:29,856 basehttp "GET /static/css/flatpickr.css HTTP/1.1" 200 20981
+INFO 2024-12-21 14:30:29,884 basehttp "GET /static/css/bootstrap.rtl.css HTTP/1.1" 200 280259
+INFO 2024-12-21 14:30:29,934 basehttp "GET /static/pdfjs/build/pdf.mjs HTTP/1.1" 200 628531
+INFO 2024-12-21 14:30:29,946 basehttp "GET /static/img/outgoing-mail.png HTTP/1.1" 200 27599
+INFO 2024-12-21 14:30:29,947 basehttp "GET /static/img/incoming-mail.png HTTP/1.1" 200 27510
+INFO 2024-12-21 14:30:29,959 basehttp "GET /static/img/decrees.png HTTP/1.1" 200 15258
+INFO 2024-12-21 14:30:29,961 basehttp "GET /static/img/internal-mail.png HTTP/1.1" 200 12268
+INFO 2024-12-21 14:30:29,980 basehttp "GET /static/img/report.png HTTP/1.1" 200 15471
+INFO 2024-12-21 14:30:30,006 basehttp "GET /static/js/flatpickr.js HTTP/1.1" 200 87832
+INFO 2024-12-21 14:30:30,042 basehttp "GET /static/js/bootstrap.bundle.js HTTP/1.1" 200 207819
+INFO 2024-12-21 14:30:30,057 basehttp "GET /static/js/details.js HTTP/1.1" 200 6445
+INFO 2024-12-21 14:30:30,071 basehttp "GET /static/img/settings.png HTTP/1.1" 200 21053
+INFO 2024-12-21 14:30:40,383 basehttp "GET /static/fonts/Shabwa.ttf HTTP/1.1" 200 51148
+INFO 2024-12-21 14:30:40,383 basehttp "GET /static/fonts/Shabwa-Bold.ttf HTTP/1.1" 200 49452
+INFO 2024-12-21 14:30:40,385 basehttp "GET /static/fonts/Shabwa-Medium.ttf HTTP/1.1" 200 51776
+INFO 2024-12-21 14:30:54,107 basehttp "GET /static/favicon.png HTTP/1.1" 200 6093
+INFO 2024-12-21 14:30:54,693 views Submitted Query: 
+INFO 2024-12-21 14:30:54,695 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:30:54,724 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3370
+INFO 2024-12-21 14:30:58,576 views Submitted Query: 
+INFO 2024-12-21 14:30:58,578 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:30:58,586 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3350
+INFO 2024-12-21 14:31:02,489 views Submitted Query: 
+INFO 2024-12-21 14:31:02,493 views Returned 0 documents for model 'internal'.
+INFO 2024-12-21 14:31:02,500 basehttp "GET /documents/internal/ HTTP/1.1" 200 3442
+INFO 2024-12-21 14:31:03,850 views Submitted Query: 
+INFO 2024-12-21 14:31:03,852 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:31:03,857 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3357
+INFO 2024-12-21 14:31:10,204 views Submitted Query: 
+INFO 2024-12-21 14:31:10,207 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:31:10,213 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3436
+INFO 2024-12-21 14:31:10,287 basehttp "GET /static/css/style.css HTTP/1.1" 200 9218
+INFO 2024-12-21 14:31:10,290 basehttp "GET /static/css/flatpickr.css HTTP/1.1" 200 20981
+INFO 2024-12-21 14:31:10,318 basehttp "GET /static/css/bootstrap.rtl.css HTTP/1.1" 200 280259
+INFO 2024-12-21 14:31:10,365 basehttp "GET /static/pdfjs/build/pdf.mjs HTTP/1.1" 200 628531
+INFO 2024-12-21 14:31:10,380 basehttp "GET /static/img/incoming-mail.png HTTP/1.1" 200 27510
+INFO 2024-12-21 14:31:10,382 basehttp "GET /static/img/outgoing-mail.png HTTP/1.1" 200 27599
+INFO 2024-12-21 14:31:10,395 basehttp "GET /static/img/internal-mail.png HTTP/1.1" 200 12268
+INFO 2024-12-21 14:31:10,396 basehttp "GET /static/img/decrees.png HTTP/1.1" 200 15258
+INFO 2024-12-21 14:31:10,412 basehttp "GET /static/img/report.png HTTP/1.1" 200 15471
+INFO 2024-12-21 14:31:10,433 basehttp "GET /static/js/flatpickr.js HTTP/1.1" 200 87832
+INFO 2024-12-21 14:31:10,464 basehttp "GET /static/js/bootstrap.bundle.js HTTP/1.1" 200 207819
+INFO 2024-12-21 14:31:10,478 basehttp "GET /static/js/details.js HTTP/1.1" 200 6445
+INFO 2024-12-21 14:31:10,493 basehttp "GET /static/img/settings.png HTTP/1.1" 200 21053
+INFO 2024-12-21 14:31:16,031 basehttp "GET /static/fonts/Shabwa.ttf HTTP/1.1" 200 51148
+INFO 2024-12-21 14:31:16,032 basehttp "GET /static/fonts/Shabwa-Bold.ttf HTTP/1.1" 200 49452
+INFO 2024-12-21 14:31:16,033 basehttp "GET /static/fonts/Shabwa-Medium.ttf HTTP/1.1" 200 51776
+INFO 2024-12-21 14:31:32,106 basehttp "GET /static/favicon.png HTTP/1.1" 200 6093
+INFO 2024-12-21 14:31:57,550 views Submitted Query: 
+INFO 2024-12-21 14:31:57,553 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:31:57,580 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3374
+INFO 2024-12-21 14:32:17,262 views Submitted Query: 
+INFO 2024-12-21 14:32:17,264 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:32:17,285 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3359
+INFO 2024-12-21 14:32:47,673 views Submitted Query: 
+INFO 2024-12-21 14:32:47,676 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:32:47,704 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3365
+INFO 2024-12-21 14:32:58,320 views Submitted Query: 
+INFO 2024-12-21 14:32:58,323 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:32:58,347 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3388
+INFO 2024-12-21 14:33:04,256 views Submitted Query: 
+INFO 2024-12-21 14:33:04,259 views Returned 0 documents for model 'incoming'.
+INFO 2024-12-21 14:33:04,266 basehttp "GET /documents/incoming/ HTTP/1.1" 200 3400
+INFO 2024-12-21 14:33:05,308 views Submitted Query: 
+INFO 2024-12-21 14:33:05,311 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:33:05,316 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3353
+INFO 2024-12-21 14:33:37,429 views Submitted Query: 
+INFO 2024-12-21 14:33:37,431 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:33:37,461 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3408
+INFO 2024-12-21 14:33:37,542 basehttp "GET /static/css/style.css HTTP/1.1" 200 9218
+INFO 2024-12-21 14:33:37,545 basehttp "GET /static/css/flatpickr.css HTTP/1.1" 200 20981
+INFO 2024-12-21 14:33:37,576 basehttp "GET /static/css/bootstrap.rtl.css HTTP/1.1" 200 280259
+INFO 2024-12-21 14:33:37,617 basehttp "GET /static/pdfjs/build/pdf.mjs HTTP/1.1" 200 628531
+INFO 2024-12-21 14:33:37,632 basehttp "GET /static/img/outgoing-mail.png HTTP/1.1" 200 27599
+INFO 2024-12-21 14:33:37,634 basehttp "GET /static/img/incoming-mail.png HTTP/1.1" 200 27510
+INFO 2024-12-21 14:33:37,646 basehttp "GET /static/img/internal-mail.png HTTP/1.1" 200 12268
+INFO 2024-12-21 14:33:37,647 basehttp "GET /static/img/decrees.png HTTP/1.1" 200 15258
+INFO 2024-12-21 14:33:37,664 basehttp "GET /static/img/report.png HTTP/1.1" 200 15471
+INFO 2024-12-21 14:33:37,686 basehttp "GET /static/js/flatpickr.js HTTP/1.1" 200 87832
+INFO 2024-12-21 14:33:37,716 basehttp "GET /static/js/bootstrap.bundle.js HTTP/1.1" 200 207819
+INFO 2024-12-21 14:33:37,730 basehttp "GET /static/js/details.js HTTP/1.1" 200 6445
+INFO 2024-12-21 14:33:37,746 basehttp "GET /static/img/settings.png HTTP/1.1" 200 21053
+INFO 2024-12-21 14:33:38,689 basehttp "GET /static/fonts/Shabwa.ttf HTTP/1.1" 200 51148
+INFO 2024-12-21 14:33:38,716 basehttp "GET /static/fonts/Shabwa-Bold.ttf HTTP/1.1" 200 49452
+INFO 2024-12-21 14:33:38,791 basehttp "GET /static/fonts/Shabwa-Medium.ttf HTTP/1.1" 200 51776
+INFO 2024-12-21 14:33:40,782 basehttp "GET /static/favicon.png HTTP/1.1" 200 6093
+INFO 2024-12-21 14:35:23,262 views Submitted Query: 
+INFO 2024-12-21 14:35:23,265 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:35:23,293 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3357
+INFO 2024-12-21 14:35:24,412 views Submitted Query: 
+INFO 2024-12-21 14:35:24,415 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:35:24,424 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3437
+INFO 2024-12-21 14:35:24,581 views Submitted Query: 
+INFO 2024-12-21 14:35:24,584 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:35:24,590 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3371
+INFO 2024-12-21 14:35:24,699 views Submitted Query: 
+INFO 2024-12-21 14:35:24,701 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:35:24,708 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3415
+INFO 2024-12-21 14:35:24,867 views Submitted Query: 
+INFO 2024-12-21 14:35:24,870 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:35:24,877 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3351
+INFO 2024-12-21 14:35:26,874 views Submitted Query: 
+INFO 2024-12-21 14:35:26,877 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:35:26,884 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3420
+INFO 2024-12-21 14:35:27,120 views Submitted Query: 
+INFO 2024-12-21 14:35:27,124 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:35:27,131 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3396
+INFO 2024-12-21 14:35:28,648 basehttp "GET / HTTP/1.1" 200 1338611
+INFO 2024-12-21 14:35:30,732 views Submitted Query: 
+INFO 2024-12-21 14:35:30,734 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:35:30,742 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3413
+INFO 2024-12-21 14:35:44,231 views Submitted Query: 
+INFO 2024-12-21 14:35:44,234 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:35:44,258 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3421
+INFO 2024-12-21 14:35:44,403 views Submitted Query: 
+INFO 2024-12-21 14:35:44,406 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:35:44,412 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3372
+INFO 2024-12-21 14:35:44,539 views Submitted Query: 
+INFO 2024-12-21 14:35:44,541 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:35:44,551 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3437
+INFO 2024-12-21 14:35:44,693 views Submitted Query: 
+INFO 2024-12-21 14:35:44,696 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:35:44,702 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3357
+INFO 2024-12-21 14:35:44,840 views Submitted Query: 
+INFO 2024-12-21 14:35:44,843 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:35:44,850 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3386
+INFO 2024-12-21 14:35:46,741 views Submitted Query: 
+INFO 2024-12-21 14:35:46,743 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:35:46,751 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3356
+INFO 2024-12-21 14:35:47,139 views Submitted Query: 
+INFO 2024-12-21 14:35:47,141 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:35:47,147 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3443
+INFO 2024-12-21 14:35:48,744 views Submitted Query: 
+INFO 2024-12-21 14:35:48,747 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:35:48,753 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3412
+INFO 2024-12-21 14:35:49,351 views Submitted Query: 
+INFO 2024-12-21 14:35:49,354 views Returned 0 documents for model 'incoming'.
+INFO 2024-12-21 14:35:49,359 basehttp "GET /documents/incoming/ HTTP/1.1" 200 3374
+INFO 2024-12-21 14:35:50,235 views Submitted Query: 
+INFO 2024-12-21 14:35:50,237 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:35:50,244 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3443
+INFO 2024-12-21 14:36:40,806 basehttp "GET /manage/departments/ HTTP/1.1" 200 2630
+INFO 2024-12-21 14:36:42,738 basehttp "GET /manage/affiliates/ HTTP/1.1" 200 2679
+INFO 2024-12-21 14:36:43,567 basehttp "GET /manage/ministers/ HTTP/1.1" 200 2665
+INFO 2024-12-21 14:36:44,396 basehttp "GET /manage/governments/ HTTP/1.1" 200 2614
+INFO 2024-12-21 14:36:45,875 views Submitted Query: 
+INFO 2024-12-21 14:36:45,877 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:36:45,891 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3370
+INFO 2024-12-21 14:36:57,492 views Submitted Query: 
+INFO 2024-12-21 14:36:57,495 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:36:57,517 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3366
+INFO 2024-12-21 14:37:00,186 views Submitted Query: 
+INFO 2024-12-21 14:37:00,188 views Returned 0 documents for model 'incoming'.
+INFO 2024-12-21 14:37:00,195 basehttp "GET /documents/incoming/ HTTP/1.1" 200 3402
+INFO 2024-12-21 14:37:01,000 views Submitted Query: 
+INFO 2024-12-21 14:37:01,003 views Returned 0 documents for model 'incoming'.
+INFO 2024-12-21 14:37:01,011 basehttp "GET /documents/incoming/ HTTP/1.1" 200 3431
+INFO 2024-12-21 14:37:01,828 views Submitted Query: 
+INFO 2024-12-21 14:37:01,830 views Returned 0 documents for model 'internal'.
+INFO 2024-12-21 14:37:01,836 basehttp "GET /documents/internal/ HTTP/1.1" 200 3381
+INFO 2024-12-21 14:37:03,113 views Submitted Query: 
+INFO 2024-12-21 14:37:03,115 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:37:03,121 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3436
+INFO 2024-12-21 14:37:04,000 basehttp "GET /manage/departments/ HTTP/1.1" 200 2691
+INFO 2024-12-21 14:37:05,269 views Submitted Query: 
+INFO 2024-12-21 14:37:05,272 views Returned 0 documents for model 'report'.
+INFO 2024-12-21 14:37:05,278 basehttp "GET /documents/report/ HTTP/1.1" 200 3432
+INFO 2024-12-21 14:37:06,494 views Submitted Query: 
+INFO 2024-12-21 14:37:06,496 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:37:06,502 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3406
+INFO 2024-12-21 14:37:15,622 views Submitted Query: 
+INFO 2024-12-21 14:37:15,625 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:37:15,647 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3368
+INFO 2024-12-21 14:37:17,131 views Submitted Query: 
+INFO 2024-12-21 14:37:17,135 views Returned 0 documents for model 'incoming'.
+INFO 2024-12-21 14:37:17,142 basehttp "GET /documents/incoming/ HTTP/1.1" 200 3398
+INFO 2024-12-21 14:37:18,259 views Submitted Query: 
+INFO 2024-12-21 14:37:18,262 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:37:18,271 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3403
+INFO 2024-12-21 14:38:11,314 views Submitted Query: 
+INFO 2024-12-21 14:38:11,316 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:38:11,340 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3438
+INFO 2024-12-21 14:38:19,041 views Submitted Query: 
+INFO 2024-12-21 14:38:19,044 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:38:19,075 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3391
+INFO 2024-12-21 14:38:20,688 views Submitted Query: 
+INFO 2024-12-21 14:38:20,690 views Returned 0 documents for model 'incoming'.
+INFO 2024-12-21 14:38:20,696 basehttp "GET /documents/incoming/ HTTP/1.1" 200 3380
+INFO 2024-12-21 14:38:31,620 views Submitted Query: 
+INFO 2024-12-21 14:38:31,622 views Returned 0 documents for model 'incoming'.
+INFO 2024-12-21 14:38:31,643 basehttp "GET /documents/incoming/ HTTP/1.1" 200 3397
+INFO 2024-12-21 14:38:36,242 views Submitted Query: 
+INFO 2024-12-21 14:38:36,246 views Returned 0 documents for model 'internal'.
+INFO 2024-12-21 14:38:36,255 basehttp "GET /documents/internal/ HTTP/1.1" 200 3362
+INFO 2024-12-21 14:38:37,858 views Submitted Query: 
+INFO 2024-12-21 14:38:37,860 views Returned 0 documents for model 'report'.
+INFO 2024-12-21 14:38:37,867 basehttp "GET /documents/report/ HTTP/1.1" 200 3424
+INFO 2024-12-21 14:38:38,649 views Submitted Query: 
+INFO 2024-12-21 14:38:38,652 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:38:38,657 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3351
+INFO 2024-12-21 14:39:41,584 views Submitted Query: 
+INFO 2024-12-21 14:39:41,586 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:39:41,607 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3446
+INFO 2024-12-21 14:39:49,176 views Submitted Query: 
+INFO 2024-12-21 14:39:49,178 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:39:49,201 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3361
+INFO 2024-12-21 14:40:02,227 views Submitted Query: 
+INFO 2024-12-21 14:40:02,229 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:40:02,254 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3412
+INFO 2024-12-21 14:40:16,899 views Submitted Query: 
+INFO 2024-12-21 14:40:16,901 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:40:16,924 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3381
+INFO 2024-12-21 14:40:38,422 views Submitted Query: 
+INFO 2024-12-21 14:40:38,426 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:40:38,453 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3366
+INFO 2024-12-21 14:40:45,758 views Submitted Query: 
+INFO 2024-12-21 14:40:45,760 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:40:45,785 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3417
+INFO 2024-12-21 14:41:25,255 views Submitted Query: 
+INFO 2024-12-21 14:41:25,258 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:41:25,283 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3393
+INFO 2024-12-21 14:41:45,350 views Submitted Query: 
+INFO 2024-12-21 14:41:45,354 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:41:45,383 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3437
+INFO 2024-12-21 14:41:45,481 basehttp "GET /static/css/style.css HTTP/1.1" 200 9218
+INFO 2024-12-21 14:41:45,482 basehttp "GET /static/css/flatpickr.css HTTP/1.1" 200 20981
+INFO 2024-12-21 14:41:45,510 basehttp "GET /static/css/bootstrap.rtl.css HTTP/1.1" 200 280259
+INFO 2024-12-21 14:41:45,559 basehttp "GET /static/pdfjs/build/pdf.mjs HTTP/1.1" 200 628531
+INFO 2024-12-21 14:41:45,574 basehttp "GET /static/img/outgoing-mail.png HTTP/1.1" 200 27599
+INFO 2024-12-21 14:41:45,574 basehttp "GET /static/img/incoming-mail.png HTTP/1.1" 200 27510
+INFO 2024-12-21 14:41:45,587 basehttp "GET /static/img/internal-mail.png HTTP/1.1" 200 12268
+INFO 2024-12-21 14:41:45,592 basehttp "GET /static/img/decrees.png HTTP/1.1" 200 15258
+INFO 2024-12-21 14:41:45,609 basehttp "GET /static/img/report.png HTTP/1.1" 200 15471
+INFO 2024-12-21 14:41:45,633 basehttp "GET /static/js/flatpickr.js HTTP/1.1" 200 87832
+INFO 2024-12-21 14:41:45,670 basehttp "GET /static/js/bootstrap.bundle.js HTTP/1.1" 200 207819
+INFO 2024-12-21 14:41:45,684 basehttp "GET /static/js/details.js HTTP/1.1" 200 6445
+INFO 2024-12-21 14:41:45,699 basehttp "GET /static/img/settings.png HTTP/1.1" 200 21053
+INFO 2024-12-21 14:41:48,648 basehttp "GET /static/fonts/Shabwa.ttf HTTP/1.1" 200 51148
+INFO 2024-12-21 14:41:48,731 basehttp "GET /static/fonts/Shabwa-Bold.ttf HTTP/1.1" 200 49452
+INFO 2024-12-21 14:41:48,747 basehttp "GET /static/fonts/Shabwa-Medium.ttf HTTP/1.1" 200 51776
+INFO 2024-12-21 14:42:02,681 basehttp "GET /static/favicon.png HTTP/1.1" 200 6093
+INFO 2024-12-21 14:42:53,356 views Submitted Query: 
+INFO 2024-12-21 14:42:53,358 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:42:53,380 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3362
+INFO 2024-12-21 14:44:02,243 views Submitted Query: 
+INFO 2024-12-21 14:44:02,246 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:44:02,271 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3421
+INFO 2024-12-21 14:44:05,575 views Submitted Query: 
+INFO 2024-12-21 14:44:05,578 views Returned 0 documents for model 'incoming'.
+INFO 2024-12-21 14:44:05,586 basehttp "GET /documents/incoming/ HTTP/1.1" 200 3462
+INFO 2024-12-21 14:44:07,040 views Submitted Query: 
+INFO 2024-12-21 14:44:07,043 views Returned 0 documents for model 'internal'.
+INFO 2024-12-21 14:44:07,050 basehttp "GET /documents/internal/ HTTP/1.1" 200 3378
+INFO 2024-12-21 14:44:07,804 views Submitted Query: 
+INFO 2024-12-21 14:44:07,807 views Returned 0 documents for model 'decree'.
+INFO 2024-12-21 14:44:07,814 basehttp "GET /documents/decree/ HTTP/1.1" 200 3387
+INFO 2024-12-21 14:44:08,365 views Submitted Query: 
+INFO 2024-12-21 14:44:08,367 views Returned 0 documents for model 'report'.
+INFO 2024-12-21 14:44:08,373 basehttp "GET /documents/report/ HTTP/1.1" 200 3389
+INFO 2024-12-21 14:44:09,730 views Submitted Query: 
+INFO 2024-12-21 14:44:09,734 views Returned 0 documents for model 'incoming'.
+INFO 2024-12-21 14:44:09,740 basehttp "GET /documents/incoming/ HTTP/1.1" 200 3450
+INFO 2024-12-21 14:46:15,194 views Submitted Query: 
+INFO 2024-12-21 14:46:15,196 views Returned 0 documents for model 'incoming'.
+INFO 2024-12-21 14:46:15,218 basehttp "GET /documents/incoming/ HTTP/1.1" 200 3411
+INFO 2024-12-21 14:46:17,691 views Submitted Query: 
+INFO 2024-12-21 14:46:17,693 views Returned 0 documents for model 'internal'.
+INFO 2024-12-21 14:46:17,699 basehttp "GET /documents/internal/ HTTP/1.1" 200 3425
+INFO 2024-12-21 14:46:19,198 views Submitted Query: 
+INFO 2024-12-21 14:46:19,202 views Returned 0 documents for model 'decree'.
+INFO 2024-12-21 14:46:19,208 basehttp "GET /documents/decree/ HTTP/1.1" 200 3433
+INFO 2024-12-21 14:46:20,069 views Submitted Query: 
+INFO 2024-12-21 14:46:20,072 views Returned 0 documents for model 'report'.
+INFO 2024-12-21 14:46:20,077 basehttp "GET /documents/report/ HTTP/1.1" 200 3424
+INFO 2024-12-21 14:46:22,240 basehttp "GET /manage/departments/ HTTP/1.1" 200 2645
+INFO 2024-12-21 14:47:37,841 views Submitted Query: 
+INFO 2024-12-21 14:47:37,843 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:47:37,850 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3408
+INFO 2024-12-21 14:48:02,814 views Submitted Query: 
+INFO 2024-12-21 14:48:02,817 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:48:02,823 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3386
+INFO 2024-12-21 14:50:10,832 autoreload /workspaces/mail_archive/documents/forms.py changed, reloading.
+INFO 2024-12-21 14:50:13,260 autoreload Watching for file changes with StatReloader
+INFO 2024-12-21 14:50:19,517 llm Model and tokenizer initialized.
+INFO 2024-12-21 14:50:22,671 basehttp "GET /documents/outgoing/add/ HTTP/1.1" 200 2729
+INFO 2024-12-21 14:50:22,813 basehttp "GET /static/js/dateFixer.js HTTP/1.1" 200 7861
+INFO 2024-12-21 14:50:28,422 views Submitted Query: 
+INFO 2024-12-21 14:50:28,425 views Returned 0 documents for model 'incoming'.
+INFO 2024-12-21 14:50:28,441 basehttp "GET /documents/incoming/ HTTP/1.1" 200 3376
+INFO 2024-12-21 14:50:29,698 basehttp "GET /documents/incoming/add/ HTTP/1.1" 200 2880
+INFO 2024-12-21 14:50:46,331 views Submitted Query: 
+INFO 2024-12-21 14:50:46,333 views Returned 0 documents for model 'internal'.
+INFO 2024-12-21 14:50:46,340 basehttp "GET /documents/internal/ HTTP/1.1" 200 3440
+INFO 2024-12-21 14:50:47,706 basehttp "GET /documents/internal/add/ HTTP/1.1" 200 2709
+INFO 2024-12-21 14:50:50,842 views Submitted Query: 
+INFO 2024-12-21 14:50:50,845 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:50:50,852 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3405
+INFO 2024-12-21 14:50:51,773 basehttp "GET /documents/outgoing/add/ HTTP/1.1" 200 2786
+INFO 2024-12-21 14:50:56,313 views Submitted Query: 
+INFO 2024-12-21 14:50:56,317 views Returned 0 documents for model 'decree'.
+INFO 2024-12-21 14:50:56,322 basehttp "GET /documents/decree/ HTTP/1.1" 200 3378
+INFO 2024-12-21 14:50:57,458 basehttp "GET /documents/decree/add/ HTTP/1.1" 200 2769
+INFO 2024-12-21 14:51:05,523 views Submitted Query: 
+INFO 2024-12-21 14:51:05,527 views Returned 0 documents for model 'outgoing'.
+INFO 2024-12-21 14:51:05,533 basehttp "GET /documents/outgoing/ HTTP/1.1" 200 3408

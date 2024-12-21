@@ -127,15 +127,25 @@
                 <div class="modal-body">
                     <form method="POST" action="{% url 'login' %}">
                         {% csrf_token %}
-                        <input type="hidden" name="next" value="{{ request.GET.next|default:'index' }}">  <!-- Capture the model name -->
+                        <input type="hidden" name="next" value="{{ request.GET.next|default:'index' }}">
                         <div class="mb-3">
                             <label for="username" class="form-label">Username:</label>
-                            <input type="text" class="form-control" name="username" id="username" required>
+                            <input type="text" class="form-control" name="username" id="username" required value="{{ request.POST.username }}">
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">Password:</label>
                             <input type="password" class="form-control" name="password" id="password" required>
                         </div>
+                        
+                        <!-- Display error messages here -->
+                        {% if messages %}
+                            <div class="alert alert-danger">
+                                {% for message in messages %}
+                                    <p>{{ message }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        
                         <button type="submit" class="btn btn-primary">Login</button>
                     </form>
                 </div>

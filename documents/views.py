@@ -16,10 +16,9 @@ from django.core.paginator import Paginator
 import plotly.express as px
 import pandas as pd
 # from django.utils.http import urlencode
-from .llm_service import llm_service_instance
+from .llm import llm_service_instance
 import speech_recognition as sr
 from django.core.cache import cache
-
 
 
 logger = logging.getLogger('documents')
@@ -53,18 +52,16 @@ def user_login(request):
         # Authenticate the user
         user = authenticate(request, username=username, password=password)
         if user is not None:
+            # If credentials are correct, log the user in
             login(request, user)
             user_name = user.username
             logger.info(f'User {username} logged in successfully.')  # Log successful login
-
-            if 'show_login_modal' in request.session:
-                del request.session['show_login_modal']
-
             # Always redirect to index after login
             return redirect(next_url or 'index')
         else:
             messages.error(request, 'Invalid username or password.')
             logger.warning(f'Failed login attempt for user: {username}')
+            return render(request, 'index.html', {'user_name': user_name})
 
     # Render the index page with the login form if not authenticated
     return render(request, 'index.html', {'user_name': user_name})
@@ -303,7 +300,7 @@ def document_view(request, model_name):
     if not request.user.is_authenticated:
         return redirect('login')  # Redirect to login if not authenticated
     
-    # llm_service = llm_service_instance
+    llm_service = llm_service_instance
 
     # Initialize model_class and related variables
     model_class, _, arabic_name, arabic_names = None, None, None, None

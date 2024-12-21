@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% load custom_filters %}
-{% block title %}{{ arabic_name | title }}{% endblock %}
+{% block title %}{{ arabic_names | title }}{% endblock %}
 {% block content %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
@@ -88,7 +88,7 @@
         <thead>
             <tr>
                 <th>الرقم</th>
-                <th>التاريخ</th>
+                <th>تاريخ التسجيل</th>
                 <th>العنوان</th>
                 {% if model_name == 'incoming' %}
                     <th>رقم الرسالة</th>
@@ -125,14 +125,14 @@
                 {% if model_name == 'incoming' %}
                     <td>{{ doc.orig_number }}</td>
                     <td>{{ doc.orig_date }}</td>
-                    <td>{{ doc.dept_from.name }}</td>
-                    <td>{{ doc.dept_to.name }}</td>
+                    <td>{{ doc.affiliate.name }}</td>
+                    <td>{{ doc.department.name }}</td>
                 {% elif model_name == 'outgoing' %}
-                    <td>{{ doc.dept_from.name }}</td>
-                    <td>{{ doc.dept_to.name }}</td>
+                    <td>{{ doc.department.name }}</td>
+                    <td>{{ doc.affiliate.name }}</td>
                 {% elif model_name == 'internal' %}
-                    <td>{{ doc.dept_from.name }}</td>
-                    <td>{{ doc.dept_to.name }}</td>
+                    <td>{{ doc.department.name }}</td>
+                    <td>{{ doc.department_to.name }}</td>
                 {% elif model_name == 'decree' %}
                     <td>{{ doc.minister.name }}</td>
                     <td>{{ doc.government.name }}</td>
